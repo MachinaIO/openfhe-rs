@@ -1,8 +1,0 @@
-{
-    "files.associations": {
-        "*.mpc": "python",
-        "__bit_reference": "cpp",
-        "deque": "cpp",
-        "complex": "cpp"
-    }
-}
