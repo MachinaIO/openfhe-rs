@@ -26,6 +26,6 @@ fn main() {
     let rhs = ffi::DCRTPolyGenFromDug(&params);
     let lhs = ffi::DCRTPolyGenFromDug(&params);
 
-    // let _out_add = ffi::DCRTPolyAdd(&rhs, &lhs);
-    // let _out_mul = ffi::DCRTPolyMul(&rhs, &lhs);
+    let _out_add = ffi::DCRTPolyAdd(&rhs, &lhs);
+    let _out_mul = ffi::DCRTPolyMul(&rhs, &lhs);
 }

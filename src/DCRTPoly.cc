@@ -53,16 +53,16 @@ std::unique_ptr<DCRTPolyParams> DCRTPolyGenNullParams()
     return std::make_unique<DCRTPolyParams>();
 }
 
-// std::unique_ptr<DCRTPolyImpl> DCRTPolyAdd(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs)
-// {
-//     auto res = rhs + lhs;
-//     return std::make_unique<DCRTPolyImpl>(res);
-// }
+std::unique_ptr<DCRTPolyImpl> DCRTPolyAdd(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs)
+{
+    auto res = rhs.GetPoly() + lhs.GetPoly();
+    return std::make_unique<DCRTPolyImpl>(std::move(res));
+}
 
-// std::unique_ptr<DCRTPolyImpl> DCRTPolyMul(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs)
-// {
-//     auto res = rhs * lhs;
-//     return std::make_unique<DCRTPolyImpl>(res);
-// }
+std::unique_ptr<DCRTPolyImpl> DCRTPolyMul(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs)
+{
+    auto res = rhs.GetPoly() * lhs.GetPoly();
+    return std::make_unique<DCRTPolyImpl>(std::move(res));
+}
 
 } // openfhe

@@ -732,7 +732,7 @@ pub mod ffi
 
     // DCRTPolyImpl
     unsafe extern "C++" {
-        /// Generates a DCRTPoly object using discrete uniform distribution
+        /// Generates a DCRTPolyImpl object using discrete uniform distribution
         ///
         /// # Arguments
         /// * `params` - The parameters defining the ring structure for the polynomial
@@ -741,7 +741,7 @@ pub mod ffi
         /// A unique pointer to the newly generated DCRTPolyImpl object
         fn DCRTPolyGenFromDug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
 
-        /// Generates a DCRTPoly object using discrete Gaussian distribution
+        /// Generates a DCRTPolyImpl object using discrete Gaussian distribution
         ///
         /// # Arguments
         /// * `params` - The parameters defining the ring structure for the polynomial
@@ -751,7 +751,7 @@ pub mod ffi
         /// A unique pointer to the newly generated DCRTPolyImpl object
         fn DCRTPolyGenFromDgg(params: &ILDCRTParams, sigma: f64) -> UniquePtr<DCRTPolyImpl>;
 
-        /// Generates a DCRTPoly object using discrete binary distribution
+        /// Generates a DCRTPolyImpl object using discrete binary distribution
         ///
         /// # Arguments
         /// * `params` - The parameters defining the ring structure for the polynomial
@@ -759,6 +759,26 @@ pub mod ffi
         /// # Returns
         /// A unique pointer to the newly generated DCRTPolyImpl object
         fn DCRTPolyGenFromBug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
+
+        /// Adds two DCRTPolyImpl objects
+        ///
+        /// # Arguments
+        /// * `rhs` - The right-hand side DCRTPolyImpl object
+        /// * `lhs` - The left-hand side DCRTPolyImpl object
+        ///
+        /// # Returns
+        /// A unique pointer representing the sum of the two operands
+        fn DCRTPolyAdd(rhs: &DCRTPolyImpl, lhs: &DCRTPolyImpl) -> UniquePtr<DCRTPolyImpl>;
+
+        /// Multiplies two DCRTPolyImpl objects
+        ///
+        /// # Arguments
+        /// * `rhs` - The right-hand side DCRTPolyImpl object
+        /// * `lhs` - The left-hand side DCRTPolyImpl object
+        ///
+        /// # Returns
+        /// A unique pointer representing the product of the two operands
+        fn DCRTPolyMul(rhs: &DCRTPolyImpl, lhs: &DCRTPolyImpl) -> UniquePtr<DCRTPolyImpl>;
     }
 
     // KeyPairDCRTPoly

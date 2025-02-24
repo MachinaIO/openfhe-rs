@@ -24,26 +24,26 @@ public:
 
 // Generator functions
 /**
- * @brief Generates a DCRTPoly object sampled uniformly from the discrete binary distribution
+ * @brief Generates a DCRTPolyImpl object sampled uniformly from the discrete binary distribution
  *
  * @param params The parameters defining the ring structure for the polynomial
- * @return A unique pointer to the newly generated DCRTPoly object
+ * @return A unique pointer to the newly generated DCRTPolyImpl object
  */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params);
 
 /**
- * @brief Generates a DCRTPoly object sampled uniformly from the discrete uniform distribution
+ * @brief Generates a DCRTPolyImpl object sampled uniformly from the discrete uniform distribution
  *
  * @param params The parameters defining the ring structure for the polynomial
- * @return A unique pointer to the newly generated DCRTPoly object
+ * @return A unique pointer to the newly generated DCRTPolyImpl object
  */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDug(const ILDCRTParams& params);
 
 /**
- * @brief Generates a DCRTPoly object sampled uniformly from the discrete Gaussian distribution
+ * @brief Generates a DCRTPolyImpl object sampled uniformly from the discrete Gaussian distribution
  *
  * @param params The parameters defining the ring structure for the polynomial
- * @return A unique pointer to the newly generated DCRTPoly object
+ * @return A unique pointer to the newly generated DCRTPolyImpl object
  */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParams& params, double sigma);
 
@@ -64,22 +64,22 @@ public:
 // Generator functions
 [[nodiscard]] std::unique_ptr<DCRTPolyParams> DCRTPolyGenNullParams();
 
-// /**
-//  * @brief Adds two DCRTPoly objects
-//  *
-//  * @param rhs The right-hand side DCRTPoly object
-//  * @param lhs The left-hand side DCRTPoly object    
-//  * @return A new DCRTPoly object representing the sum of the two operands
-//  */
-// [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyAdd(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs);
+/**
+ * @brief Adds two DCRTPolyImpl objects
+ *
+ * @param rhs The right-hand side DCRTPolyImpl object
+ * @param lhs The left-hand side DCRTPolyImpl object    
+ * @return A new DCRTPolyImpl object representing the sum of the two operands
+ */
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyAdd(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs);
 
-// /**
-//  * @brief Multiplies two DCRTPoly objects
-//  *
-//  * @param rhs The right-hand side DCRTPoly object
-//  * @param lhs The left-hand side DCRTPoly object    
-//  * @return A new DCRTPoly object representing the product of the two operands
-//  */
-// [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyMul(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs);
+/**
+ * @brief Multiplies two DCRTPolyImpl objects
+ *
+ * @param rhs The right-hand side DCRTPolyImpl object
+ * @param lhs The left-hand side DCRTPolyImpl object    
+ * @return A new DCRTPolyImpl object representing the product of the two operands
+ */
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyMul(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs);
 
 } // openfhe
