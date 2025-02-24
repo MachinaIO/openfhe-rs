@@ -16,4 +16,8 @@ fn main() {
     let k = 68; // to calculate
 
     let _res = ffi::DCRTPolyGaussSamp(n.try_into().unwrap(), k, &trapdoor, &u, base);
+
+    let signa = 4.57825;
+
+    let _e = ffi::DCRTPolyGenFromDgg(&params, signa);
 }

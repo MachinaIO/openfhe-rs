@@ -39,6 +39,21 @@ public:
 using DCRTPolyImpl = lbcrypto::DCRTPolyImpl<lbcrypto::BigVector>;
 
 // Generator functions
+/**
+ * @brief Generates a DCRTPoly object using discrete uniform distribution
+ *
+ * @param params The parameters defining the ring structure for the polynomial
+ * @return A unique pointer to the newly generated DCRTPolyImpl object
+ */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDug(const ILDCRTParams& params);
+
+/**
+ * @brief Generates a DCRTPoly object using discrete Gaussian distribution
+ *
+ * @param params The parameters defining the ring structure for the polynomial
+ * @param sigma The standard deviation for the Gaussian distribution
+ * @return A unique pointer to the newly generated DCRTPolyImpl object
+ */
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParams& params, double sigma);
 
 } // openfhe

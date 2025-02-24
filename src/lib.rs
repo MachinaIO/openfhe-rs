@@ -735,12 +735,29 @@ pub mod ffi
     unsafe extern "C++"
     {
         fn DCRTPolyGenFromDug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
+        fn DCRTPolyGenFromDgg(params: &ILDCRTParams, sigma: f64) -> UniquePtr<DCRTPolyImpl>;
     }
 
     // KeyPairDCRTPoly
     unsafe extern "C++"
     {
+        /// Generates a DCRTPoly object using discrete uniform distribution
+        ///
+        /// # Arguments
+        /// * `params` - The parameters defining the ring structure for the polynomial
+        ///
+        /// # Returns
+        /// A unique pointer to the newly generated DCRTPolyImpl object
         fn GetPrivateKey(self: &KeyPairDCRTPoly) -> UniquePtr<PrivateKeyDCRTPoly>;
+
+        /// Generates a DCRTPoly object using discrete Gaussian distribution
+        ///
+        /// # Arguments
+        /// * `params` - The parameters defining the ring structure for the polynomial
+        /// * `sigma` - The standard deviation for the Gaussian distribution
+        ///
+        /// # Returns
+        /// A unique pointer to the newly generated DCRTPolyImpl object
         fn GetPublicKey(self: &KeyPairDCRTPoly) -> UniquePtr<PublicKeyDCRTPoly>;
     }
 
