@@ -197,7 +197,6 @@ pub mod ffi
         type CiphertextDCRTPoly;
         type CryptoContextDCRTPoly;
         type CryptoParametersBaseDCRTPoly;
-        type DCRTPoly;
         type DCRTPolyImpl;
         type DCRTPolyParams;
         type DecryptResult;
@@ -573,7 +572,7 @@ pub mod ffi
         fn KeySwitchDown(self: &CryptoContextDCRTPoly, ciphertext: &CiphertextDCRTPoly)
                          -> UniquePtr<CiphertextDCRTPoly>;
         fn KeySwitchDownFirstElement(self: &CryptoContextDCRTPoly, ciphertext: &CiphertextDCRTPoly)
-                                     -> UniquePtr<DCRTPoly>;
+                                     -> UniquePtr<DCRTPolyImpl>;
         fn KeySwitchExt(self: &CryptoContextDCRTPoly, ciphertext: &CiphertextDCRTPoly,
                         addFirst: bool) -> UniquePtr<CiphertextDCRTPoly>;
         fn KeySwitchGen(self: &CryptoContextDCRTPoly, oldPrivateKey: &PrivateKeyDCRTPoly,
@@ -760,26 +759,6 @@ pub mod ffi
         /// # Returns
         /// A unique pointer to the newly generated DCRTPolyImpl object
         fn DCRTPolyGenFromBug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
-
-        /// Adds two DCRTPoly objects
-        ///
-        /// # Arguments
-        /// * `rhs` - The right-hand side DCRTPoly object
-        /// * `lhs` - The left-hand side DCRTPoly object
-        ///
-        /// # Returns
-        /// A unique pointer to the newly generated DCRTPolyImpl object
-        fn DCRTPolyAdd(rhs: &DCRTPolyImpl, lhs: &DCRTPolyImpl) -> UniquePtr<DCRTPolyImpl>;
-
-        /// Multiplies two DCRTPoly objects
-        ///
-        /// # Arguments
-        /// * `rhs` - The right-hand side DCRTPoly object
-        /// * `lhs` - The left-hand side DCRTPoly object
-        ///
-        /// # Returns
-        /// A unique pointer to the newly generated DCRTPolyImpl object
-        fn DCRTPolyMul(rhs: &DCRTPolyImpl, lhs: &DCRTPolyImpl) -> UniquePtr<DCRTPolyImpl>;
     }
 
     // KeyPairDCRTPoly

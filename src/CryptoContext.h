@@ -26,7 +26,7 @@ namespace openfhe
 class CiphertextDCRTPoly;
 struct ComplexPair;
 class CryptoParametersBaseDCRTPoly;
-class DCRTPoly;
+class DCRTPolyImpl;
 class DCRTPolyParams;
 class DecryptResult;
 class EncodingParams;
@@ -341,7 +341,7 @@ public:
         const CiphertextDCRTPoly& ciphertext, const EvalKeyDCRTPoly& evalKey) const;
     [[nodiscard]] std::unique_ptr<CiphertextDCRTPoly> KeySwitchDown(
         const CiphertextDCRTPoly& ciphertext) const;
-    [[nodiscard]] std::unique_ptr<DCRTPoly> KeySwitchDownFirstElement(
+    [[nodiscard]] std::unique_ptr<DCRTPolyImpl> KeySwitchDownFirstElement(
         const CiphertextDCRTPoly& ciphertext) const;
     [[nodiscard]] std::unique_ptr<CiphertextDCRTPoly> KeySwitchExt(
         const CiphertextDCRTPoly& ciphertext, const bool addFirst) const;

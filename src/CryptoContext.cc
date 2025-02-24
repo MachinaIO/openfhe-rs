@@ -786,10 +786,10 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::KeySwitchDown(
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->KeySwitchDown(
         ciphertext.GetRef()));
 }
-std::unique_ptr<DCRTPoly> CryptoContextDCRTPoly::KeySwitchDownFirstElement(
+std::unique_ptr<DCRTPolyImpl> CryptoContextDCRTPoly::KeySwitchDownFirstElement(
     const CiphertextDCRTPoly& ciphertext) const
 {
-    return std::make_unique<DCRTPoly>(m_cryptoContextImplSharedPtr->KeySwitchDownFirstElement(
+    return std::make_unique<DCRTPolyImpl>(m_cryptoContextImplSharedPtr->KeySwitchDownFirstElement(
         ciphertext.GetRef()));
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::KeySwitchExt(

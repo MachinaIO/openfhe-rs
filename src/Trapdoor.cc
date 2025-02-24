@@ -28,18 +28,18 @@ std::unique_ptr<TrapdoorOutput> DCRTPolyTrapdoorGen(
 
 std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const TrapdoorOutput& trapdoor, const DCRTPolyImpl& u, int64_t base)
 {
-    DCRTPolyImpl::DggType dgg(lbcrypto::SIGMA);
+    lbcrypto::DCRTPoly::DggType dgg(lbcrypto::SIGMA);
 
     double c = (base + 1) * lbcrypto::SIGMA;
     double s = lbcrypto::SPECTRAL_BOUND(n, k, base);
-    DCRTPolyImpl::DggType dggLargeSigma(sqrt(s * s - c * c));
+    lbcrypto::DCRTPoly::DggType dggLargeSigma(sqrt(s * s - c * c));
 
     auto result = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::GaussSamp(
         n,
         k,
         trapdoor.m,
         trapdoor.tp,
-        u,
+        u.GetPoly(),
         dgg,
         dggLargeSigma,
         base

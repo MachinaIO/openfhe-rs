@@ -17,15 +17,15 @@ fn main() {
 
     let _res = ffi::DCRTPolyGaussSamp(n.try_into().unwrap(), k, &trapdoor, &u, base);
 
-    let signa = 4.57825;
+    let sigma = 4.57825;
 
-    let _e = ffi::DCRTPolyGenFromDgg(&params, signa);
+    let _e = ffi::DCRTPolyGenFromDgg(&params, sigma);
 
     let _s = ffi::DCRTPolyGenFromBug(&params);
 
     let rhs = ffi::DCRTPolyGenFromDug(&params);
     let lhs = ffi::DCRTPolyGenFromDug(&params);
 
-    let _out_add = ffi::DCRTPolyAdd(&rhs, &lhs);
-    let _out_mul = ffi::DCRTPolyMul(&rhs, &lhs);
+    // let _out_add = ffi::DCRTPolyAdd(&rhs, &lhs);
+    // let _out_mul = ffi::DCRTPolyMul(&rhs, &lhs);
 }
