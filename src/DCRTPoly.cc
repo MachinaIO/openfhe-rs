@@ -43,4 +43,16 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params)
     return std::make_unique<DCRTPolyImpl>(bug, params_ptr, Format::EVALUATION);
 }
 
+std::unique_ptr<DCRTPolyImpl> DCRTPolyAdd(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs)
+{
+    auto res = rhs + lhs;
+    return std::make_unique<DCRTPolyImpl>(res);
+}
+
+std::unique_ptr<DCRTPolyImpl> DCRTPolyMul(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs)
+{
+    auto res = rhs * lhs;
+    return std::make_unique<DCRTPolyImpl>(res);
+}
+
 } // openfhe

@@ -38,7 +38,6 @@ public:
 
 using DCRTPolyImpl = lbcrypto::DCRTPolyImpl<lbcrypto::BigVector>;
 
-// Generator functions
 /**
  * @brief Generates a DCRTPoly object using discrete uniform distribution
  *
@@ -64,4 +63,21 @@ using DCRTPolyImpl = lbcrypto::DCRTPolyImpl<lbcrypto::BigVector>;
  */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params);
 
+/**
+ * @brief Adds two DCRTPoly objects
+ *
+ * @param rhs The right-hand side DCRTPoly object
+ * @param lhs The left-hand side DCRTPoly object    
+ * @return A new DCRTPoly object representing the sum of the two operands
+ */
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyAdd(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs);
+
+/**
+ * @brief Multiplies two DCRTPoly objects
+ *
+ * @param rhs The right-hand side DCRTPoly object
+ * @param lhs The left-hand side DCRTPoly object    
+ * @return A new DCRTPoly object representing the product of the two operands
+ */
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyMul(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs);
 } // openfhe
