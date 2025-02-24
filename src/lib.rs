@@ -734,13 +734,6 @@ pub mod ffi
     // DCRTPolyImpl
     unsafe extern "C++"
     {
-        fn DCRTPolyGenFromDug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
-        fn DCRTPolyGenFromDgg(params: &ILDCRTParams, sigma: f64) -> UniquePtr<DCRTPolyImpl>;
-    }
-
-    // KeyPairDCRTPoly
-    unsafe extern "C++"
-    {
         /// Generates a DCRTPoly object using discrete uniform distribution
         ///
         /// # Arguments
@@ -748,7 +741,7 @@ pub mod ffi
         ///
         /// # Returns
         /// A unique pointer to the newly generated DCRTPolyImpl object
-        fn GetPrivateKey(self: &KeyPairDCRTPoly) -> UniquePtr<PrivateKeyDCRTPoly>;
+        fn DCRTPolyGenFromDug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
 
         /// Generates a DCRTPoly object using discrete Gaussian distribution
         ///
@@ -758,6 +751,22 @@ pub mod ffi
         ///
         /// # Returns
         /// A unique pointer to the newly generated DCRTPolyImpl object
+        fn DCRTPolyGenFromDgg(params: &ILDCRTParams, sigma: f64) -> UniquePtr<DCRTPolyImpl>;
+
+        /// Generates a DCRTPoly object using discrete binary distribution
+        ///
+        /// # Arguments
+        /// * `params` - The parameters defining the ring structure for the polynomial
+        ///
+        /// # Returns
+        /// A unique pointer to the newly generated DCRTPolyImpl object
+        fn DCRTPolyGenFromBug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
+    }
+
+    // KeyPairDCRTPoly
+    unsafe extern "C++"
+    {
+        fn GetPrivateKey(self: &KeyPairDCRTPoly) -> UniquePtr<PrivateKeyDCRTPoly>;
         fn GetPublicKey(self: &KeyPairDCRTPoly) -> UniquePtr<PublicKeyDCRTPoly>;
     }
 

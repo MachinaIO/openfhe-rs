@@ -13,11 +13,13 @@ fn main() {
 
     let trapdoor = ffi::DCRTPolyTrapdoorGen(&params, base, false);
 
-    let k = 68; // to calculate
+    let k = 68; // TODO: not hardcoded
 
     let _res = ffi::DCRTPolyGaussSamp(n.try_into().unwrap(), k, &trapdoor, &u, base);
 
     let signa = 4.57825;
 
     let _e = ffi::DCRTPolyGenFromDgg(&params, signa);
+
+    let _s = ffi::DCRTPolyGenFromBug(&params);
 }

@@ -56,4 +56,12 @@ using DCRTPolyImpl = lbcrypto::DCRTPolyImpl<lbcrypto::BigVector>;
  */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParams& params, double sigma);
 
+/**
+ * @brief Generates a DCRTPoly object using discrete binary distribution
+ *
+ * @param params The parameters defining the ring structure for the polynomial
+ * @return A unique pointer to the newly generated DCRTPolyImpl object
+ */
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params);
+
 } // openfhe

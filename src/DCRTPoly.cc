@@ -36,4 +36,11 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParams& params, dou
     return std::make_unique<DCRTPolyImpl>(dgg, params_ptr, Format::EVALUATION);
 }
 
+std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params)
+{
+    std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
+    typename DCRTPolyImpl::BugType bug;
+    return std::make_unique<DCRTPolyImpl>(bug, params_ptr, Format::EVALUATION);
+}
+
 } // openfhe
