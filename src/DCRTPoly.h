@@ -19,7 +19,7 @@ public:
     DCRTPolyImpl& operator=(DCRTPolyImpl&&) = delete;
 
     [[nodiscard]] const lbcrypto::DCRTPoly& GetPoly() const noexcept;
-
+    [[nodiscard]] std::unique_ptr<DCRTPolyImpl> Negate() const;
 };
 
 // Generator functions

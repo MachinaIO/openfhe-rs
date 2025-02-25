@@ -789,6 +789,12 @@ pub mod ffi
         /// # Returns
         /// A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial)
         fn DCRTPolyGenFromConst(params: &ILDCRTParams, value: u64) -> UniquePtr<DCRTPolyImpl>;
+
+        /// Negates a DCRTPolyImpl object
+        ///
+        /// # Returns
+        /// A unique pointer to the negated DCRTPolyImpl object
+        fn Negate(self: &DCRTPolyImpl) -> UniquePtr<DCRTPolyImpl>;
     }
 
     // KeyPairDCRTPoly

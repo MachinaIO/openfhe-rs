@@ -13,6 +13,11 @@ const lbcrypto::DCRTPoly& DCRTPolyImpl::GetPoly() const noexcept
     return m_poly;
 }
 
+std::unique_ptr<DCRTPolyImpl> DCRTPolyImpl::Negate() const 
+{
+    auto res = -m_poly;
+    return std::make_unique<DCRTPolyImpl>(std::move(res));
+}
 
 // Generator functions
 std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params)
