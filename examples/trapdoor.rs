@@ -12,14 +12,15 @@ fn main() {
     let u = ffi::DCRTPolyGenFromDug(&params);
     let _neg_u = u.Negate();
 
-    // test traits
-    println!("u: {:?}", u);
-
     let trapdoor = ffi::DCRTPolyTrapdoorGen(&params, base, false);
 
     let k = 68; // TODO: not hardcoded
 
-    let _constant_poly = ffi::DCRTPolyGenFromConst(&params, 1);
+    // test traits
+    let constant_poly = ffi::DCRTPolyGenFromConst(&params, 1);
+    let constant_poly_2 = ffi::DCRTPolyGenFromConst(&params, 1);
+    assert_eq!(constant_poly, constant_poly_2);
+    println!("constant_poly: {:?}", constant_poly);
 
     let _res = ffi::DCRTPolyGaussSamp(n.try_into().unwrap(), k, &trapdoor, &u, base);
 

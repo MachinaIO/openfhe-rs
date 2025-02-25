@@ -1217,11 +1217,19 @@ pub mod ffi
 
 use std::fmt;
 use crate::ffi::DCRTPolyImpl;
+use cxx::UniquePtr;
 
 // DCRTPolyImpl Debug trait impl
 impl fmt::Debug for DCRTPolyImpl {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.GetString())
+    }
+}
+
+// DCRTPolyImpl PartialEq trait impl
+impl PartialEq for DCRTPolyImpl {
+    fn eq(&self, other: &Self) -> bool {
+        self.IsEqual(other)
     }
 }
 
