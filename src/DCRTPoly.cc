@@ -1,5 +1,6 @@
 #include "DCRTPoly.h"
 #include "openfhe/src/lib.rs.h"
+#include <sstream>
 
 namespace openfhe
 {
@@ -17,6 +18,13 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyImpl::Negate() const
 {
     auto res = -m_poly;
     return std::make_unique<DCRTPolyImpl>(std::move(res));
+}
+
+rust::String DCRTPolyImpl::GetString() const
+{
+    std::stringstream stream;
+    stream << m_poly;
+    return rust::String(stream.str());
 }
 
 // Generator functions

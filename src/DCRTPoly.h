@@ -4,6 +4,7 @@
 #include "openfhe/core/lattice/hal/default/dcrtpoly.h"
 #include "openfhe/core/math/math-hal.h"
 #include "Params.h"
+#include "rust/cxx.h"
 
 namespace openfhe
 {
@@ -20,7 +21,7 @@ public:
 
     [[nodiscard]] const lbcrypto::DCRTPoly& GetPoly() const noexcept;
     [[nodiscard]] std::unique_ptr<DCRTPolyImpl> Negate() const;
-};
+    [[nodiscard]] rust::String GetString() const;};
 
 // Generator functions
 /**

@@ -795,6 +795,7 @@ pub mod ffi
         /// # Returns
         /// A unique pointer to the negated DCRTPolyImpl object
         fn Negate(self: &DCRTPolyImpl) -> UniquePtr<DCRTPolyImpl>;
+        fn GetString(self: &DCRTPolyImpl) -> String;
     }
 
     // KeyPairDCRTPoly

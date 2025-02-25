@@ -12,6 +12,8 @@ fn main() {
     let u = ffi::DCRTPolyGenFromDug(&params);
     let _neg_u = u.Negate();
 
+    println!("{}", u.GetString());
+
     let trapdoor = ffi::DCRTPolyTrapdoorGen(&params, base, false);
 
     let k = 68; // TODO: not hardcoded
