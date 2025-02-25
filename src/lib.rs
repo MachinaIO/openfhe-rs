@@ -796,6 +796,7 @@ pub mod ffi
         /// A unique pointer to the negated DCRTPolyImpl object
         fn Negate(self: &DCRTPolyImpl) -> UniquePtr<DCRTPolyImpl>;
         fn GetString(self: &DCRTPolyImpl) -> String;
+        fn IsEqual(self: &DCRTPolyImpl, other: &DCRTPolyImpl) -> bool;
     }
 
     // KeyPairDCRTPoly
@@ -1211,6 +1212,16 @@ pub mod ffi
         // Generator functions
         fn DCRTPolyTrapdoorGen(params: &ILDCRTParams, base: i64, balanced: bool) -> UniquePtr<TrapdoorOutput>;
         fn DCRTPolyGaussSamp(n: usize, k: usize, trapdoor: &TrapdoorOutput, u: &DCRTPolyImpl, base: i64) -> UniquePtr<Matrix>;
+    }
+}
+
+use std::fmt;
+use crate::ffi::DCRTPolyImpl;
+
+// DCRTPolyImpl Debug trait impl
+impl fmt::Debug for DCRTPolyImpl {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.GetString())
     }
 }
 

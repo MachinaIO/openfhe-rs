@@ -21,7 +21,9 @@ public:
 
     [[nodiscard]] const lbcrypto::DCRTPoly& GetPoly() const noexcept;
     [[nodiscard]] std::unique_ptr<DCRTPolyImpl> Negate() const;
-    [[nodiscard]] rust::String GetString() const;};
+    [[nodiscard]] rust::String GetString() const;
+    [[nodiscard]] bool IsEqual(const DCRTPolyImpl& other) const noexcept;
+};
 
 // Generator functions
 /**

@@ -27,6 +27,10 @@ rust::String DCRTPolyImpl::GetString() const
     return rust::String(stream.str());
 }
 
+bool DCRTPolyImpl::IsEqual(const DCRTPolyImpl& other) const noexcept {
+    return m_poly == other.GetPoly();
+}
+
 // Generator functions
 std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params)
 {

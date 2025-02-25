@@ -12,7 +12,8 @@ fn main() {
     let u = ffi::DCRTPolyGenFromDug(&params);
     let _neg_u = u.Negate();
 
-    println!("{}", u.GetString());
+    // test traits
+    println!("u: {:?}", u);
 
     let trapdoor = ffi::DCRTPolyTrapdoorGen(&params, base, false);
 
