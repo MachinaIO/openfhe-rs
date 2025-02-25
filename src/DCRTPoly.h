@@ -47,6 +47,15 @@ public:
  */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParams& params, double sigma);
 
+/**
+ * @brief Generates a DCRTPolyImpl object from a constant integer value
+ *
+ * @param params The parameters defining the ring structure for the polynomial
+ * @param value The integer value to be converted to a DCRTPolyImpl object
+ * @return A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial)
+ */
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParams& params, uint64_t value);
+
 class DCRTPolyParams final
 {
     std::shared_ptr<lbcrypto::DCRTPoly::Params> m_params;

@@ -779,6 +779,16 @@ pub mod ffi
         /// # Returns
         /// A unique pointer representing the product of the two operands
         fn DCRTPolyMul(rhs: &DCRTPolyImpl, lhs: &DCRTPolyImpl) -> UniquePtr<DCRTPolyImpl>;
+
+        /// Generates a DCRTPolyImpl object from a constant integer value
+        ///
+        /// # Arguments
+        /// * `params` - The parameters defining the ring structure for the polynomial
+        /// * `value` - The integer value to be converted to a DCRTPolyImpl object
+        ///
+        /// # Returns
+        /// A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial)
+        fn DCRTPolyGenFromConst(params: &ILDCRTParams, value: u64) -> UniquePtr<DCRTPolyImpl>;
     }
 
     // KeyPairDCRTPoly

@@ -39,6 +39,14 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParams& params, dou
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
+std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParams& params, uint64_t value)
+{
+    std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
+    lbcrypto::DCRTPoly poly(params_ptr, Format::EVALUATION);
+    poly = {value};
+    return std::make_unique<DCRTPolyImpl>(std::move(poly));
+}
+
 DCRTPolyParams::DCRTPolyParams(const std::shared_ptr<lbcrypto::DCRTPoly::Params>& params) noexcept
     : m_params(params)
 { }

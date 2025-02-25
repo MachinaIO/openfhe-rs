@@ -15,6 +15,8 @@ fn main() {
 
     let k = 68; // TODO: not hardcoded
 
+    let _constant_poly = ffi::DCRTPolyGenFromConst(&params, 1);
+
     let _res = ffi::DCRTPolyGaussSamp(n.try_into().unwrap(), k, &trapdoor, &u, base);
 
     let sigma = 4.57825;
