@@ -738,7 +738,7 @@ pub mod ffi
         /// * `params` - The parameters defining the ring structure for the polynomial
         ///
         /// # Returns
-        /// A unique pointer to the newly generated DCRTPolyImpl object
+        /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is COEFFICIENT)
         fn DCRTPolyGenFromDug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
 
         /// Generates a DCRTPolyImpl object using discrete Gaussian distribution
@@ -748,7 +748,7 @@ pub mod ffi
         /// * `sigma` - The standard deviation for the Gaussian distribution
         ///
         /// # Returns
-        /// A unique pointer to the newly generated DCRTPolyImpl object
+        /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is COEFFICIENT)
         fn DCRTPolyGenFromDgg(params: &ILDCRTParams, sigma: f64) -> UniquePtr<DCRTPolyImpl>;
 
         /// Generates a DCRTPolyImpl object using discrete binary distribution
@@ -757,7 +757,7 @@ pub mod ffi
         /// * `params` - The parameters defining the ring structure for the polynomial
         ///
         /// # Returns
-        /// A unique pointer to the newly generated DCRTPolyImpl object
+        /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is COEFFICIENT)
         fn DCRTPolyGenFromBug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
 
         /// Adds two DCRTPolyImpl objects
@@ -787,7 +787,7 @@ pub mod ffi
         /// * `value` - The integer value to be converted to a DCRTPolyImpl object
         ///
         /// # Returns
-        /// A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial)
+        /// A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is COEFFICIENT)
         fn DCRTPolyGenFromConst(params: &ILDCRTParams, value: u64) -> UniquePtr<DCRTPolyImpl>;
 
         /// Negates a DCRTPolyImpl object

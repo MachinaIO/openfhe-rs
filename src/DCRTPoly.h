@@ -30,7 +30,7 @@ public:
  * @brief Generates a DCRTPolyImpl object sampled uniformly from the discrete binary distribution
  *
  * @param params The parameters defining the ring structure for the polynomial
- * @return A unique pointer to the newly generated DCRTPolyImpl object
+ * @return A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is COEFFICIENT)
  */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params);
 
@@ -38,7 +38,7 @@ public:
  * @brief Generates a DCRTPolyImpl object sampled uniformly from the discrete uniform distribution
  *
  * @param params The parameters defining the ring structure for the polynomial
- * @return A unique pointer to the newly generated DCRTPolyImpl object
+ * @return A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is COEFFICIENT)
  */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDug(const ILDCRTParams& params);
 
@@ -46,7 +46,7 @@ public:
  * @brief Generates a DCRTPolyImpl object sampled uniformly from the discrete Gaussian distribution
  *
  * @param params The parameters defining the ring structure for the polynomial
- * @return A unique pointer to the newly generated DCRTPolyImpl object
+ * @return A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is COEFFICIENT)
  */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParams& params, double sigma);
 
@@ -55,7 +55,7 @@ public:
  *
  * @param params The parameters defining the ring structure for the polynomial
  * @param value The integer value to be converted to a DCRTPolyImpl object
- * @return A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial)
+ * @return A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is COEFFICIENT)
  */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParams& params, uint64_t value);
 
