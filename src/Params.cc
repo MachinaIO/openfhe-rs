@@ -3,6 +3,16 @@
 namespace openfhe
 {
 
+ILDCRTParamsImpl::ILDCRTParamsImpl(const std::shared_ptr<ILDCRTParams>& params) noexcept
+    : m_params(params)
+{ }
+const std::shared_ptr<ILDCRTParams>& ILDCRTParamsImpl::GetRef() const noexcept
+{
+    return m_params;
+}
+
+// Generator functions
+
 std::unique_ptr<ParamsBFVRNS> GenParamsBFVRNS()
 {
     return std::make_unique<ParamsBFVRNS>();
@@ -36,9 +46,10 @@ std::unique_ptr<ParamsCKKSRNS> GenParamsCKKSRNSbyVectorOfString(
 {
     return std::make_unique<ParamsCKKSRNS>(vals);
 }
-std::unique_ptr<ILDCRTParams> GenILDCRTParamsByOrderSizeBits(
+std::unique_ptr<ILDCRTParamsImpl> GenILDCRTParamsByOrderSizeBits(
     uint32_t corder, uint32_t depth, uint32_t bits)
 {   
-    return std::make_unique<ILDCRTParams>(corder, depth, bits);
+    auto params = std::make_shared<ILDCRTParams>(corder, depth, bits);
+    return std::make_unique<ILDCRTParamsImpl>(params);
 }
 } // openfhe

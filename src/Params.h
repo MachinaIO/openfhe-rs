@@ -32,6 +32,20 @@ using ParamsBGVRNS = lbcrypto::CCParams<lbcrypto::CryptoContextBGVRNS>;
 using ParamsCKKSRNS = lbcrypto::CCParams<lbcrypto::CryptoContextCKKSRNS>;
 using ILDCRTParams = lbcrypto::ILDCRTParams<lbcrypto::BigInteger>;
 
+class ILDCRTParamsImpl final
+{
+    std::shared_ptr<ILDCRTParams> m_params;
+public:
+    ILDCRTParamsImpl() = default;
+    ILDCRTParamsImpl(const std::shared_ptr<ILDCRTParams>& params) noexcept;
+    ILDCRTParamsImpl(const ILDCRTParamsImpl&) = delete;
+    ILDCRTParamsImpl(ILDCRTParamsImpl&&) = delete;
+    ILDCRTParamsImpl& operator=(const ILDCRTParamsImpl&) = delete;
+    ILDCRTParamsImpl& operator=(ILDCRTParamsImpl&&) = delete;
+
+    [[nodiscard]] const std::shared_ptr<ILDCRTParams>& GetRef() const noexcept;
+};
+
 // Generator functions
 [[nodiscard]] std::unique_ptr<ParamsBFVRNS> GenParamsBFVRNS();
 [[nodiscard]] std::unique_ptr<ParamsBFVRNS> GenParamsBFVRNSbyVectorOfString(
@@ -45,6 +59,6 @@ using ILDCRTParams = lbcrypto::ILDCRTParams<lbcrypto::BigInteger>;
 [[nodiscard]] std::unique_ptr<ParamsCKKSRNS> GenParamsCKKSRNS();
 [[nodiscard]] std::unique_ptr<ParamsCKKSRNS> GenParamsCKKSRNSbyVectorOfString(
     const std::vector<std::string>& vals);
-[[nodiscard]] std::unique_ptr<ILDCRTParams> GenILDCRTParamsByOrderSizeBits(
+[[nodiscard]] std::unique_ptr<ILDCRTParamsImpl> GenILDCRTParamsByOrderSizeBits(
     uint32_t corder, uint32_t depth, uint32_t bits);
 } // openfhe
