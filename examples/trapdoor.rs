@@ -28,7 +28,17 @@ fn main() {
 
     let _e = ffi::DCRTPolyGenFromDgg(&params, sigma);
 
-    let _s = ffi::DCRTPolyGenFromBug(&params);
+    let mut _s = ffi::DCRTPolyGenFromBug(&params);
+
+    // Switch to EVALUATION format
+    _s.as_mut().unwrap().SwitchFormat();
+
+    println!("s: {:?}", _s);
+
+    // Switch back to COEFFICIENT format
+    _s.as_mut().unwrap().SwitchFormat();
+
+    println!("s: {:?}", _s);
 
     let rhs = ffi::DCRTPolyGenFromDug(&params);
     let lhs = ffi::DCRTPolyGenFromDug(&params);

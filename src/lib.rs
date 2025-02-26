@@ -738,7 +738,7 @@ pub mod ffi
         /// * `params` - The parameters defining the ring structure for the polynomial
         ///
         /// # Returns
-        /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is COEFFICIENT)
+        /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is EVALUATION)
         fn DCRTPolyGenFromDug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
 
         /// Generates a DCRTPolyImpl object using discrete Gaussian distribution
@@ -748,7 +748,7 @@ pub mod ffi
         /// * `sigma` - The standard deviation for the Gaussian distribution
         ///
         /// # Returns
-        /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is COEFFICIENT)
+        /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is EVALUATION)
         fn DCRTPolyGenFromDgg(params: &ILDCRTParams, sigma: f64) -> UniquePtr<DCRTPolyImpl>;
 
         /// Generates a DCRTPolyImpl object using discrete binary distribution
@@ -757,7 +757,7 @@ pub mod ffi
         /// * `params` - The parameters defining the ring structure for the polynomial
         ///
         /// # Returns
-        /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is COEFFICIENT)
+        /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is EVALUATION)
         fn DCRTPolyGenFromBug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
 
         /// Adds two DCRTPolyImpl objects
@@ -787,7 +787,7 @@ pub mod ffi
         /// * `value` - The integer value to be converted to a DCRTPolyImpl object
         ///
         /// # Returns
-        /// A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is COEFFICIENT)
+        /// A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is EVALUATION)
         fn DCRTPolyGenFromConst(params: &ILDCRTParams, value: u64) -> UniquePtr<DCRTPolyImpl>;
 
         /// Negates a DCRTPolyImpl object
@@ -797,6 +797,7 @@ pub mod ffi
         fn Negate(self: &DCRTPolyImpl) -> UniquePtr<DCRTPolyImpl>;
         fn GetString(self: &DCRTPolyImpl) -> String;
         fn IsEqual(self: &DCRTPolyImpl, other: &DCRTPolyImpl) -> bool;
+        fn SwitchFormat(self: Pin<&mut DCRTPolyImpl>);
     }
 
     // KeyPairDCRTPoly

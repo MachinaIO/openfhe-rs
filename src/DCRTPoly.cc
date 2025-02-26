@@ -36,7 +36,7 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params)
 {
     std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
     typename lbcrypto::DCRTPoly::BugType bug;
-    auto poly = lbcrypto::DCRTPoly(bug, params_ptr, Format::COEFFICIENT);
+    auto poly = lbcrypto::DCRTPoly(bug, params_ptr, Format::EVALUATION);
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
@@ -44,7 +44,7 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDug(const ILDCRTParams& params)
 {
     std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
     typename lbcrypto::DCRTPoly::DugType dug;
-    auto poly = lbcrypto::DCRTPoly(dug, params_ptr, Format::COEFFICIENT);
+    auto poly = lbcrypto::DCRTPoly(dug, params_ptr, Format::EVALUATION);
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
@@ -52,14 +52,14 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParams& params, dou
 {
     std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
     typename lbcrypto::DCRTPoly::DggType dgg(sigma);
-    auto poly = lbcrypto::DCRTPoly(dgg, params_ptr, Format::COEFFICIENT);
+    auto poly = lbcrypto::DCRTPoly(dgg, params_ptr, Format::EVALUATION);
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
 std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParams& params, uint64_t value)
 {
     std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
-    lbcrypto::DCRTPoly poly(params_ptr, Format::COEFFICIENT);
+    lbcrypto::DCRTPoly poly(params_ptr, Format::EVALUATION);
     poly = {value};
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
@@ -70,6 +70,11 @@ DCRTPolyParams::DCRTPolyParams(const std::shared_ptr<lbcrypto::DCRTPoly::Params>
 const std::shared_ptr<lbcrypto::DCRTPoly::Params>& DCRTPolyParams::GetRef() const noexcept
 {
     return m_params;
+}
+
+void DCRTPolyImpl::SwitchFormat() 
+{
+    m_poly.SwitchFormat();
 }
 
 // Generator functions
