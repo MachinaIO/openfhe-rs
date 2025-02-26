@@ -770,7 +770,8 @@ pub mod ffi
         /// A unique pointer representing the sum of the two operands
         fn DCRTPolyAdd(rhs: &DCRTPolyImpl, lhs: &DCRTPolyImpl) -> UniquePtr<DCRTPolyImpl>;
 
-        /// Multiplies two DCRTPolyImpl objects
+        /// Multiplies two DCRTPolyImpl objects 
+        /// Assumes both operands are in EVALUATION format
         ///
         /// # Arguments
         /// * `rhs` - The right-hand side DCRTPolyImpl object

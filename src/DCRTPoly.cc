@@ -31,6 +31,18 @@ bool DCRTPolyImpl::IsEqual(const DCRTPolyImpl& other) const noexcept {
     return m_poly == other.GetPoly();
 }
 
+std::unique_ptr<DCRTPolyImpl> DCRTPolyAdd(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs)
+{
+    auto res = rhs.GetPoly() + lhs.GetPoly();
+    return std::make_unique<DCRTPolyImpl>(std::move(res));
+}
+
+std::unique_ptr<DCRTPolyImpl> DCRTPolyMul(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs)
+{
+    auto res = rhs.GetPoly() * lhs.GetPoly();
+    return std::make_unique<DCRTPolyImpl>(std::move(res));
+}
+
 // Generator functions
 std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params)
 {
@@ -64,6 +76,11 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParams& params, u
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
+void DCRTPolyImpl::SwitchFormat() 
+{
+    m_poly.SwitchFormat();
+}
+
 DCRTPolyParams::DCRTPolyParams(const std::shared_ptr<lbcrypto::DCRTPoly::Params>& params) noexcept
     : m_params(params)
 { }
@@ -72,27 +89,10 @@ const std::shared_ptr<lbcrypto::DCRTPoly::Params>& DCRTPolyParams::GetRef() cons
     return m_params;
 }
 
-void DCRTPolyImpl::SwitchFormat() 
-{
-    m_poly.SwitchFormat();
-}
-
 // Generator functions
 std::unique_ptr<DCRTPolyParams> DCRTPolyGenNullParams()
 {
     return std::make_unique<DCRTPolyParams>();
-}
-
-std::unique_ptr<DCRTPolyImpl> DCRTPolyAdd(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs)
-{
-    auto res = rhs.GetPoly() + lhs.GetPoly();
-    return std::make_unique<DCRTPolyImpl>(std::move(res));
-}
-
-std::unique_ptr<DCRTPolyImpl> DCRTPolyMul(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs)
-{
-    auto res = rhs.GetPoly() * lhs.GetPoly();
-    return std::make_unique<DCRTPolyImpl>(std::move(res));
 }
 
 } // openfhe

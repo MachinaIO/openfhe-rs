@@ -60,6 +60,25 @@ public:
  */
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParams& params, uint64_t value);
 
+/**
+ * @brief Adds two DCRTPolyImpl objects
+ *
+ * @param rhs The right-hand side DCRTPolyImpl object
+ * @param lhs The left-hand side DCRTPolyImpl object    
+ * @return A new DCRTPolyImpl object representing the sum of the two operands
+ */
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyAdd(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs);
+
+/**
+ * @brief Multiplies two DCRTPolyImpl objects
+ *
+ * Assumes both operands are in EVALUATION format
+ * @param rhs The right-hand side DCRTPolyImpl object
+ * @param lhs The left-hand side DCRTPolyImpl object    
+ * @return A new DCRTPolyImpl object representing the product of the two operands
+ */
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyMul(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs);
+
 class DCRTPolyParams final
 {
     std::shared_ptr<lbcrypto::DCRTPoly::Params> m_params;
@@ -76,23 +95,5 @@ public:
 
 // Generator functions
 [[nodiscard]] std::unique_ptr<DCRTPolyParams> DCRTPolyGenNullParams();
-
-/**
- * @brief Adds two DCRTPolyImpl objects
- *
- * @param rhs The right-hand side DCRTPolyImpl object
- * @param lhs The left-hand side DCRTPolyImpl object    
- * @return A new DCRTPolyImpl object representing the sum of the two operands
- */
-[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyAdd(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs);
-
-/**
- * @brief Multiplies two DCRTPolyImpl objects
- *
- * @param rhs The right-hand side DCRTPolyImpl object
- * @param lhs The left-hand side DCRTPolyImpl object    
- * @return A new DCRTPolyImpl object representing the product of the two operands
- */
-[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyMul(const DCRTPolyImpl& rhs, const DCRTPolyImpl& lhs);
 
 } // openfhe

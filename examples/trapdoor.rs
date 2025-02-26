@@ -30,12 +30,12 @@ fn main() {
 
     let mut _s = ffi::DCRTPolyGenFromBug(&params);
 
-    // Switch to EVALUATION format
+    // Switch to COEFFICIENT format
     _s.as_mut().unwrap().SwitchFormat();
 
     println!("s: {:?}", _s);
 
-    // Switch back to COEFFICIENT format
+    // Switch back to EVALUATION format
     _s.as_mut().unwrap().SwitchFormat();
 
     println!("s: {:?}", _s);
