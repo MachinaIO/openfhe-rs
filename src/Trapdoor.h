@@ -20,7 +20,7 @@ struct TrapdoorOutput
 
 // Generator functions
 [[nodiscard]] std::unique_ptr<TrapdoorOutput> DCRTPolyTrapdoorGen(
-    const ILDCRTParams& params,
+    const ILDCRTParamsImpl& params,
     int64_t base,
     bool balanced);
 

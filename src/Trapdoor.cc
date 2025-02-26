@@ -6,15 +6,14 @@ namespace openfhe
 {
 
 std::unique_ptr<TrapdoorOutput> DCRTPolyTrapdoorGen(
-    const ILDCRTParams& params,
+    const ILDCRTParamsImpl& params,
     int64_t base,
     bool balanced)
 {
 
-    std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
 
     auto result = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::TrapdoorGen(
-        params_ptr,
+        params.GetRef(),
         lbcrypto::SIGMA,
         base,
         balanced
