@@ -791,6 +791,16 @@ pub mod ffi
         /// A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is EVALUATION)
         fn DCRTPolyGenFromConst(params: &ILDCRTParams, value: u64) -> UniquePtr<DCRTPolyImpl>;
 
+        /// Generates a DCRTPolyImpl object from a vector of integers
+        ///
+        /// # Arguments
+        /// * `params` - The parameters defining the ring structure for the polynomial
+        /// * `values` - The vector of integers to be converted to a DCRTPolyImpl object
+        ///
+        /// # Returns
+        /// A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is EVALUATION)
+        fn DCRTPolyGenFromVec(params: &ILDCRTParams, values: &CxxVector<i64>) -> UniquePtr<DCRTPolyImpl>;
+
         /// Negates a DCRTPolyImpl object
         ///
         /// # Returns

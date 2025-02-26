@@ -1,3 +1,4 @@
+use cxx::CxxVector;
 use openfhe::ffi;
 
 fn main() {
@@ -30,6 +31,8 @@ fn main() {
 
     let mut _s = ffi::DCRTPolyGenFromBug(&params);
 
+    // print _s
+    println!("_s: {:?}", _s);
     // Switch to COEFFICIENT format
     _s.as_mut().unwrap().SwitchFormat();
 
@@ -45,4 +48,16 @@ fn main() {
 
     let _out_add = ffi::DCRTPolyAdd(&rhs, &lhs);
     let _out_mul = ffi::DCRTPolyMul(&rhs, &lhs);
+
+    // Gen poly from vec
+    let mut coeffs = CxxVector::<i64>::new();
+    coeffs.pin_mut().push(1);
+    coeffs.pin_mut().push(2);
+    coeffs.pin_mut().push(3);
+    coeffs.pin_mut().push(4);
+    coeffs.pin_mut().push(5);
+
+    let mut poly = ffi::DCRTPolyGenFromVec(&params, &coeffs);
+
+    println!("poly: {:?}", poly);
 }

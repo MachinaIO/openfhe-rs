@@ -76,6 +76,15 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParams& params, u
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
+std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromVec(const ILDCRTParams& params, const std::vector<int64_t>& values)
+{
+    std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
+    lbcrypto::DCRTPoly poly(params_ptr, Format::EVALUATION);
+    poly = values;
+    poly.SwitchFormat();
+    return std::make_unique<DCRTPolyImpl>(std::move(poly));
+}
+
 void DCRTPolyImpl::SwitchFormat() 
 {
     m_poly.SwitchFormat();
