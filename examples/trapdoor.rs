@@ -10,6 +10,12 @@ fn main() {
 
     let params = ffi::GenILDCRTParamsByOrderSizeBits(2 * n, size, k_res);
 
+    // Fetch modulus and ring dimension
+    let modulus = params.GetModulus();
+    let ring_dimension = params.GetRingDimension();
+    println!("modulus: {:?}", modulus);
+    println!("ring_dimension: {:?}", ring_dimension);
+
     let u = ffi::DCRTPolyGenFromDug(&params);
     let _neg_u = u.Negate();
 

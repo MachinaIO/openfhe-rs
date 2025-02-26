@@ -11,6 +11,16 @@ const std::shared_ptr<ILDCRTParams>& ILDCRTParamsImpl::GetRef() const noexcept
     return m_params;
 }
 
+uint64_t ILDCRTParamsImpl::GetModulus() const
+{
+    return m_params -> GetModulus().ConvertToInt();
+}
+
+uint32_t ILDCRTParamsImpl::GetRingDimension() const
+{
+    return m_params->GetRingDimension();
+}
+
 // Generator functions
 
 std::unique_ptr<ParamsBFVRNS> GenParamsBFVRNS()

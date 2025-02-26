@@ -6,6 +6,7 @@
 #include "openfhe/pke/scheme/bgvrns/gen-cryptocontext-bgvrns-params.h"
 #include "openfhe/pke/scheme/ckksrns/gen-cryptocontext-ckksrns-params.h"
 #include "openfhe/core/lattice/hal/default/ildcrtparams.h"
+#include "openfhe/core/lattice/hal/elemparams.h"
 #include "openfhe/core/math/math-hal.h"
 
 #include <memory>
@@ -44,6 +45,8 @@ public:
     ILDCRTParamsImpl& operator=(ILDCRTParamsImpl&&) = delete;
 
     [[nodiscard]] const std::shared_ptr<ILDCRTParams>& GetRef() const noexcept;
+    [[nodiscard]] uint64_t GetModulus() const;
+    [[nodiscard]] uint32_t GetRingDimension() const;
 };
 
 // Generator functions

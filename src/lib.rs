@@ -822,6 +822,8 @@ pub mod ffi
     unsafe extern "C++"
     {
         fn GenILDCRTParamsByOrderSizeBits(corder: u32, depth: u32, bits: u32) -> UniquePtr<ILDCRTParamsImpl>;
+        fn GetModulus(self: &ILDCRTParamsImpl) -> u64;
+        fn GetRingDimension(self: &ILDCRTParamsImpl) -> u32;
     }
 
     // Params
