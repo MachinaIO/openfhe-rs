@@ -33,7 +33,7 @@ public:
  * @param params The parameters defining the ring structure for the polynomial
  * @return A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is EVALUATION)
  */
-[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params);
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParamsImpl& params);
 
 /**
  * @brief Generates a DCRTPolyImpl object sampled uniformly from the discrete uniform distribution
@@ -41,7 +41,7 @@ public:
  * @param params The parameters defining the ring structure for the polynomial
  * @return A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is EVALUATION)
  */
-[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDug(const ILDCRTParams& params);
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDug(const ILDCRTParamsImpl& params);
 
 /**
  * @brief Generates a DCRTPolyImpl object sampled uniformly from the discrete Gaussian distribution
@@ -49,7 +49,7 @@ public:
  * @param params The parameters defining the ring structure for the polynomial
  * @return A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is EVALUATION)
  */
-[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParams& params, double sigma);
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParamsImpl& params, double sigma);
 
 /**
  * @brief Generates a DCRTPolyImpl object from a constant integer value
@@ -58,7 +58,7 @@ public:
  * @param value The integer value to be converted to a DCRTPolyImpl object
  * @return A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is EVALUATION)
  */
-[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParams& params, uint64_t value);
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParamsImpl& params, uint64_t value);
 
 /**
  * @brief Generates a DCRTPolyImpl object from a vector of integers
@@ -67,7 +67,7 @@ public:
  * @param values The vector of integers to be converted to a DCRTPolyImpl object
  * @return A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is EVALUATION)
  */
-[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromVec(const ILDCRTParams& params, const std::vector<int64_t>& values);
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromVec(const ILDCRTParamsImpl& params, const std::vector<int64_t>& values);
 
 /**
  * @brief Adds two DCRTPolyImpl objects

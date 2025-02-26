@@ -44,42 +44,37 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyMul(const DCRTPolyImpl& rhs, const DCRTPol
 }
 
 // Generator functions
-std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParams& params)
+std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromBug(const ILDCRTParamsImpl& params)
 {
-    std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
     typename lbcrypto::DCRTPoly::BugType bug;
-    auto poly = lbcrypto::DCRTPoly(bug, params_ptr, Format::EVALUATION);
+    auto poly = lbcrypto::DCRTPoly(bug, params.GetRef(), Format::EVALUATION);
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
-std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDug(const ILDCRTParams& params)
+std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDug(const ILDCRTParamsImpl& params)
 {
-    std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
     typename lbcrypto::DCRTPoly::DugType dug;
-    auto poly = lbcrypto::DCRTPoly(dug, params_ptr, Format::EVALUATION);
+    auto poly = lbcrypto::DCRTPoly(dug, params.GetRef(), Format::EVALUATION);
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
-std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParams& params, double sigma)
+std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParamsImpl& params, double sigma)
 {
-    std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
     typename lbcrypto::DCRTPoly::DggType dgg(sigma);
-    auto poly = lbcrypto::DCRTPoly(dgg, params_ptr, Format::EVALUATION);
+    auto poly = lbcrypto::DCRTPoly(dgg, params.GetRef(), Format::EVALUATION);
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
-std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParams& params, uint64_t value)
+std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParamsImpl& params, uint64_t value)
 {
-    std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
-    lbcrypto::DCRTPoly poly(params_ptr, Format::EVALUATION);
+    lbcrypto::DCRTPoly poly(params.GetRef(), Format::EVALUATION);
     poly = {value};
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
-std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromVec(const ILDCRTParams& params, const std::vector<int64_t>& values)
+std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromVec(const ILDCRTParamsImpl& params, const std::vector<int64_t>& values)
 {
-    std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
-    lbcrypto::DCRTPoly poly(params_ptr, Format::EVALUATION);
+    lbcrypto::DCRTPoly poly(params.GetRef(), Format::EVALUATION);
     poly = values;
     poly.SwitchFormat();
     return std::make_unique<DCRTPolyImpl>(std::move(poly));

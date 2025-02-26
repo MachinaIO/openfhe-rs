@@ -203,7 +203,6 @@ pub mod ffi
         type EncodingParams;
         type EvalKeyDCRTPoly;
         type KeyPairDCRTPoly;
-        type ILDCRTParams;
         type ILDCRTParamsImpl;
         type LWEPrivateKey;
         type MapFromIndexToEvalKey;
@@ -740,7 +739,7 @@ pub mod ffi
         ///
         /// # Returns
         /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is EVALUATION)
-        fn DCRTPolyGenFromDug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
+        fn DCRTPolyGenFromDug(params: &ILDCRTParamsImpl) -> UniquePtr<DCRTPolyImpl>;
 
         /// Generates a DCRTPolyImpl object using discrete Gaussian distribution
         ///
@@ -750,7 +749,7 @@ pub mod ffi
         ///
         /// # Returns
         /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is EVALUATION)
-        fn DCRTPolyGenFromDgg(params: &ILDCRTParams, sigma: f64) -> UniquePtr<DCRTPolyImpl>;
+        fn DCRTPolyGenFromDgg(params: &ILDCRTParamsImpl, sigma: f64) -> UniquePtr<DCRTPolyImpl>;
 
         /// Generates a DCRTPolyImpl object using discrete binary distribution
         ///
@@ -759,7 +758,7 @@ pub mod ffi
         ///
         /// # Returns
         /// A unique pointer to the newly generated DCRTPolyImpl object (by default, the format is EVALUATION)
-        fn DCRTPolyGenFromBug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
+        fn DCRTPolyGenFromBug(params: &ILDCRTParamsImpl) -> UniquePtr<DCRTPolyImpl>;
 
         /// Adds two DCRTPolyImpl objects
         ///
@@ -790,7 +789,7 @@ pub mod ffi
         ///
         /// # Returns
         /// A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is EVALUATION)
-        fn DCRTPolyGenFromConst(params: &ILDCRTParams, value: u64) -> UniquePtr<DCRTPolyImpl>;
+        fn DCRTPolyGenFromConst(params: &ILDCRTParamsImpl, value: u64) -> UniquePtr<DCRTPolyImpl>;
 
         /// Generates a DCRTPolyImpl object from a vector of integers
         ///
@@ -800,7 +799,7 @@ pub mod ffi
         ///
         /// # Returns
         /// A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is EVALUATION)
-        fn DCRTPolyGenFromVec(params: &ILDCRTParams, values: &CxxVector<i64>) -> UniquePtr<DCRTPolyImpl>;
+        fn DCRTPolyGenFromVec(params: &ILDCRTParamsImpl, values: &CxxVector<i64>) -> UniquePtr<DCRTPolyImpl>;
 
         /// Negates a DCRTPolyImpl object
         ///
