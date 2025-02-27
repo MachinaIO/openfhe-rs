@@ -3,7 +3,7 @@ use openfhe::ffi;
 fn main() {
     // Parameters based on https://github.com/openfheorg/openfhe-development/blob/7b8346f4eac27121543e36c17237b919e03ec058/src/core/unittest/UnitTestTrapdoor.cpp#L314
     let n: u32 = 16;
-    let size: u32 = 4;
+    let size: u32 = 4; // Number of CRT moduli
     let k_res: u32 = 51;
     let base: i64 = 8;
 

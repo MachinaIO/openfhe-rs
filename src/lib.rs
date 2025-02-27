@@ -1225,6 +1225,8 @@ pub mod ffi
     {   
         // Generator functions
         fn DCRTPolyTrapdoorGen(params: &ILDCRTParamsImpl, base: i64, balanced: bool) -> UniquePtr<TrapdoorOutput>;
+
+        // Sample function
         fn DCRTPolyGaussSamp(n: usize, k: usize, trapdoor: &TrapdoorOutput, u: &DCRTPolyImpl, base: i64) -> UniquePtr<Matrix>;
     }
 }
