@@ -9,6 +9,8 @@
 #include "openfhe/core/lattice/hal/elemparams.h"
 #include "openfhe/core/math/math-hal.h"
 
+#include "rust/cxx.h"
+
 #include <memory>
 
 namespace openfhe
@@ -45,7 +47,7 @@ public:
     ILDCRTParamsImpl& operator=(ILDCRTParamsImpl&&) = delete;
 
     [[nodiscard]] const std::shared_ptr<ILDCRTParams>& GetRef() const noexcept;
-    [[nodiscard]] uint64_t GetModulus() const;
+    [[nodiscard]] rust::String GetModulus() const;
     [[nodiscard]] uint32_t GetRingDimension() const;
 };
 

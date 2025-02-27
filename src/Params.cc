@@ -11,9 +11,9 @@ const std::shared_ptr<ILDCRTParams>& ILDCRTParamsImpl::GetRef() const noexcept
     return m_params;
 }
 
-uint64_t ILDCRTParamsImpl::GetModulus() const
+rust::String ILDCRTParamsImpl::GetModulus() const
 {
-    return m_params -> GetModulus().ConvertToInt();
+    return m_params -> GetModulus().ToString();
 }
 
 uint32_t ILDCRTParamsImpl::GetRingDimension() const
