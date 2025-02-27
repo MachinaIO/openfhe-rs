@@ -14,7 +14,7 @@ const Matrix& TrapdoorOutput::GetMatrix() const noexcept
     return m_matrix;
 }
 
-const RLWETrapdoorPair& TrapdoorOutput::GetTrapdoorPair() const noexcept
+const RLWETrapdoorPair& TrapdoorOutput::GetTrapdoor() const noexcept
 {
     return m_trapdoorPair;
 }
@@ -49,7 +49,7 @@ std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const TrapdoorOutp
         n,
         k,
         trapdoor.GetMatrix(),
-        trapdoor.GetTrapdoorPair(),
+        trapdoor.GetTrapdoor(),
         u.GetPoly(),
         dgg,
         dggLargeSigma,

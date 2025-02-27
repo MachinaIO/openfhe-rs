@@ -216,6 +216,7 @@ pub mod ffi
         type Plaintext;
         type PrivateKeyDCRTPoly;
         type PublicKeyDCRTPoly;
+        type RLWETrapdoorPair;
         type SchemeBaseDCRTPoly;
         type SetOfUints;
         type UnorderedMapFromIndexToDCRTPoly;
@@ -1223,6 +1224,9 @@ pub mod ffi
     // Trapdoor
     unsafe extern "C++"
     {   
+        fn GetMatrix(self: &TrapdoorOutput) -> &Matrix;
+        fn GetTrapdoor(self: &TrapdoorOutput) -> &RLWETrapdoorPair;
+
         // Generator functions
         fn DCRTPolyTrapdoorGen(params: &ILDCRTParamsImpl, base: i64, balanced: bool) -> UniquePtr<TrapdoorOutput>;
 

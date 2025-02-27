@@ -11,17 +11,12 @@ namespace openfhe
 using Matrix = lbcrypto::Matrix<lbcrypto::DCRTPoly>;   
 using RLWETrapdoorPair = lbcrypto::RLWETrapdoorPair<lbcrypto::DCRTPoly>;
 
-// struct TrapdoorOutput
-// {
-//     Matrix m;
-//     RLWETrapdoorPair tp;
-// };
-
 class TrapdoorOutput final
 {
     Matrix m_matrix;
     RLWETrapdoorPair m_trapdoorPair;
 public:
+    TrapdoorOutput() = default;
     TrapdoorOutput(Matrix&& matrix, RLWETrapdoorPair&& trapdoorPair) noexcept;
     TrapdoorOutput(const TrapdoorOutput&) = delete;
     TrapdoorOutput(TrapdoorOutput&&) = delete;
@@ -29,7 +24,7 @@ public:
     TrapdoorOutput& operator=(TrapdoorOutput&&) = delete;
 
     [[nodiscard]] const Matrix& GetMatrix() const noexcept;
-    [[nodiscard]] const RLWETrapdoorPair& GetTrapdoorPair() const noexcept;
+    [[nodiscard]] const RLWETrapdoorPair& GetTrapdoor() const noexcept;
 };
 
 // Generator functions
