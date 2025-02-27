@@ -67,7 +67,7 @@ public:
  * @param values The vector of integers to be converted to a DCRTPolyImpl object
  * @return A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is EVALUATION)
  */
-[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromVec(const ILDCRTParamsImpl& params, const std::vector<std::string>& values);
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromVec(const ILDCRTParamsImpl& params, const rust::Vec<rust::String>& values);
 
 /**
  * @brief Adds two DCRTPolyImpl objects

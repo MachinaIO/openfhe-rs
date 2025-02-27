@@ -1,9 +1,11 @@
+use std::marker::PhantomPinned;
+
 use cxx::{let_cxx_string, CxxString, CxxVector};
 use openfhe::ffi;
 fn main() {
     // Parameters based on https://github.com/openfheorg/openfhe-development/blob/7b8346f4eac27121543e36c17237b919e03ec058/src/core/unittest/UnitTestTrapdoor.cpp#L314
     let n: u32 = 16;
-    let size: u32 = 4; // Number of CRT moduli
+    let size: u32 = 4; // Number of CRT
     let k_res: u32 = 51;
     let base: i64 = 8;
 
@@ -56,12 +58,9 @@ fn main() {
     let _out_add = ffi::DCRTPolyAdd(&rhs, &lhs);
     let _out_mul = ffi::DCRTPolyMul(&rhs, &lhs);
 
-    // // Gen poly from vec
-    // let mut coeffs = CxxVector::new();
-    // let_cxx_string!(one = "1");
-    // coeffs.pin_mut().push(&one);
-
-    // let mut poly = ffi::DCRTPolyGenFromVec(&params, &coeffs);
-
-    // println!("poly: {:?}", poly);
+    // Gen poly from vec
+    let mut coeffs = Vec::new();
+    coeffs.push("1".to_string());
+    let poly = ffi::DCRTPolyGenFromVec(&params, &coeffs);
+    println!("poly: {:?}", poly);
 }
