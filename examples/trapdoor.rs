@@ -1,4 +1,4 @@
-use cxx::{let_cxx_string, CxxVector};
+use cxx::{let_cxx_string, CxxString, CxxVector};
 use openfhe::ffi;
 fn main() {
     // Parameters based on https://github.com/openfheorg/openfhe-development/blob/7b8346f4eac27121543e36c17237b919e03ec058/src/core/unittest/UnitTestTrapdoor.cpp#L314
@@ -56,15 +56,12 @@ fn main() {
     let _out_add = ffi::DCRTPolyAdd(&rhs, &lhs);
     let _out_mul = ffi::DCRTPolyMul(&rhs, &lhs);
 
-    // Gen poly from vec
-    let mut coeffs = CxxVector::<i64>::new();
-    coeffs.pin_mut().push(1);
-    coeffs.pin_mut().push(2);
-    coeffs.pin_mut().push(3);
-    coeffs.pin_mut().push(4);
-    coeffs.pin_mut().push(5);
+    // // Gen poly from vec
+    // let mut coeffs = CxxVector::new();
+    // let_cxx_string!(one = "1");
+    // coeffs.pin_mut().push(&one);
 
-    let mut poly = ffi::DCRTPolyGenFromVec(&params, &coeffs);
+    // let mut poly = ffi::DCRTPolyGenFromVec(&params, &coeffs);
 
-    println!("poly: {:?}", poly);
+    // println!("poly: {:?}", poly);
 }
