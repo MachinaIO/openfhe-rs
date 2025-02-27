@@ -65,11 +65,23 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParamsImpl& params,
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
-std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParamsImpl& params, uint64_t value)
+std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParamsImpl& params, const std::string& value)
 {
-    lbcrypto::DCRTPoly poly(params.GetRef(), Format::EVALUATION);
-    poly = {value};
-    return std::make_unique<DCRTPolyImpl>(std::move(poly));
+    // Create a BigInteger
+    lbcrypto::BigInteger bigInt(value);
+
+    // Create a BigVector
+    lbcrypto::BigVector bigVec(params.GetRingDimension(), params.GetRef()->GetModulus());
+    bigVec[0] = bigInt;
+
+    // Create a PolyLargeType (which is a polynomial with BigInteger coefficients)
+    lbcrypto::DCRTPoly::PolyLargeType polyLarge(params.GetRef());
+    polyLarge.SetValues(bigVec, Format::EVALUATION);
+
+    // Convert polyLarge to a DCRTPoly
+    lbcrypto::DCRTPoly poly_small(polyLarge, params.GetRef());
+
+    return std::make_unique<DCRTPolyImpl>(std::move(poly_small));
 }
 
 std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromVec(const ILDCRTParamsImpl& params, const std::vector<int64_t>& values)

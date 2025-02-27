@@ -1,6 +1,5 @@
-use cxx::CxxVector;
+use cxx::{let_cxx_string, CxxVector};
 use openfhe::ffi;
-
 fn main() {
     // Parameters based on https://github.com/openfheorg/openfhe-development/blob/7b8346f4eac27121543e36c17237b919e03ec058/src/core/unittest/UnitTestTrapdoor.cpp#L314
     let n: u32 = 16;
@@ -24,8 +23,10 @@ fn main() {
     let k = 68; // TODO: not hardcoded
 
     // test traits
-    let constant_poly = ffi::DCRTPolyGenFromConst(&params, 1);
-    let constant_poly_2 = ffi::DCRTPolyGenFromConst(&params, 1);
+    let_cxx_string!(one = "1");
+
+    let constant_poly = ffi::DCRTPolyGenFromConst(&params, &one);
+    let constant_poly_2 = ffi::DCRTPolyGenFromConst(&params, &one);
     assert_eq!(constant_poly, constant_poly_2);
     println!("constant_poly: {:?}", constant_poly);
 

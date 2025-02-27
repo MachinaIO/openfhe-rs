@@ -58,7 +58,7 @@ public:
  * @param value The integer value to be converted to a DCRTPolyImpl object
  * @return A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is EVALUATION)
  */
-[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParamsImpl& params, uint64_t value);
+[[nodiscard]] std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParamsImpl& params, const std::string& value);
 
 /**
  * @brief Generates a DCRTPolyImpl object from a vector of integers

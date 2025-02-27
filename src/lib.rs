@@ -789,7 +789,7 @@ pub mod ffi
         ///
         /// # Returns
         /// A unique pointer to the newly generated DCRTPolyImpl object (constant polynomial) (by default, the format is EVALUATION)
-        fn DCRTPolyGenFromConst(params: &ILDCRTParamsImpl, value: u64) -> UniquePtr<DCRTPolyImpl>;
+        fn DCRTPolyGenFromConst(params: &ILDCRTParamsImpl, value: &CxxString) -> UniquePtr<DCRTPolyImpl>;
 
         /// Generates a DCRTPolyImpl object from a vector of integers
         ///
