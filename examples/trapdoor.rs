@@ -44,12 +44,12 @@ fn main() {
     // print _s
     println!("_s: {:?}", _s);
     // Switch to COEFFICIENT format
-    _s.as_mut().unwrap().SwitchFormat();
+    _s.as_mut().unwrap().SwitchFormatImpl();
 
     println!("s: {:?}", _s);
 
     // Switch back to EVALUATION format
-    _s.as_mut().unwrap().SwitchFormat();
+    _s.as_mut().unwrap().SwitchFormatImpl();
 
     println!("s: {:?}", _s);
 
@@ -60,10 +60,12 @@ fn main() {
     let _out_mul = ffi::DCRTPolyMul(&rhs, &lhs);
 
     // Gen poly from vec
-    let mut coeffs = Vec::new();
-    coeffs.push(one);
+    let mut coeffs = Vec::with_capacity(n as usize);
+    for i in 0..n {
+        coeffs.push(i.to_string());
+    }
+
     let poly = ffi::DCRTPolyGenFromVec(&params, &coeffs);
-    println!("poly: {:?}", poly);
-    let get_coeffs = u.GetCoefficients();
+    let get_coeffs = poly.GetCoefficients();
     assert_eq!(coeffs, get_coeffs);
 }

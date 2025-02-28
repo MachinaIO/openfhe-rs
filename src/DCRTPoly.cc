@@ -73,10 +73,13 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParamsImpl& param
 
     // Create a PolyLargeType (which is a polynomial with BigInteger coefficients)
     lbcrypto::DCRTPoly::PolyLargeType polyLarge(params.GetRef());
-    polyLarge.SetValues(bigVec, Format::EVALUATION);
+    polyLarge.SetValues(bigVec, Format::COEFFICIENT);
 
     // Convert polyLarge to a DCRTPoly
     lbcrypto::DCRTPoly poly_small(polyLarge, params.GetRef());
+
+    // switch poly_small to EVALUATION format
+    poly_small.SetFormat(Format::EVALUATION);
 
     return std::make_unique<DCRTPolyImpl>(std::move(poly_small));
 }
@@ -91,15 +94,18 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromVec(const ILDCRTParamsImpl& params,
 
     // Create a PolyLargeType (which is a polynomial with BigInteger coefficients)
     lbcrypto::DCRTPoly::PolyLargeType polyLarge(params.GetRef());
-    polyLarge.SetValues(bigVec, Format::EVALUATION);
+    polyLarge.SetValues(bigVec, Format::COEFFICIENT);
 
     // Convert polyLarge to a DCRTPoly
     lbcrypto::DCRTPoly poly_small(polyLarge, params.GetRef());
 
+    // switch poly_small to EVALUATION format
+    poly_small.SetFormat(Format::EVALUATION);
+
     return std::make_unique<DCRTPolyImpl>(std::move(poly_small));
 }
 
-void DCRTPolyImpl::SwitchFormat() 
+void DCRTPolyImpl::SwitchFormatImpl() 
 {
     m_poly.SwitchFormat();
 }
@@ -120,11 +126,14 @@ std::unique_ptr<DCRTPolyParams> DCRTPolyGenNullParams()
 
 
 rust::Vec<rust::String> DCRTPolyImpl::GetCoefficients() const
-{
+{   
     auto tempPoly = m_poly;
     tempPoly.SetFormat(Format::COEFFICIENT);
+
     lbcrypto::DCRTPoly::PolyLargeType polyLarge = tempPoly.CRTInterpolate();
+
     const lbcrypto::BigVector &coeffs = polyLarge.GetValues();
+
     rust::Vec<rust::String> result;
     for (size_t i = 0; i < coeffs.GetLength(); ++i)
     {

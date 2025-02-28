@@ -23,7 +23,7 @@ public:
     [[nodiscard]] std::unique_ptr<DCRTPolyImpl> Negate() const;
     [[nodiscard]] rust::String GetString() const;
     [[nodiscard]] bool IsEqual(const DCRTPolyImpl& other) const noexcept;
-    void SwitchFormat();
+    void SwitchFormatImpl();
     rust::Vec<rust::String> GetCoefficients() const;
 };
 
