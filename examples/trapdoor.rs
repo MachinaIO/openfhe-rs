@@ -25,7 +25,7 @@ fn main() {
     let k = 68; // TODO: not hardcoded
 
     // test traits
-    let_cxx_string!(one = "1");
+    let one = String::from("1");
 
     let constant_poly = ffi::DCRTPolyGenFromConst(&params, &one);
     let constant_poly_2 = ffi::DCRTPolyGenFromConst(&params, &one);
@@ -60,7 +60,7 @@ fn main() {
 
     // Gen poly from vec
     let mut coeffs = Vec::new();
-    coeffs.push("1".to_string());
+    coeffs.push(one);
     let poly = ffi::DCRTPolyGenFromVec(&params, &coeffs);
     println!("poly: {:?}", poly);
 }

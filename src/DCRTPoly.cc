@@ -65,11 +65,11 @@ std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDgg(const ILDCRTParamsImpl& params,
     return std::make_unique<DCRTPolyImpl>(std::move(poly));
 }
 
-std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParamsImpl& params, const std::string& value)
+std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromConst(const ILDCRTParamsImpl& params, const rust::String& value)
 {
     // Create a BigVector
     lbcrypto::BigVector bigVec(params.GetRingDimension(), params.GetRef()->GetModulus());
-    bigVec[0] = lbcrypto::BigInteger(value);
+    bigVec[0] = lbcrypto::BigInteger(std::string(value));
 
     // Create a PolyLargeType (which is a polynomial with BigInteger coefficients)
     lbcrypto::DCRTPoly::PolyLargeType polyLarge(params.GetRef());
