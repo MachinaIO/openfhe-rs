@@ -25,8 +25,6 @@ public:
 
     [[nodiscard]] const Matrix& GetMatrix() const noexcept;
     [[nodiscard]] const RLWETrapdoorPair& GetTrapdoor() const noexcept;
-    [[nodiscard]] std::unique_ptr<RLWETrapdoorPair> GetTrapdoorPtr() const;
-    [[nodiscard]] std::unique_ptr<Matrix> GetMatrixPtr() const;
 };
 
 // Generator functions
