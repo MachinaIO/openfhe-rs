@@ -1226,6 +1226,7 @@ pub mod ffi
     {   
         fn GetMatrix(self: &TrapdoorOutput) -> &Matrix;
         fn GetTrapdoor(self: &TrapdoorOutput) -> &RLWETrapdoorPair;
+        fn GetTrapdoorPtr(self: &TrapdoorOutput) -> UniquePtr<RLWETrapdoorPair>;
 
         // Generator functions
         fn DCRTPolyTrapdoorGen(params: &ILDCRTParamsImpl, base: i64, balanced: bool) -> UniquePtr<TrapdoorOutput>;

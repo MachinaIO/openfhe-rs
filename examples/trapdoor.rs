@@ -20,7 +20,8 @@ fn main() {
     let u = ffi::DCRTPolyGenFromDug(&params);
     let _neg_u = u.Negate();
 
-    let trapdoor = ffi::DCRTPolyTrapdoorGen(&params, base, false);
+    let trapdoor_output = ffi::DCRTPolyTrapdoorGen(&params, base, false);
+    let _trapdoor = trapdoor_output.GetTrapdoorPtr();
 
     let k = 68; // TODO: not hardcoded
 
@@ -32,7 +33,7 @@ fn main() {
     assert_eq!(constant_poly, constant_poly_2);
     println!("constant_poly: {:?}", constant_poly);
 
-    let _res = ffi::DCRTPolyGaussSamp(n.try_into().unwrap(), k, &trapdoor, &u, base);
+    let _res = ffi::DCRTPolyGaussSamp(n.try_into().unwrap(), k, &trapdoor_output, &u, base);
 
     let sigma = 4.57825;
 

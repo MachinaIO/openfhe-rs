@@ -19,6 +19,11 @@ const RLWETrapdoorPair& TrapdoorOutput::GetTrapdoor() const noexcept
     return m_trapdoorPair;
 }
 
+std::unique_ptr<RLWETrapdoorPair> TrapdoorOutput::GetTrapdoorPtr() const
+{
+    return std::make_unique<RLWETrapdoorPair>(m_trapdoorPair);
+}
+
 std::unique_ptr<TrapdoorOutput> DCRTPolyTrapdoorGen(
     const ILDCRTParamsImpl& params,
     int64_t base,
