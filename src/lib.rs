@@ -1175,6 +1175,7 @@ pub mod ffi {
         fn IsEqual(self: &DCRTPolyImpl, other: &DCRTPolyImpl) -> bool;
         fn SwitchFormatImpl(self: Pin<&mut DCRTPolyImpl>);
         fn GetCoefficients(self: &DCRTPolyImpl) -> Vec<String>;
+        fn GetModulus(self: &DCRTPolyImpl) -> String;
     }
 
     // KeyPairDCRTPoly

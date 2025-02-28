@@ -14,6 +14,11 @@ const lbcrypto::DCRTPoly& DCRTPolyImpl::GetPoly() const noexcept
     return m_poly;
 }
 
+rust::String DCRTPolyImpl::GetModulus() const
+{   
+    return m_poly.GetModulus().ToString();
+}
+
 std::unique_ptr<DCRTPolyImpl> DCRTPolyImpl::Negate() const 
 {
     auto res = -m_poly;

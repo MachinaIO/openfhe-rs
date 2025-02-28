@@ -24,7 +24,8 @@ public:
     [[nodiscard]] rust::String GetString() const;
     [[nodiscard]] bool IsEqual(const DCRTPolyImpl& other) const noexcept;
     void SwitchFormatImpl();
-    rust::Vec<rust::String> GetCoefficients() const;
+    [[nodiscard]] rust::Vec<rust::String> GetCoefficients() const;
+    [[nodiscard]] rust::String GetModulus() const;
 };
 
 // Generator functions

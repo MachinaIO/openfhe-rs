@@ -20,6 +20,10 @@ fn main() {
     let u = ffi::DCRTPolyGenFromDug(&params);
     let _neg_u = u.Negate();
 
+    // get modulus from u
+    let modulus_from_u = u.GetModulus();
+    assert_eq!(modulus, modulus_from_u);
+
     let trapdoor_output = ffi::DCRTPolyTrapdoorGen(&params, base, false);
     let _trapdoor = trapdoor_output.GetTrapdoorPtr();
 
