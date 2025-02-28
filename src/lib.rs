@@ -810,6 +810,7 @@ pub mod ffi
         fn GetString(self: &DCRTPolyImpl) -> String;
         fn IsEqual(self: &DCRTPolyImpl, other: &DCRTPolyImpl) -> bool;
         fn SwitchFormat(self: Pin<&mut DCRTPolyImpl>);
+        fn GetCoefficients(self: &DCRTPolyImpl) -> Vec<String>;
     }
 
     // KeyPairDCRTPoly

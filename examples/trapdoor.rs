@@ -64,4 +64,6 @@ fn main() {
     coeffs.push(one);
     let poly = ffi::DCRTPolyGenFromVec(&params, &coeffs);
     println!("poly: {:?}", poly);
+    let get_coeffs = u.GetCoefficients();
+    assert_eq!(coeffs, get_coeffs);
 }

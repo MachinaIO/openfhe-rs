@@ -118,4 +118,20 @@ std::unique_ptr<DCRTPolyParams> DCRTPolyGenNullParams()
     return std::make_unique<DCRTPolyParams>();
 }
 
+
+rust::Vec<rust::String> DCRTPolyImpl::GetCoefficients() const
+{
+    auto tempPoly = m_poly;
+    tempPoly.SetFormat(Format::COEFFICIENT);
+    lbcrypto::DCRTPoly::PolyLargeType polyLarge = tempPoly.CRTInterpolate();
+    const lbcrypto::BigVector &coeffs = polyLarge.GetValues();
+    rust::Vec<rust::String> result;
+    for (size_t i = 0; i < coeffs.GetLength(); ++i)
+    {
+        result.push_back(rust::String(coeffs[i].ToString()));
+    }
+
+    return result;
+}
+
 } // openfhe
