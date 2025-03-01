@@ -5,26 +5,26 @@
 namespace openfhe
 {
 
-DCRTTrapdoor::DCRTTrapdoor(rust::Vec<std::unique_ptr<DCRTPolyImpl>>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept
+DCRTTrapdoorImpl::DCRTTrapdoorImpl(std::vector<DCRTPolyImpl>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept
     : m_publicVector(std::move(publicVector)), m_trapdoorPair(std::move(trapdoorPair))
 { }
 
-// const Matrix& DCRTTrapdoor::GetMatrix() const noexcept
+// const Matrix& DCRTTrapdoorImpl::GetMatrix() const noexcept
 // {
 //     return m_matrix;
 // }
 
-// const RLWETrapdoorPair& DCRTTrapdoor::GetTrapdoor() const noexcept
+// const RLWETrapdoorPair& DCRTTrapdoorImpl::GetTrapdoor() const noexcept
 // {
 //     return m_trapdoorPair;
 // }
 
-std::unique_ptr<RLWETrapdoorPair> DCRTTrapdoor::GetTrapdoorPtr() const
+std::unique_ptr<RLWETrapdoorPair> DCRTTrapdoorImpl::GetTrapdoorPtr() const
 {
     return std::make_unique<RLWETrapdoorPair>(m_trapdoorPair);
 }
 
-std::unique_ptr<DCRTTrapdoor> DCRTPolyTrapdoorGen(
+std::unique_ptr<DCRTTrapdoorImpl> DCRTPolyTrapdoorGen(
     const ILDCRTParamsImpl& params,
     int64_t base,
     bool balanced)
@@ -36,18 +36,19 @@ std::unique_ptr<DCRTTrapdoor> DCRTPolyTrapdoorGen(
         balanced
     );
 
-    rust::Vec<std::unique_ptr<DCRTPolyImpl>> publicVector;
+    std::vector<DCRTPolyImpl> publicVector;
+    publicVector.reserve(trapPair.first.GetCols());
     for (size_t i = 0; i < trapPair.first.GetCols(); i++) {
-        publicVector.push_back(std::make_unique<DCRTPolyImpl>(std::move(trapPair.first(0, i))));
+        publicVector.emplace_back(std::move(trapPair.first(0, i)));
     }
 
-    return std::make_unique<DCRTTrapdoor>(
+    return std::make_unique<DCRTTrapdoorImpl>(
         std::move(publicVector),
         std::move(trapPair.second)
     );
 }
 
-// std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const DCRTTrapdoor& trapdoor, const DCRTPolyImpl& u, int64_t base)
+// std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const DCRTTrapdoorImpl& trapdoor, const DCRTPolyImpl& u, int64_t base)
 // {
 //     lbcrypto::DCRTPoly::DggType dgg(lbcrypto::SIGMA);
 

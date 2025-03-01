@@ -206,7 +206,7 @@ pub mod ffi {
         type VectorOfLWECiphertexts;
         type VectorOfPrivateKeys;
         type VectorOfVectorOfCiphertexts;
-        type DCRTTrapdoor;
+        type DCRTTrapdoorImpl;
     }
 
     // CiphertextDCRTPoly
@@ -1651,20 +1651,20 @@ pub mod ffi {
 
     // Trapdoor
     unsafe extern "C++" {
-        fn GetTrapdoorPtr(self: &DCRTTrapdoor) -> UniquePtr<RLWETrapdoorPair>;
+        fn GetTrapdoorPtr(self: &DCRTTrapdoorImpl) -> UniquePtr<RLWETrapdoorPair>;
 
         // Generator functions
         fn DCRTPolyTrapdoorGen(
             params: &ILDCRTParamsImpl,
             base: i64,
             balanced: bool,
-        ) -> UniquePtr<DCRTTrapdoor>;
+        ) -> UniquePtr<DCRTTrapdoorImpl>;
 
         // // Sample function
         // fn DCRTPolyGaussSamp(
         //     n: usize,
         //     k: usize,
-        //     trapdoor: &DCRTTrapdoor,
+        //     trapdoor: &DCRTTrapdoorImpl,
         //     u: &DCRTPolyImpl,
         //     base: i64,
         // ) -> UniquePtr<Matrix>;

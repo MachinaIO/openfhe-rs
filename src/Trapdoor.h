@@ -4,34 +4,34 @@
 #include "openfhe/core/math/matrix.h"
 #include "openfhe/core/lattice/trapdoor.h"
 #include "DCRTPoly.h"
-#include "rust/cxx.h"
+#include <vector>
 
 namespace openfhe
 {
 
 using RLWETrapdoorPair = lbcrypto::RLWETrapdoorPair<lbcrypto::DCRTPoly>;
 
-class DCRTTrapdoor final
+class DCRTTrapdoorImpl final
 {
-    rust::Vec<std::unique_ptr<DCRTPolyImpl>> m_publicVector;
+    std::vector<DCRTPolyImpl> m_publicVector;
     RLWETrapdoorPair m_trapdoorPair;
 public:
-    DCRTTrapdoor() = default;
-    DCRTTrapdoor(rust::Vec<std::unique_ptr<DCRTPolyImpl>>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept;
-    DCRTTrapdoor(const DCRTTrapdoor&) = delete;
-    DCRTTrapdoor(DCRTTrapdoor&&) = delete;
-    DCRTTrapdoor& operator=(const DCRTTrapdoor&) = delete;
-    DCRTTrapdoor& operator=(DCRTTrapdoor&&) = delete;
+    DCRTTrapdoorImpl() = default;
+    DCRTTrapdoorImpl(std::vector<DCRTPolyImpl>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept;
+    DCRTTrapdoorImpl(const DCRTTrapdoorImpl&) = delete;
+    DCRTTrapdoorImpl(DCRTTrapdoorImpl&&) = delete;
+    DCRTTrapdoorImpl& operator=(const DCRTTrapdoorImpl&) = delete;
+    DCRTTrapdoorImpl& operator=(DCRTTrapdoorImpl&&) = delete;
 
     [[nodiscard]] std::unique_ptr<RLWETrapdoorPair> GetTrapdoorPtr() const;
 };
 
 // Generator functions
-[[nodiscard]] std::unique_ptr<DCRTTrapdoor> DCRTPolyTrapdoorGen(
+[[nodiscard]] std::unique_ptr<DCRTTrapdoorImpl> DCRTPolyTrapdoorGen(
     const ILDCRTParamsImpl& params,
     int64_t base,
     bool balanced);
 
 // // Sample function
-// [[nodiscard]] std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const DCRTTrapdoor& trapdoor, const DCRTPolyImpl& u, int64_t base);
+// [[nodiscard]] std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const DCRTTrapdoorImpl& trapdoor, const DCRTPolyImpl& u, int64_t base);
 } // openfhe
