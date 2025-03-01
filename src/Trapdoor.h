@@ -13,18 +13,18 @@ using RLWETrapdoorPair = lbcrypto::RLWETrapdoorPair<lbcrypto::DCRTPoly>;
 
 class DCRTTrapdoorImpl final
 {
-    std::vector<std::unique_ptr<DCRTPolyImpl>> m_publicVector;
+    std::vector<DCRTPolyImpl> m_publicVector;
     RLWETrapdoorPair m_trapdoorPair;
 public:
     DCRTTrapdoorImpl() = default;
-    DCRTTrapdoorImpl(std::vector<std::unique_ptr<DCRTPolyImpl>>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept;
+    DCRTTrapdoorImpl(std::vector<DCRTPolyImpl>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept;
     DCRTTrapdoorImpl(const DCRTTrapdoorImpl&) = delete;
     DCRTTrapdoorImpl(DCRTTrapdoorImpl&&) = delete;
     DCRTTrapdoorImpl& operator=(const DCRTTrapdoorImpl&) = delete;
     DCRTTrapdoorImpl& operator=(DCRTTrapdoorImpl&&) = delete;
 
     [[nodiscard]] std::unique_ptr<RLWETrapdoorPair> GetTrapdoorPtr() const;
-    // [[nodiscard]] std::unique_ptr<std::vector<DCRTPolyImpl>> GetPublicVectorPtr() const;
+    [[nodiscard]] std::unique_ptr<std::vector<DCRTPolyImpl>> GetPublicVectorPtr() const;
 };
 
 // Generator functions

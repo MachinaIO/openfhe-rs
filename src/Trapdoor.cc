@@ -5,14 +5,14 @@
 namespace openfhe
 {
 
-DCRTTrapdoorImpl::DCRTTrapdoorImpl(std::vector<std::unique_ptr<DCRTPolyImpl>>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept
+DCRTTrapdoorImpl::DCRTTrapdoorImpl(std::vector<DCRTPolyImpl>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept
     : m_publicVector(std::move(publicVector)), m_trapdoorPair(std::move(trapdoorPair))
 { }
 
-// std::unique_ptr<std::vector<DCRTPolyImpl>> DCRTTrapdoorImpl::GetPublicVectorPtr() const
-// {
-//     return std::make_unique<std::vector<DCRTPolyImpl>>(m_publicVector);
-// }
+std::unique_ptr<std::vector<DCRTPolyImpl>> DCRTTrapdoorImpl::GetPublicVectorPtr() const
+{
+    return std::make_unique<std::vector<DCRTPolyImpl>>(m_publicVector);
+}
 
 // const Matrix& DCRTTrapdoorImpl::GetMatrix() const noexcept
 // {
@@ -41,10 +41,10 @@ std::unique_ptr<DCRTTrapdoorImpl> DCRTPolyTrapdoorGen(
         balanced
     );
 
-    std::vector<std::unique_ptr<DCRTPolyImpl>> publicVector;
+    std::vector<DCRTPolyImpl> publicVector;
     publicVector.reserve(trapPair.first.GetCols());
     for (size_t i = 0; i < trapPair.first.GetCols(); i++) {
-        publicVector.push_back(std::make_unique<DCRTPolyImpl>(std::move(trapPair.first(0, i))));
+        publicVector.emplace_back(std::move(trapPair.first(0, i)));
     }
 
     return std::make_unique<DCRTTrapdoorImpl>(
