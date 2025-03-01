@@ -5,7 +5,7 @@
 namespace openfhe
 {
 
-DCRTTrapdoor::DCRTTrapdoor(std::vector<std::unique_ptr<DCRTPolyImpl>>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept
+DCRTTrapdoor::DCRTTrapdoor(rust::Vec<std::unique_ptr<DCRTPolyImpl>>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept
     : m_publicVector(std::move(publicVector)), m_trapdoorPair(std::move(trapdoorPair))
 { }
 
@@ -36,13 +36,13 @@ std::unique_ptr<DCRTTrapdoor> DCRTPolyTrapdoorGen(
         balanced
     );
 
-    std::vector<std::unique_ptr<DCRTPolyImpl>> public_matrix_vector;
+    rust::Vec<std::unique_ptr<DCRTPolyImpl>> publicVector;
     for (size_t i = 0; i < trapPair.first.GetCols(); i++) {
-        public_matrix_vector.push_back(std::make_unique<DCRTPolyImpl>(std::move(trapPair.first(0, i))));
+        publicVector.push_back(std::make_unique<DCRTPolyImpl>(std::move(trapPair.first(0, i))));
     }
 
     return std::make_unique<DCRTTrapdoor>(
-        std::move(public_matrix_vector),
+        std::move(publicVector),
         std::move(trapPair.second)
     );
 }

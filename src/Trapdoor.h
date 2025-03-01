@@ -4,6 +4,7 @@
 #include "openfhe/core/math/matrix.h"
 #include "openfhe/core/lattice/trapdoor.h"
 #include "DCRTPoly.h"
+#include "rust/cxx.h"
 
 namespace openfhe
 {
@@ -12,11 +13,11 @@ using RLWETrapdoorPair = lbcrypto::RLWETrapdoorPair<lbcrypto::DCRTPoly>;
 
 class DCRTTrapdoor final
 {
-    std::vector<std::unique_ptr<DCRTPolyImpl>> m_publicVector;
+    rust::Vec<std::unique_ptr<DCRTPolyImpl>> m_publicVector;
     RLWETrapdoorPair m_trapdoorPair;
 public:
     DCRTTrapdoor() = default;
-    DCRTTrapdoor(std::vector<std::unique_ptr<DCRTPolyImpl>>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept;
+    DCRTTrapdoor(rust::Vec<std::unique_ptr<DCRTPolyImpl>>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept;
     DCRTTrapdoor(const DCRTTrapdoor&) = delete;
     DCRTTrapdoor(DCRTTrapdoor&&) = delete;
     DCRTTrapdoor& operator=(const DCRTTrapdoor&) = delete;
