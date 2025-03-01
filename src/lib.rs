@@ -1652,6 +1652,7 @@ pub mod ffi {
     // Trapdoor
     unsafe extern "C++" {
         fn GetTrapdoorPtr(self: &DCRTTrapdoorImpl) -> UniquePtr<RLWETrapdoorPair>;
+        fn GetPublicVectorPtr(self: &DCRTTrapdoorImpl) -> UniquePtr<CxxVector<DCRTPolyImpl>>;
 
         // Generator functions
         fn DCRTPolyTrapdoorGen(

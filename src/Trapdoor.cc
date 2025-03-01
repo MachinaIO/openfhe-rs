@@ -9,6 +9,11 @@ DCRTTrapdoorImpl::DCRTTrapdoorImpl(std::vector<DCRTPolyImpl>&& publicVector, RLW
     : m_publicVector(std::move(publicVector)), m_trapdoorPair(std::move(trapdoorPair))
 { }
 
+std::unique_ptr<std::vector<DCRTPolyImpl>> DCRTTrapdoorImpl::GetPublicVectorPtr() const
+{
+    return std::make_unique<std::vector<DCRTPolyImpl>>(m_publicVector);
+}
+
 // const Matrix& DCRTTrapdoorImpl::GetMatrix() const noexcept
 // {
 //     return m_matrix;

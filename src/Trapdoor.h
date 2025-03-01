@@ -24,6 +24,7 @@ public:
     DCRTTrapdoorImpl& operator=(DCRTTrapdoorImpl&&) = delete;
 
     [[nodiscard]] std::unique_ptr<RLWETrapdoorPair> GetTrapdoorPtr() const;
+    [[nodiscard]] std::unique_ptr<std::vector<DCRTPolyImpl>> GetPublicVectorPtr() const;
 };
 
 // Generator functions

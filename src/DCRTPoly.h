@@ -14,7 +14,9 @@ class DCRTPolyImpl final
     lbcrypto::DCRTPoly m_poly;
 public:
     DCRTPolyImpl(lbcrypto::DCRTPoly&& poly) noexcept;
-    DCRTPolyImpl(const DCRTPolyImpl&) = delete;
+    DCRTPolyImpl(const DCRTPolyImpl& other)
+        : m_poly(other.m_poly)
+    { }    
     DCRTPolyImpl(DCRTPolyImpl&& other) noexcept
         : m_poly(std::move(other.m_poly))
     { }
