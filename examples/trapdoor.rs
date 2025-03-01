@@ -37,13 +37,15 @@ fn main() {
 
     // test traits
     let one = String::from("1");
+    let sigma = 4.57825;
 
     let constant_poly = ffi::DCRTPolyGenFromConst(&params, &one);
     let constant_poly_2 = ffi::DCRTPolyGenFromConst(&params, &one);
     assert_eq!(constant_poly, constant_poly_2);
     println!("constant_poly: {:?}", constant_poly);
 
-    let preimage = ffi::DCRTPolyGaussSamp(n.try_into().unwrap(), k, &trapdoor_output, &u, base);
+    let preimage =
+        ffi::DCRTPolyGaussSamp(n.try_into().unwrap(), k, &trapdoor_output, &u, base, sigma);
 
     // get the polynomials from the preimage (note that preimage in a column vector)
     let poly_at_index_3 = ffi::GetMatrixElement(&preimage, 0, 0);
@@ -51,8 +53,6 @@ fn main() {
 
     let poly_at_index_4 = ffi::GetMatrixElement(&preimage, 1, 0);
     println!("poly_at_index_4: {:?}", poly_at_index_4);
-
-    let sigma = 4.57825;
 
     let _e = ffi::DCRTPolyGenFromDgg(&params, sigma);
 

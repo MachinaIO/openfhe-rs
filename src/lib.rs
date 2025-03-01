@@ -1669,6 +1669,7 @@ pub mod ffi {
             trapdoor: &DCRTTrapdoorImpl,
             u: &DCRTPolyImpl,
             base: i64,
+            sigma: f64,
         ) -> UniquePtr<Matrix>;
 
         // Getter function on Matrix

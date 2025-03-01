@@ -68,9 +68,9 @@ std::unique_ptr<DCRTTrapdoorImpl> DCRTPolyTrapdoorGen(
     );
 }
 
-std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const DCRTTrapdoorImpl& trapdoor, const DCRTPolyImpl& u, int64_t base)
+std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const DCRTTrapdoorImpl& trapdoor, const DCRTPolyImpl& u, int64_t base, double sigma)
 {
-    lbcrypto::DCRTPoly::DggType dgg(lbcrypto::SIGMA);
+    lbcrypto::DCRTPoly::DggType dgg(sigma);
 
     double c = (base + 1) * lbcrypto::SIGMA;
     double s = lbcrypto::SPECTRAL_BOUND(n, k, base);

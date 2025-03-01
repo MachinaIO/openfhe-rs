@@ -37,7 +37,7 @@ public:
     bool balanced);
 
 // Sample function
-[[nodiscard]] std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const DCRTTrapdoorImpl& trapdoor, const DCRTPolyImpl& u, int64_t base);
+[[nodiscard]] std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const DCRTTrapdoorImpl& trapdoor, const DCRTPolyImpl& u, int64_t base, double sigma);
 [[nodiscard]] std::unique_ptr<DCRTPolyImpl> GetMatrixElement(
     const Matrix& matrix, size_t row, size_t col);
 } // openfhe
