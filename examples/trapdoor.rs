@@ -26,12 +26,12 @@ fn main() {
 
     let trapdoor_output = ffi::DCRTPolyTrapdoorGen(&params, base, false);
     let _trapdoor = trapdoor_output.GetTrapdoorPtr();
-    let public_vector = trapdoor_output.GetPublicVectorPtr();
+    // let public_vector: cxx::UniquePtr<CxxVector<ffi::DCRTPolyImpl>> = trapdoor_output.GetPublicVectorPtr();
 
-    // print the polynomials in the public vector with their index
-    for (i, poly) in public_vector.iter().enumerate() {
-        println!("poly {}: {:?}", i, poly);
-    }
+    // // print the polynomials in the public vector with their index
+    // for (i, poly) in public_vector.iter().enumerate() {
+    //     // println!("poly {}: {:?}", i, poly);
+    // }
 
     let k = 68; // TODO: not hardcoded
 
