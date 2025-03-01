@@ -29,15 +29,15 @@ size_t DCRTTrapdoorImpl::GetPublicVectorSize() const noexcept
     return m_publicVector.size();
 }
 
-// const Matrix& DCRTTrapdoorImpl::GetMatrix() const noexcept
-// {
-//     return m_matrix;
-// }
-
-// const RLWETrapdoorPair& DCRTTrapdoorImpl::GetTrapdoor() const noexcept
-// {
-//     return m_trapdoorPair;
-// }
+std::unique_ptr<DCRTPolyImpl> GetMatrixElement(const Matrix& matrix, size_t row, size_t col)
+{
+    if (row >= matrix.GetRows() || col >= matrix.GetCols()) {
+        return nullptr;
+    }
+    
+    lbcrypto::DCRTPoly copy = matrix(row, col);
+    return std::make_unique<DCRTPolyImpl>(std::move(copy));
+}
 
 std::unique_ptr<RLWETrapdoorPair> DCRTTrapdoorImpl::GetTrapdoorPtr() const
 {

@@ -1670,6 +1670,9 @@ pub mod ffi {
             u: &DCRTPolyImpl,
             base: i64,
         ) -> UniquePtr<Matrix>;
+
+        // Getter function on Matrix
+        fn GetMatrixElement(matrix: &Matrix, row: usize, col: usize) -> UniquePtr<DCRTPolyImpl>;
     }
 }
 
