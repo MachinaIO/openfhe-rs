@@ -163,6 +163,7 @@ pub mod ffi {
         type ExecutionMode;
         type Format;
         type KeySwitchTechnique;
+        type Matrix;
         type MultipartyMode;
         type MultiplicationTechnique;
         type PKESchemeFeature;
@@ -1661,14 +1662,14 @@ pub mod ffi {
             balanced: bool,
         ) -> UniquePtr<DCRTTrapdoorImpl>;
 
-        // // Sample function
-        // fn DCRTPolyGaussSamp(
-        //     n: usize,
-        //     k: usize,
-        //     trapdoor: &DCRTTrapdoorImpl,
-        //     u: &DCRTPolyImpl,
-        //     base: i64,
-        // ) -> UniquePtr<Matrix>;
+        // Sample function
+        fn DCRTPolyGaussSamp(
+            n: usize,
+            k: usize,
+            trapdoor: &DCRTTrapdoorImpl,
+            u: &DCRTPolyImpl,
+            base: i64,
+        ) -> UniquePtr<Matrix>;
     }
 }
 

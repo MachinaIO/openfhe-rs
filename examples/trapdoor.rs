@@ -43,7 +43,7 @@ fn main() {
     assert_eq!(constant_poly, constant_poly_2);
     println!("constant_poly: {:?}", constant_poly);
 
-    // let _res = ffi::DCRTPolyGaussSamp(n.try_into().unwrap(), k, &trapdoor_output, &u, base);
+    let _res = ffi::DCRTPolyGaussSamp(n.try_into().unwrap(), k, &trapdoor_output, &u, base);
 
     let sigma = 4.57825;
 

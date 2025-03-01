@@ -10,6 +10,7 @@ namespace openfhe
 {
 
 using RLWETrapdoorPair = lbcrypto::RLWETrapdoorPair<lbcrypto::DCRTPoly>;
+using Matrix = lbcrypto::Matrix<lbcrypto::DCRTPoly>;
 
 class DCRTTrapdoorImpl final
 {
@@ -23,8 +24,10 @@ public:
     DCRTTrapdoorImpl& operator=(const DCRTTrapdoorImpl&) = delete;
     DCRTTrapdoorImpl& operator=(DCRTTrapdoorImpl&&) = delete;
 
+    [[nodiscard]] const RLWETrapdoorPair& GetTrapdoor() const noexcept;
     [[nodiscard]] std::unique_ptr<RLWETrapdoorPair> GetTrapdoorPtr() const;
     [[nodiscard]] std::unique_ptr<DCRTPolyImpl> GetPolyAtIndex(size_t index) const;
+    [[nodiscard]] size_t GetPublicVectorSize() const noexcept;
 };
 
 // Generator functions
@@ -33,6 +36,6 @@ public:
     int64_t base,
     bool balanced);
 
-// // Sample function
-// [[nodiscard]] std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const DCRTTrapdoorImpl& trapdoor, const DCRTPolyImpl& u, int64_t base);
+// Sample function
+[[nodiscard]] std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const DCRTTrapdoorImpl& trapdoor, const DCRTPolyImpl& u, int64_t base);
 } // openfhe
