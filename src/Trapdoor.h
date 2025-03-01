@@ -8,32 +8,29 @@
 namespace openfhe
 {
 
-using Matrix = lbcrypto::Matrix<lbcrypto::DCRTPoly>;   
 using RLWETrapdoorPair = lbcrypto::RLWETrapdoorPair<lbcrypto::DCRTPoly>;
 
-class TrapdoorOutput final
+class DCRTTrapdoor final
 {
-    Matrix m_matrix;
+    std::vector<std::unique_ptr<DCRTPolyImpl>> m_publicVector;
     RLWETrapdoorPair m_trapdoorPair;
 public:
-    TrapdoorOutput() = default;
-    TrapdoorOutput(Matrix&& matrix, RLWETrapdoorPair&& trapdoorPair) noexcept;
-    TrapdoorOutput(const TrapdoorOutput&) = delete;
-    TrapdoorOutput(TrapdoorOutput&&) = delete;
-    TrapdoorOutput& operator=(const TrapdoorOutput&) = delete;
-    TrapdoorOutput& operator=(TrapdoorOutput&&) = delete;
+    DCRTTrapdoor() = default;
+    DCRTTrapdoor(std::vector<std::unique_ptr<DCRTPolyImpl>>&& publicVector, RLWETrapdoorPair&& trapdoorPair) noexcept;
+    DCRTTrapdoor(const DCRTTrapdoor&) = delete;
+    DCRTTrapdoor(DCRTTrapdoor&&) = delete;
+    DCRTTrapdoor& operator=(const DCRTTrapdoor&) = delete;
+    DCRTTrapdoor& operator=(DCRTTrapdoor&&) = delete;
 
-    [[nodiscard]] const Matrix& GetMatrix() const noexcept;
-    [[nodiscard]] const RLWETrapdoorPair& GetTrapdoor() const noexcept;
     [[nodiscard]] std::unique_ptr<RLWETrapdoorPair> GetTrapdoorPtr() const;
 };
 
 // Generator functions
-[[nodiscard]] std::unique_ptr<TrapdoorOutput> DCRTPolyTrapdoorGen(
+[[nodiscard]] std::unique_ptr<DCRTTrapdoor> DCRTPolyTrapdoorGen(
     const ILDCRTParamsImpl& params,
     int64_t base,
     bool balanced);
 
-// Sample function
-[[nodiscard]] std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const TrapdoorOutput& trapdoor, const DCRTPolyImpl& u, int64_t base);
+// // Sample function
+// [[nodiscard]] std::unique_ptr<Matrix> DCRTPolyGaussSamp(size_t n, size_t k, const DCRTTrapdoor& trapdoor, const DCRTPolyImpl& u, int64_t base);
 } // openfhe

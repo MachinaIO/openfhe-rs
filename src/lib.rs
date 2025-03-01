@@ -189,7 +189,6 @@ pub mod ffi {
         type MapFromIndexToEvalKey;
         type MapFromStringToMapFromIndexToEvalKey;
         type MapFromStringToVectorOfEvalKeys;
-        type Matrix;
         type Params;
         type ParamsBFVRNS;
         type ParamsBGVRNS;
@@ -207,7 +206,7 @@ pub mod ffi {
         type VectorOfLWECiphertexts;
         type VectorOfPrivateKeys;
         type VectorOfVectorOfCiphertexts;
-        type TrapdoorOutput;
+        type DCRTTrapdoor;
     }
 
     // CiphertextDCRTPoly
@@ -1652,25 +1651,23 @@ pub mod ffi {
 
     // Trapdoor
     unsafe extern "C++" {
-        fn GetMatrix(self: &TrapdoorOutput) -> &Matrix;
-        fn GetTrapdoor(self: &TrapdoorOutput) -> &RLWETrapdoorPair;
-        fn GetTrapdoorPtr(self: &TrapdoorOutput) -> UniquePtr<RLWETrapdoorPair>;
+        fn GetTrapdoorPtr(self: &DCRTTrapdoor) -> UniquePtr<RLWETrapdoorPair>;
 
         // Generator functions
         fn DCRTPolyTrapdoorGen(
             params: &ILDCRTParamsImpl,
             base: i64,
             balanced: bool,
-        ) -> UniquePtr<TrapdoorOutput>;
+        ) -> UniquePtr<DCRTTrapdoor>;
 
-        // Sample function
-        fn DCRTPolyGaussSamp(
-            n: usize,
-            k: usize,
-            trapdoor: &TrapdoorOutput,
-            u: &DCRTPolyImpl,
-            base: i64,
-        ) -> UniquePtr<Matrix>;
+        // // Sample function
+        // fn DCRTPolyGaussSamp(
+        //     n: usize,
+        //     k: usize,
+        //     trapdoor: &DCRTTrapdoor,
+        //     u: &DCRTPolyImpl,
+        //     base: i64,
+        // ) -> UniquePtr<Matrix>;
     }
 }
 
