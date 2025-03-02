@@ -26,10 +26,10 @@ std::unique_ptr<RLWETrapdoorPair> DCRTSquareMatTrapdoorImpl::GetTrapdoorPtr() co
     return std::make_unique<RLWETrapdoorPair>(m_trapdoorPair);
 }
 
-// std::unique_ptr<DCRTMatrixImpl> DCRTSquareMatTrapdoorImpl::GetPublicMatrixPtr() const
-// {
-//     return std::make_unique<DCRTMatrixImpl>(std::move(m_publicMatrix));
-// }
+std::unique_ptr<DCRTMatrixImpl> DCRTSquareMatTrapdoorImpl::GetPublicMatrixPtr() const
+{
+    return std::make_unique<DCRTMatrixImpl>(Matrix(m_publicMatrix.GetMatrix()));
+}
 
 std::unique_ptr<DCRTSquareMatTrapdoorImpl> DCRTPolySquareMatTrapdoorGen(
     const ILDCRTParamsImpl& params,

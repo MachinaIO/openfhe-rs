@@ -22,7 +22,7 @@ public:
     DCRTMatrixImpl(Matrix&& matrix) noexcept;
     DCRTMatrixImpl(const DCRTMatrixImpl&) = delete;
     DCRTMatrixImpl(DCRTMatrixImpl&& other) noexcept 
-        : m_matrix(std::move(other.m_matrix)) {}    
+        : m_matrix(std::move(other.m_matrix)) {}  
     DCRTMatrixImpl& operator=(const DCRTMatrixImpl&) = delete;
     DCRTMatrixImpl& operator=(DCRTMatrixImpl&&) = delete;
 

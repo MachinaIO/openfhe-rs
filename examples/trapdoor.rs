@@ -7,7 +7,7 @@ fn main() {
     let n: u32 = 16;
     let size: u32 = 4; // Number of CRT
     let k_res: u32 = 51;
-    let base: i64 = 8;
+    let base: i64 = 2;
 
     let params = ffi::GenILDCRTParamsByOrderSizeBits(2 * n, size, k_res);
 
@@ -25,7 +25,7 @@ fn main() {
     assert_eq!(modulus, modulus_from_u);
 
     let sigma = 4.57825;
-    let d = 2;
+    let d = 3;
 
     // Generate matrix
     let mut matrix = ffi::DCRTMatrixCreate(&params, d, d);
@@ -50,15 +50,11 @@ fn main() {
 
     let trapdoor_output = ffi::DCRTPolySquareMatTrapdoorGen(&params, sigma, d, base, false);
     let _trapdoor = trapdoor_output.GetTrapdoorPtr();
-    // let _public_vector = trapdoor_output.GetPublicVectorPtr();
+    let _public_matrix = trapdoor_output.GetPublicMatrixPtr();
 
-    // let poly_at_index = trapdoor_output.GetPolyAtIndex(0);
-    // println!("poly_at_index: {:?}", poly_at_index);
-
-    // let poly_at_index_2 = trapdoor_output.GetPolyAtIndex(1);
-    // println!("poly_at_index_2: {:?}", poly_at_index_2);
-
-    let k = 68; // TODO: not hardcoded
+    // print the sizes of the public matrix
+    println!("public_matrix: {:?}", _public_matrix.GetRows());
+    println!("public_matrix: {:?}", _public_matrix.GetCols());
 
     // test traits
     let one = String::from("1");

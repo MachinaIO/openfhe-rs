@@ -27,7 +27,7 @@ public:
     [[nodiscard]] const RLWETrapdoorPair& GetTrapdoor() const noexcept;
     [[nodiscard]] const DCRTMatrixImpl& GetPublicMatrix() const noexcept;
     [[nodiscard]] std::unique_ptr<RLWETrapdoorPair> GetTrapdoorPtr() const;
-    // [[nodiscard]] std::unique_ptr<DCRTMatrixImpl> GetPublicMatrixPtr() const;
+    [[nodiscard]] std::unique_ptr<DCRTMatrixImpl> GetPublicMatrixPtr() const;
 };
 
 // Generator functions

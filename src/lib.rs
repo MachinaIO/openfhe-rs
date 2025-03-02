@@ -1092,6 +1092,8 @@ pub mod ffi {
             cols: usize,
         ) -> UniquePtr<DCRTMatrixImpl>;
         fn GetElement(self: &DCRTMatrixImpl, row: usize, col: usize) -> UniquePtr<DCRTPolyImpl>;
+        fn GetRows(self: &DCRTMatrixImpl) -> usize;
+        fn GetCols(self: &DCRTMatrixImpl) -> usize;
         fn SetElement(
             self: Pin<&mut DCRTMatrixImpl>,
             row: usize,
@@ -1670,7 +1672,7 @@ pub mod ffi {
     // Trapdoor
     unsafe extern "C++" {
         fn GetTrapdoorPtr(self: &DCRTSquareMatTrapdoorImpl) -> UniquePtr<RLWETrapdoorPair>;
-        // fn GetPublicMatrixPtr(self: &DCRTSquareMatTrapdoorImpl) -> UniquePtr<DCRTMatrixImpl>;
+        fn GetPublicMatrixPtr(self: &DCRTSquareMatTrapdoorImpl) -> UniquePtr<DCRTMatrixImpl>;
 
         // Generator functions
         fn DCRTPolySquareMatTrapdoorGen(
