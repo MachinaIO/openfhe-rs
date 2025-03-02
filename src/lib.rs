@@ -1098,7 +1098,7 @@ pub mod ffi {
             self: Pin<&mut DCRTMatrixImpl>,
             row: usize,
             col: usize,
-            element: UniquePtr<DCRTPolyImpl>,
+            element: &UniquePtr<DCRTPolyImpl>,
         );
     }
 

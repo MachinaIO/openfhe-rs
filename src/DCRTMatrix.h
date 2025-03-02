@@ -29,8 +29,7 @@ public:
     [[nodiscard]] const Matrix& GetMatrix() const noexcept;
     [[nodiscard]] Matrix& GetMatrix() noexcept;
     [[nodiscard]] std::unique_ptr<DCRTPolyImpl> GetElement(size_t row, size_t col) const;
-    void SetElement(size_t row, size_t col, std::unique_ptr<DCRTPolyImpl> element);
-    [[nodiscard]] size_t GetRows() const noexcept;
+void SetElement(size_t row, size_t col, const std::unique_ptr<DCRTPolyImpl>& element);    [[nodiscard]] size_t GetRows() const noexcept;
     [[nodiscard]] size_t GetCols() const noexcept;
 };
 

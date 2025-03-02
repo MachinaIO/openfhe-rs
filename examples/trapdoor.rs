@@ -36,7 +36,7 @@ fn main() {
             let poly = ffi::DCRTPolyGenFromDug(&params);
             // print the poly and its index
             println!("poly: {:?}, index: {:?}", poly, (i, j));
-            matrix.as_mut().unwrap().SetElement(i, j, poly);
+            matrix.as_mut().unwrap().SetElement(i, j, &poly);
         }
     }
 

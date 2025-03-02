@@ -27,7 +27,7 @@ std::unique_ptr<DCRTPolyImpl> DCRTMatrixImpl::GetElement(size_t row, size_t col)
     return std::make_unique<DCRTPolyImpl>(std::move(copy));
 }
 
-void DCRTMatrixImpl::SetElement(size_t row, size_t col, std::unique_ptr<DCRTPolyImpl> element)
+void DCRTMatrixImpl::SetElement(size_t row, size_t col, const std::unique_ptr<DCRTPolyImpl>& element)
 {
     m_matrix(row, col) = element->GetPoly();
 }
