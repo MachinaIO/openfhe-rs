@@ -46,7 +46,7 @@ size_t DCRTMatrixImpl::GetCols() const noexcept
 std::unique_ptr<DCRTMatrixImpl> DCRTMatrixCreate(const ILDCRTParamsImpl& params, size_t rows, size_t cols)
 {
     auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params.GetRef(), Format::EVALUATION);
-    Matrix matrix(zero_alloc, cols, rows);
+    Matrix matrix(zero_alloc, rows, cols);
     return std::make_unique<DCRTMatrixImpl>(std::move(matrix));
 }
 
