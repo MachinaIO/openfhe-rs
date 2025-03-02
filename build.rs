@@ -4,6 +4,7 @@ fn main() {
         .file("src/Ciphertext.cc")
         .file("src/CryptoContext.cc")
         .file("src/CryptoParametersBase.cc")
+        .file("src/DCRTMatrix.cc")
         .file("src/DCRTPoly.cc")
         .file("src/DecryptResult.cc")
         .file("src/EncodingParams.cc")
@@ -51,6 +52,8 @@ fn main() {
     println!("cargo::rerun-if-changed=src/CryptoParametersBase.cc");
     println!("cargo::rerun-if-changed=src/DCRTPoly.h");
     println!("cargo::rerun-if-changed=src/DCRTPoly.cc");
+    println!("cargo::rerun-if-changed=src/DCRTMatrix.h");
+    println!("cargo::rerun-if-changed=src/DCRTMatrix.cc");
     println!("cargo::rerun-if-changed=src/DecryptResult.h");
     println!("cargo::rerun-if-changed=src/DecryptResult.cc");
     println!("cargo::rerun-if-changed=src/EncodingParams.h");

@@ -141,6 +141,7 @@ pub mod ffi {
         include!("openfhe/src/Ciphertext.h");
         include!("openfhe/src/CryptoContext.h");
         include!("openfhe/src/CryptoParametersBase.h");
+        include!("openfhe/src/DCRTMatrix.h");
         include!("openfhe/src/DCRTPoly.h");
         include!("openfhe/src/DecryptResult.h");
         include!("openfhe/src/EncodingParams.h");
@@ -163,7 +164,6 @@ pub mod ffi {
         type ExecutionMode;
         type Format;
         type KeySwitchTechnique;
-        type Matrix;
         type MultipartyMode;
         type MultiplicationTechnique;
         type PKESchemeFeature;
@@ -179,8 +179,10 @@ pub mod ffi {
         type CiphertextDCRTPoly;
         type CryptoContextDCRTPoly;
         type CryptoParametersBaseDCRTPoly;
+        type DCRTMatrixImpl;
         type DCRTPolyImpl;
         type DCRTPolyParams;
+        type DCRTSquareMatTrapdoorImpl;
         type DecryptResult;
         type EncodingParams;
         type EvalKeyDCRTPoly;
@@ -207,7 +209,6 @@ pub mod ffi {
         type VectorOfLWECiphertexts;
         type VectorOfPrivateKeys;
         type VectorOfVectorOfCiphertexts;
-        type DCRTTrapdoorImpl;
     }
 
     // CiphertextDCRTPoly
@@ -1083,6 +1084,22 @@ pub mod ffi {
         fn DCRTPolyGenNullCryptoContext() -> UniquePtr<CryptoContextDCRTPoly>;
     }
 
+    // DCRTMatrixImpl
+    unsafe extern "C++" {
+        fn DCRTMatrixCreate(
+            params: &ILDCRTParamsImpl,
+            rows: usize,
+            cols: usize,
+        ) -> UniquePtr<DCRTMatrixImpl>;
+        fn GetElement(self: &DCRTMatrixImpl, row: usize, col: usize) -> UniquePtr<DCRTPolyImpl>;
+        fn SetElement(
+            self: Pin<&mut DCRTMatrixImpl>,
+            row: usize,
+            col: usize,
+            element: UniquePtr<DCRTPolyImpl>,
+        );
+    }
+
     // DCRTPolyParams
     unsafe extern "C++" {
         // Generator functions
@@ -1652,28 +1669,27 @@ pub mod ffi {
 
     // Trapdoor
     unsafe extern "C++" {
-        fn GetTrapdoorPtr(self: &DCRTTrapdoorImpl) -> UniquePtr<RLWETrapdoorPair>;
-        fn GetPolyAtIndex(self: &DCRTTrapdoorImpl, index: usize) -> UniquePtr<DCRTPolyImpl>;
+        fn GetTrapdoorPtr(self: &DCRTSquareMatTrapdoorImpl) -> UniquePtr<RLWETrapdoorPair>;
+        // fn GetPublicMatrixPtr(self: &DCRTSquareMatTrapdoorImpl) -> UniquePtr<DCRTMatrixImpl>;
 
         // Generator functions
-        fn DCRTPolyTrapdoorGen(
+        fn DCRTPolySquareMatTrapdoorGen(
             params: &ILDCRTParamsImpl,
+            sigma: f64,
+            d: usize,
             base: i64,
             balanced: bool,
-        ) -> UniquePtr<DCRTTrapdoorImpl>;
+        ) -> UniquePtr<DCRTSquareMatTrapdoorImpl>;
 
-        // Sample function
-        fn DCRTPolyGaussSamp(
-            n: usize,
-            k: usize,
-            trapdoor: &DCRTTrapdoorImpl,
-            u: &DCRTPolyImpl,
-            base: i64,
-            sigma: f64,
-        ) -> UniquePtr<Matrix>;
-
-        // Getter function on Matrix
-        fn GetMatrixElement(matrix: &Matrix, row: usize, col: usize) -> UniquePtr<DCRTPolyImpl>;
+        // // Sample function
+        // fn DCRTPolyGaussSamp(
+        //     n: usize,
+        //     k: usize,
+        //     trapdoor: &DCRTSquareMatTrapdoorImpl,
+        //     u: &DCRTPolyImpl,
+        //     base: i64,
+        //     sigma: f64,
+        // ) -> UniquePtr<Matrix>;
     }
 }
 
