@@ -24,8 +24,6 @@ public:
     DCRTSquareMatTrapdoorImpl& operator=(const DCRTSquareMatTrapdoorImpl&) = delete;
     DCRTSquareMatTrapdoorImpl& operator=(DCRTSquareMatTrapdoorImpl&&) = delete;
 
-    [[nodiscard]] const RLWETrapdoorPair& GetTrapdoor() const noexcept;
-    [[nodiscard]] const DCRTMatrixImpl& GetPublicMatrix() const noexcept;
     [[nodiscard]] std::unique_ptr<RLWETrapdoorPair> GetTrapdoorPtr() const;
     [[nodiscard]] std::unique_ptr<DCRTMatrixImpl> GetPublicMatrixPtr() const;
 };
@@ -38,7 +36,7 @@ public:
     int64_t base,
     bool balanced);
 
-// // Sample function
-// [[nodiscard]] std::unique_ptr<Matrix> DCRTPolySquareMatGaussSamp(size_t n, size_t k, const DCRTSquareMatTrapdoorImpl& trapdoor, const DCRTPolyImpl& u, int64_t base, double sigma);
+// Sample function
+[[nodiscard]] std::unique_ptr<DCRTMatrixImpl> DCRTPolySquareMatGaussSamp(size_t n, size_t k, const DCRTMatrixImpl& publicMatrix, const RLWETrapdoorPair& trapdoor, const DCRTMatrixImpl& U, int64_t base, double sigma);
 
 } // openfhe

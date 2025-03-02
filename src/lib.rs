@@ -1683,15 +1683,16 @@ pub mod ffi {
             balanced: bool,
         ) -> UniquePtr<DCRTSquareMatTrapdoorImpl>;
 
-        // // Sample function
-        // fn DCRTPolyGaussSamp(
-        //     n: usize,
-        //     k: usize,
-        //     trapdoor: &DCRTSquareMatTrapdoorImpl,
-        //     u: &DCRTPolyImpl,
-        //     base: i64,
-        //     sigma: f64,
-        // ) -> UniquePtr<Matrix>;
+        // Sample function
+        fn DCRTPolySquareMatGaussSamp(
+            n: usize,
+            k: usize,
+            publicMatrix: &DCRTMatrixImpl,
+            trapdoor: &RLWETrapdoorPair,
+            U: &DCRTMatrixImpl,
+            base: i64,
+            sigma: f64,
+        ) -> UniquePtr<DCRTMatrixImpl>;
     }
 }
 
