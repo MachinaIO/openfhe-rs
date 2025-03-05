@@ -21,6 +21,11 @@ rust::String DCRTPoly::GetString() const
     return rust::String(stream.str());
 }
 
+rust::String DCRTPoly::GetModulus() const
+{   
+    return m_poly.GetModulus().ToString();
+}
+
 bool DCRTPoly::IsEqual(const DCRTPoly& other) const noexcept
 {
     return m_poly == other.m_poly;

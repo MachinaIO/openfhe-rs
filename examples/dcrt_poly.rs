@@ -50,6 +50,6 @@ fn main() {
     let coeffs_poly_add = poly_add.GetCoefficients();
     println!("coeffs_poly_add: {:?}", coeffs_poly_add);
 
-    // the format of the poly should still be in evaluation format
-    println!("poly_add: {:?}", poly_add);
+    let poly_modulus = poly.GetModulus();
+    assert_eq!(poly_modulus, modulus);
 }
