@@ -6,6 +6,8 @@
 #include "openfhe/pke/scheme/bgvrns/gen-cryptocontext-bgvrns-params.h"
 #include "openfhe/pke/scheme/ckksrns/gen-cryptocontext-ckksrns-params.h"
 
+#include "rust/cxx.h"
+
 #include <memory>
 
 namespace openfhe
@@ -42,6 +44,6 @@ using ParamsCKKSRNS = lbcrypto::CCParams<lbcrypto::CryptoContextCKKSRNS>;
 [[nodiscard]] std::unique_ptr<ParamsCKKSRNS> GenParamsCKKSRNS();
 [[nodiscard]] std::unique_ptr<ParamsCKKSRNS> GenParamsCKKSRNSbyVectorOfString(
     const std::vector<std::string>& vals);
-
-
+[[nodiscard]] rust::String GenModulus(
+    usint n, size_t size, size_t kRes);
 } // openfhe

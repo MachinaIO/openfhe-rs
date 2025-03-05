@@ -11,6 +11,9 @@ fn main() {
     // print the const_poly
     println!("const_poly: {:?}", const_poly);
 
+    let modulus = ffi::GenModulus(n, size, k_res);
+    println!("modulus: {:?}", modulus);
+
     let const_poly_2 = ffi::DCRTPolyGenFromConst(n, size, k_res, &val);
     // print the const_poly_2
     println!("const_poly_2: {:?}", const_poly_2);

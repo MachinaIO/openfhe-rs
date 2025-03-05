@@ -730,7 +730,6 @@ pub mod ffi
             -> UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromVec(n: u32, size: usize, kRes: usize, values: &Vec<String>) 
             -> UniquePtr<DCRTPoly>;
-    
     }
 
     // DCRTPolyParams
@@ -815,6 +814,7 @@ pub mod ffi
         // Generator functions
         fn GenParamsByScheme(scheme: SCHEME) -> UniquePtr<Params>;
         fn GenParamsByVectorOfString(vals: &CxxVector<CxxString>) -> UniquePtr<Params>;
+        fn GenModulus(n: u32, size: usize, k_res: usize) -> String;
     }
 
     // ParamsBFVRNS
