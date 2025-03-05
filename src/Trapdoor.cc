@@ -73,7 +73,7 @@ std::unique_ptr<DCRTTrapdoor> DCRTSquareMatTrapdoorGen(
 }
 
 // Gauss sample functions
-std::unique_ptr<Matrix> DCRTSquareMatGaussSamp(usint n, usint k, const Matrix& publicMatrix, const RLWETrapdoorPair& trapdoor, const Matrix& U, int64_t base, double sigma)
+std::unique_ptr<Matrix> DCRTSquareMatTrapdoorGaussSamp(usint n, usint k, const Matrix& publicMatrix, const RLWETrapdoorPair& trapdoor, const Matrix& U, int64_t base, double sigma)
 {
     lbcrypto::DCRTPoly::DggType dgg(sigma);
 

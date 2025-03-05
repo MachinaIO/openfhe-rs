@@ -1624,7 +1624,7 @@ pub mod ffi {
         ) -> UniquePtr<DCRTTrapdoor>;
 
         // Gauss sample functions
-        fn DCRTSquareMatGaussSamp(
+        fn DCRTSquareMatTrapdoorGaussSamp(
             n: u32,
             k: u32,
             public_matrix: &Matrix,

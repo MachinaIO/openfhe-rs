@@ -44,7 +44,7 @@ public:
     bool balanced);
 
 // Gauss sample functions
-[[nodiscard]] std::unique_ptr<Matrix> DCRTSquareMatGaussSamp(
+[[nodiscard]] std::unique_ptr<Matrix> DCRTSquareMatTrapdoorGaussSamp(
     usint n, 
     usint k,
     const Matrix& publicMatrix, 
