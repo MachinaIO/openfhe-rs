@@ -1,6 +1,7 @@
 #pragma once
 
 #include "openfhe/core/lattice/hal/lat-backend.h"
+#include "rust/cxx.h"
 
 namespace openfhe
 {
@@ -15,6 +16,14 @@ public:
     DCRTPoly& operator=(const DCRTPoly&) = delete;
     DCRTPoly& operator=(DCRTPoly&&) = delete;
 };
+
+// Generator functions 
+[[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromConst(
+    usint n,
+    size_t size,
+    size_t kRes,
+    const rust::String& value
+);
 
 class DCRTPolyParams final
 {

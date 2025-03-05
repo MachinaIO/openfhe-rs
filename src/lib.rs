@@ -719,6 +719,14 @@ pub mod ffi
         fn DCRTPolyGenNullCryptoContext() -> UniquePtr<CryptoContextDCRTPoly>;
     }
 
+    // DCRTPoly
+    unsafe extern "C++"
+    {   
+        // Generator functions
+        fn DCRTPolyGenFromConst(n: u32, size: usize, kRes: usize, value: &String) 
+            -> UniquePtr<DCRTPoly>;
+    }
+
     // DCRTPolyParams
     unsafe extern "C++"
     {
