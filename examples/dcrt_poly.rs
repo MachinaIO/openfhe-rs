@@ -65,6 +65,8 @@ fn main() {
     println!("public_matrix_poly_0_0: {:?}", public_matrix_poly_0_0);
 
     // Generate an empty matrix
-    let matrix_empty = ffi::MatrixGen(n, size, k_res, 2, 2);
+    let mut matrix_empty = ffi::MatrixGen(n, size, k_res, 2, 2);
 
+    // set the 0, 0 element of the matrix
+    ffi::SetMatrixElement(matrix_empty.as_mut().unwrap(), 0, 0, &poly_add);
 }

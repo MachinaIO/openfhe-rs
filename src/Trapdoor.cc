@@ -61,4 +61,12 @@ std::unique_ptr<Matrix> MatrixGen(
     return std::make_unique<Matrix>(std::move(matrix));
 }
 
+void SetMatrixElement(
+    Matrix& matrix, 
+    size_t row, 
+    size_t col, 
+    const DCRTPoly& element)
+{
+    matrix(row, col) = element.GetPoly();
+}
 } // openfhe

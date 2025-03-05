@@ -41,4 +41,10 @@ public:
     size_t kRes,
     size_t nrow, 
     size_t ncol);
+
+void SetMatrixElement(
+    Matrix& matrix, 
+    size_t row, 
+    size_t col, 
+    const DCRTPoly& element);
 } // openfhe

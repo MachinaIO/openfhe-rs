@@ -757,6 +757,7 @@ pub mod ffi
     unsafe extern "C++"
     {
         fn MatrixGen(n: u32, size: usize, k_res: usize, nrow: usize, ncol: usize) -> UniquePtr<Matrix>;
+        fn SetMatrixElement(matrix: Pin<&mut Matrix>, row: usize, col: usize, element: &DCRTPoly);
     }
 
     // KeyPairDCRTPoly
