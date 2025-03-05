@@ -8,6 +8,12 @@ DCRTPoly::DCRTPoly(lbcrypto::DCRTPoly&& poly) noexcept
     : m_poly(std::move(poly))
 { }
 
+const lbcrypto::DCRTPoly& DCRTPoly::GetPoly() const noexcept
+{
+    return m_poly;
+}
+
+
 rust::String DCRTPoly::GetString() const
 {
     std::stringstream stream;
@@ -74,6 +80,18 @@ std::unique_ptr<DCRTPoly> DCRTPolyGenFromVec(
 
     return std::make_unique<DCRTPoly>(std::move(dcrtPoly));
 }
+
+// Arithmetic
+std::unique_ptr<DCRTPoly> DCRTPolyAdd(const DCRTPoly& rhs, const DCRTPoly& lhs)
+{
+    return std::make_unique<DCRTPoly>(rhs.GetPoly() + lhs.GetPoly());
+}
+
+std::unique_ptr<DCRTPoly> DCRTPolyMul(const DCRTPoly& rhs, const DCRTPoly& lhs)
+{
+    return std::make_unique<DCRTPoly>(rhs.GetPoly() * lhs.GetPoly());
+}
+
 
 DCRTPolyParams::DCRTPolyParams(const std::shared_ptr<lbcrypto::DCRTPoly::Params>& params) noexcept
     : m_params(params)

@@ -36,6 +36,10 @@ public:
     const rust::Vec<rust::String>& values
 );
 
+// Arithmetic
+[[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyAdd(const DCRTPoly& rhs, const DCRTPoly& lhs);
+[[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyMul(const DCRTPoly& rhs, const DCRTPoly& lhs);
+
 class DCRTPolyParams final
 {
     std::shared_ptr<lbcrypto::DCRTPoly::Params> m_params;

@@ -33,4 +33,12 @@ fn main() {
 
     // assert that the two poly are equal
     assert_eq!(poly, poly_2);
+
+    // perform polynomial addition
+    let poly_add = ffi::DCRTPolyAdd(&poly, &poly_2);
+    println!("poly_add: {:?}", poly_add);
+
+    // perform polynomial multiplication
+    let poly_mul = ffi::DCRTPolyMul(&poly, &poly_2);
+    println!("poly_mul: {:?}", poly_mul);
 }

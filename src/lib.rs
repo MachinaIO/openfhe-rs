@@ -730,6 +730,10 @@ pub mod ffi
             -> UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromVec(n: u32, size: usize, kRes: usize, values: &Vec<String>) 
             -> UniquePtr<DCRTPoly>;
+
+        // Arithmetic
+        fn DCRTPolyAdd(rhs: &DCRTPoly, lhs: &DCRTPoly) -> UniquePtr<DCRTPoly>;
+        fn DCRTPolyMul(rhs: &DCRTPoly, lhs: &DCRTPoly) -> UniquePtr<DCRTPoly>;
     }
 
     // DCRTPolyParams
