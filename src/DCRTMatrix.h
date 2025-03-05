@@ -14,12 +14,13 @@ class DCRTMatrix final
 public:
     DCRTMatrix() = default;
     DCRTMatrix(Matrix&& matrix) noexcept;
-    DCRTMatrix(const DCRTMatrix&) = delete;
+    DCRTMatrix(const DCRTMatrix& other);
     DCRTMatrix(DCRTMatrix&&) = delete;
     DCRTMatrix& operator=(const DCRTMatrix&) = delete;
     DCRTMatrix& operator=(DCRTMatrix&&) = delete;
 
     [[nodiscard]] std::unique_ptr<DCRTPoly> GetElement(size_t row, size_t col) const;
+    [[nodiscard]] const Matrix& GetMatrix() const noexcept;
 };
 
 // // Generator functions

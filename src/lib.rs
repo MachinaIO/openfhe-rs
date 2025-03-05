@@ -174,6 +174,7 @@ pub mod ffi
         include!("openfhe/src/SchemeBase.h");
         include!("openfhe/src/SequenceContainers.h");
         include!("openfhe/src/SerialDeserial.h");
+        include!("openfhe/src/Trapdoor.h");
 
         // enums
         type COMPRESSION_LEVEL;
@@ -200,6 +201,7 @@ pub mod ffi
         type DCRTMatrix;
         type DCRTPoly;
         type DCRTPolyParams;
+        type DCRTTrapdoor;
         type DecryptResult;
         type EncodingParams;
         type EvalKeyDCRTPoly;
@@ -215,6 +217,7 @@ pub mod ffi
         type Plaintext;
         type PrivateKeyDCRTPoly;
         type PublicKeyDCRTPoly;
+        type RLWETrapdoorPair;
         type SchemeBaseDCRTPoly;
         type SetOfUints;
         type UnorderedMapFromIndexToDCRTPoly;
@@ -1157,6 +1160,13 @@ pub mod ffi
         fn DCRTPolySerializePrivateKeyToFile(privateKeyLocation: &CxxString,
                                              privateKey: &PrivateKeyDCRTPoly,
                                              serialMode: SerialMode) -> bool;
+    }
+
+    // Trapdoor
+    unsafe extern "C++"
+    {
+        fn GetPublicMatrix(self: &DCRTTrapdoor) -> UniquePtr<DCRTMatrix>;
+        fn GetTrapdoorPair(self: &DCRTTrapdoor) -> UniquePtr<RLWETrapdoorPair>;
     }
 }
 
