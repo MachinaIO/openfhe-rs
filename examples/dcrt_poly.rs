@@ -56,4 +56,8 @@ fn main() {
 
     let poly_modulus = poly.GetModulus();
     assert_eq!(poly_modulus, modulus);
+
+    // sample trapdoor
+    let sigma = 4.57825;
+    let trapdoor = ffi::DCRTTrapdoorGen(n, size, k_res, sigma, 2, false);
 }

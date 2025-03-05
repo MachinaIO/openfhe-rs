@@ -160,7 +160,6 @@ pub mod ffi
         include!("openfhe/src/Ciphertext.h");
         include!("openfhe/src/CryptoContext.h");
         include!("openfhe/src/CryptoParametersBase.h");
-        include!("openfhe/src/DCRTMatrix.h");
         include!("openfhe/src/DCRTPoly.h");
         include!("openfhe/src/DecryptResult.h");
         include!("openfhe/src/EncodingParams.h");
@@ -198,7 +197,6 @@ pub mod ffi
         type CiphertextDCRTPoly;
         type CryptoContextDCRTPoly;
         type CryptoParametersBaseDCRTPoly;
-        type DCRTMatrix;
         type DCRTPoly;
         type DCRTPolyParams;
         type DCRTTrapdoor;
@@ -210,6 +208,7 @@ pub mod ffi
         type MapFromIndexToEvalKey;
         type MapFromStringToMapFromIndexToEvalKey;
         type MapFromStringToVectorOfEvalKeys;
+        type Matrix;
         type Params;
         type ParamsBFVRNS;
         type ParamsBGVRNS;
@@ -724,12 +723,6 @@ pub mod ffi
         fn DCRTPolyGenNullCryptoContext() -> UniquePtr<CryptoContextDCRTPoly>;
     }
 
-    // DCRTMatrix
-    unsafe extern "C++"
-    {
-        fn GetElement(self: &DCRTMatrix, row: usize, col: usize) -> UniquePtr<DCRTPoly>;
-    }
-
     // DCRTPoly
     unsafe extern "C++"
     {   
@@ -740,13 +733,13 @@ pub mod ffi
         fn Negate(self: &DCRTPoly) -> UniquePtr<DCRTPoly>;
 
         // Generator functions
-        fn DCRTPolyGenFromConst(n: u32, size: usize, kRes: usize, value: &String) 
+        fn DCRTPolyGenFromConst(n: u32, size: usize, k_res: usize, value: &String) 
             -> UniquePtr<DCRTPoly>;
-        fn DCRTPolyGenFromVec(n: u32, size: usize, kRes: usize, values: &Vec<String>) 
+        fn DCRTPolyGenFromVec(n: u32, size: usize, k_res: usize, values: &Vec<String>) 
             -> UniquePtr<DCRTPoly>;
-        fn DCRTPolyGenFromBug(n: u32, size: usize, kRes: usize) -> UniquePtr<DCRTPoly>;
-        fn DCRTPolyGenFromDug(n: u32, size: usize, kRes: usize) -> UniquePtr<DCRTPoly>;
-        fn DCRTPolyGenFromDgg(n: u32, size: usize, kRes: usize, sigma: f64) -> UniquePtr<DCRTPoly>;
+        fn DCRTPolyGenFromBug(n: u32, size: usize, k_res: usize) -> UniquePtr<DCRTPoly>;
+        fn DCRTPolyGenFromDug(n: u32, size: usize, k_res: usize) -> UniquePtr<DCRTPoly>;
+        fn DCRTPolyGenFromDgg(n: u32, size: usize, k_res: usize, sigma: f64) -> UniquePtr<DCRTPoly>;
 
         // Arithmetic
         fn DCRTPolyAdd(rhs: &DCRTPoly, lhs: &DCRTPoly) -> UniquePtr<DCRTPoly>;
@@ -1165,8 +1158,18 @@ pub mod ffi
     // Trapdoor
     unsafe extern "C++"
     {
-        fn GetPublicMatrix(self: &DCRTTrapdoor) -> UniquePtr<DCRTMatrix>;
+        fn GetPublicMatrix(self: &DCRTTrapdoor) -> UniquePtr<Matrix>;
         fn GetTrapdoorPair(self: &DCRTTrapdoor) -> UniquePtr<RLWETrapdoorPair>;
+
+        // Generator functions
+        fn DCRTTrapdoorGen(
+            n: u32,
+            size: usize,
+            k_res: usize,
+            sigma: f64,
+            base: i64,
+            balanced: bool
+        ) -> UniquePtr<DCRTTrapdoor>;
     }
 }
 
