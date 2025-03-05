@@ -73,4 +73,8 @@ fn main() {
     // get the 0, 0 element of the matrix
     let matrix_poly_0_0 = ffi::GetMatrixElement(&matrix, 0, 0);
     assert_eq!(matrix_poly_0_0, poly_add);
+
+    // sample trapdoor for a square matrix target of size 2x2
+    let d = 2;
+    let trapdoor_square = ffi::DCRTSquareMatTrapdoorGen(n, size, k_res, d, sigma, 2, false);
 }

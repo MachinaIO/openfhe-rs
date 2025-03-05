@@ -47,6 +47,31 @@ std::unique_ptr<DCRTTrapdoor> DCRTTrapdoorGen(
     );
 }
 
+std::unique_ptr<DCRTTrapdoor> DCRTSquareMatTrapdoorGen(
+    usint n, 
+    size_t size, 
+    size_t kRes,
+    size_t d,
+    double sigma,
+    int64_t base,
+    bool balanced)
+{
+    auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+
+    auto trapdoor = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::TrapdoorGenSquareMat(
+        params,
+        sigma,
+        d,
+        base,
+        balanced
+    );
+    
+    return std::make_unique<DCRTTrapdoor>(
+        std::move(trapdoor.first),
+        std::move(trapdoor.second)
+    );
+}
+
 // Matrix functions
 std::unique_ptr<Matrix> MatrixGen(
     usint n, 
