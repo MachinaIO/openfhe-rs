@@ -21,6 +21,7 @@ public:
     [[nodiscard]] bool IsEqual(const DCRTPoly& other) const noexcept;
     [[nodiscard]] rust::Vec<rust::String> GetCoefficients() const;
     [[nodiscard]] rust::String GetModulus() const;
+    [[nodiscard]] std::unique_ptr<DCRTPoly> Negate() const;
 };
 
 // Generator functions 

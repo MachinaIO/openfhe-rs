@@ -726,7 +726,7 @@ pub mod ffi
         fn IsEqual(self: &DCRTPoly, other: &DCRTPoly) -> bool;
         fn GetCoefficients(self: &DCRTPoly) -> Vec<String>;
         fn GetModulus(self: &DCRTPoly) -> String;
-    
+        fn Negate(self: &DCRTPoly) -> UniquePtr<DCRTPoly>;
         // Generator functions
         fn DCRTPolyGenFromConst(n: u32, size: usize, kRes: usize, value: &String) 
             -> UniquePtr<DCRTPoly>;

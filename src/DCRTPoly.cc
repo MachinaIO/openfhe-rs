@@ -49,6 +49,11 @@ rust::Vec<rust::String> DCRTPoly::GetCoefficients() const
     return result;
 }
 
+std::unique_ptr<DCRTPoly> DCRTPoly::Negate() const
+{
+    return std::make_unique<DCRTPoly>(-m_poly);
+}
+
 // Generator functions
 std::unique_ptr<DCRTPoly> DCRTPolyGenFromConst(
     usint n,

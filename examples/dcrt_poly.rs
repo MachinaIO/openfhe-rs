@@ -21,6 +21,10 @@ fn main() {
     // assert that the two const_poly are equal
     assert_eq!(const_poly, const_poly_2);
 
+    let const_poly_one = ffi::DCRTPolyGenFromConst(n, size, k_res, &String::from("1"));
+    let negated_poly_one = const_poly_one.Negate();
+    println!("negated_poly_one: {:?}", negated_poly_one);
+
     let coeffs = vec![
         String::from("123456789099999"),
         String::from("1234567842539099999"),
