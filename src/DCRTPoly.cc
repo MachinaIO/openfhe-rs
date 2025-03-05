@@ -54,6 +54,17 @@ std::unique_ptr<DCRTPoly> DCRTPoly::Negate() const
     return std::make_unique<DCRTPoly>(-m_poly);
 }
 
+// Arithmetic
+std::unique_ptr<DCRTPoly> DCRTPolyAdd(const DCRTPoly& rhs, const DCRTPoly& lhs)
+{
+    return std::make_unique<DCRTPoly>(rhs.GetPoly() + lhs.GetPoly());
+}
+
+std::unique_ptr<DCRTPoly> DCRTPolyMul(const DCRTPoly& rhs, const DCRTPoly& lhs)
+{
+    return std::make_unique<DCRTPoly>(rhs.GetPoly() * lhs.GetPoly());
+}
+
 // Generator functions
 std::unique_ptr<DCRTPoly> DCRTPolyGenFromConst(
     usint n,
@@ -109,15 +120,28 @@ std::unique_ptr<DCRTPoly> DCRTPolyGenFromVec(
     return std::make_unique<DCRTPoly>(std::move(dcrtPoly));
 }
 
-// Arithmetic
-std::unique_ptr<DCRTPoly> DCRTPolyAdd(const DCRTPoly& rhs, const DCRTPoly& lhs)
+std::unique_ptr<DCRTPoly> DCRTPolyGenFromBug(usint n, size_t size, size_t kRes)
 {
-    return std::make_unique<DCRTPoly>(rhs.GetPoly() + lhs.GetPoly());
+    auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+    typename lbcrypto::DCRTPoly::BugType bug;
+    auto poly = lbcrypto::DCRTPoly(bug, params, Format::EVALUATION);
+    return std::make_unique<DCRTPoly>(std::move(poly));
 }
 
-std::unique_ptr<DCRTPoly> DCRTPolyMul(const DCRTPoly& rhs, const DCRTPoly& lhs)
+std::unique_ptr<DCRTPoly> DCRTPolyGenFromDug(usint n, size_t size, size_t kRes)
 {
-    return std::make_unique<DCRTPoly>(rhs.GetPoly() * lhs.GetPoly());
+    auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+    typename lbcrypto::DCRTPoly::DugType dug;
+    auto poly = lbcrypto::DCRTPoly(dug, params, Format::EVALUATION);
+    return std::make_unique<DCRTPoly>(std::move(poly));
+}
+
+std::unique_ptr<DCRTPoly> DCRTPolyGenFromDgg(usint n, size_t size, size_t kRes, double sigma)
+{
+    auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+    typename lbcrypto::DCRTPoly::DggType dgg(sigma);
+    auto poly = lbcrypto::DCRTPoly(dgg, params, Format::EVALUATION);
+    return std::make_unique<DCRTPoly>(std::move(poly));
 }
 
 

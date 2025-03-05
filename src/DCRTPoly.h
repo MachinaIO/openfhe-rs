@@ -39,6 +39,10 @@ public:
     const rust::Vec<rust::String>& values
 );
 
+[[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromBug(usint n, size_t size, size_t kRes);
+[[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromDug(usint n, size_t size, size_t kRes);
+[[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromDgg(usint n, size_t size, size_t kRes, double sigma);
+
 // Arithmetic
 [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyAdd(const DCRTPoly& rhs, const DCRTPoly& lhs);
 [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyMul(const DCRTPoly& rhs, const DCRTPoly& lhs);
