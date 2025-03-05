@@ -69,4 +69,13 @@ void SetMatrixElement(
 {
     matrix(row, col) = element.GetPoly();
 }
+
+std::unique_ptr<DCRTPoly> GetMatrixElement(
+    const Matrix& matrix, 
+    size_t row, 
+    size_t col)
+{   
+    lbcrypto::DCRTPoly copy = matrix(row, col);
+    return std::make_unique<DCRTPoly>(std::move(copy));
+}
 } // openfhe

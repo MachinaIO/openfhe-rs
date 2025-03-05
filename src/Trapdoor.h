@@ -47,4 +47,9 @@ void SetMatrixElement(
     size_t row, 
     size_t col, 
     const DCRTPoly& element);
+
+[[nodiscard]] std::unique_ptr<DCRTPoly> GetMatrixElement(
+    const Matrix& matrix, 
+    size_t row, 
+    size_t col);
 } // openfhe
