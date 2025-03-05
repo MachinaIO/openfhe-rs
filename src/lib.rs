@@ -1622,6 +1622,17 @@ pub mod ffi {
             base: i64,
             balanced: bool,
         ) -> UniquePtr<DCRTTrapdoor>;
+
+        // Gauss sample functions
+        fn DCRTSquareMatGaussSamp(
+            n: u32,
+            k: u32,
+            public_matrix: &Matrix,
+            trapdoor: &RLWETrapdoorPair,
+            u: &Matrix,
+            base: i64,
+            sigma: f64,
+        ) -> UniquePtr<Matrix>;
     }
 }
 

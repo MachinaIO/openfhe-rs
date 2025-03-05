@@ -57,11 +57,13 @@ fn main() {
     let poly_modulus = poly.GetModulus();
     assert_eq!(poly_modulus, modulus);
 
-    // sample trapdoor
+    // gen trapdoor
     let sigma = 4.57825;
-    let trapdoor = ffi::DCRTTrapdoorGen(n, size, k_res, sigma, 2, false);
+    let trapdoor_output = ffi::DCRTTrapdoorGen(n, size, k_res, sigma, 2, false);
+    let _trapdoor = trapdoor_output.GetTrapdoorPair();
+
     // fetch a polynomial from the trapdoor public matrix
-    let public_matrix_poly_0_0 = trapdoor.GetPublicMatrixElement(0, 0);
+    let public_matrix_poly_0_0 = trapdoor_output.GetPublicMatrixElement(0, 0);
     println!("public_matrix_poly_0_0: {:?}", public_matrix_poly_0_0);
 
     // Generate an empty matrix
@@ -74,7 +76,8 @@ fn main() {
     let matrix_poly_0_0 = ffi::GetMatrixElement(&matrix, 0, 0);
     assert_eq!(matrix_poly_0_0, poly_add);
 
-    // sample trapdoor for a square matrix target of size 2x2
+    // gen trapdoor for a square matrix target of size 2x2
     let d = 2;
-    let trapdoor_square = ffi::DCRTSquareMatTrapdoorGen(n, size, k_res, d, sigma, 2, false);
+    let trapdoor_output = ffi::DCRTSquareMatTrapdoorGen(n, size, k_res, d, sigma, 2, false);
+    let _trapdoor = trapdoor_output.GetTrapdoorPair();
 }

@@ -43,6 +43,16 @@ public:
     int64_t base,
     bool balanced);
 
+// Gauss sample functions
+[[nodiscard]] std::unique_ptr<Matrix> DCRTSquareMatGaussSamp(
+    usint n, 
+    usint k,
+    const Matrix& publicMatrix, 
+    const RLWETrapdoorPair& trapdoor, 
+    const Matrix& U, 
+    int64_t base, 
+    double sigma);
+
 // Matrix functions
 [[nodiscard]] std::unique_ptr<Matrix> MatrixGen(
     usint n, 

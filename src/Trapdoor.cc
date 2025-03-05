@@ -72,6 +72,29 @@ std::unique_ptr<DCRTTrapdoor> DCRTSquareMatTrapdoorGen(
     );
 }
 
+// Gauss sample functions
+std::unique_ptr<Matrix> DCRTSquareMatGaussSamp(usint n, usint k, const Matrix& publicMatrix, const RLWETrapdoorPair& trapdoor, const Matrix& U, int64_t base, double sigma)
+{
+    lbcrypto::DCRTPoly::DggType dgg(sigma);
+
+    double c = (base + 1) * lbcrypto::SIGMA;
+    double s = lbcrypto::SPECTRAL_BOUND(n, k, base);
+    lbcrypto::DCRTPoly::DggType dggLargeSigma(sqrt(s * s - c * c));
+
+    auto result = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::GaussSampSquareMat(
+        n,
+        k,
+        publicMatrix,
+        trapdoor,
+        U,
+        dgg,
+        dggLargeSigma,
+        base
+    );
+
+    return std::make_unique<Matrix>(std::move(result));
+}
+
 // Matrix functions
 std::unique_ptr<Matrix> MatrixGen(
     usint n, 
