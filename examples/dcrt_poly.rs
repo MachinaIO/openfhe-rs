@@ -17,4 +17,17 @@ fn main() {
 
     // assert that the two const_poly are equal
     assert_eq!(const_poly, const_poly_2);
+
+    let coeffs = vec![
+        String::from("123456789099999"),
+        String::from("1234567842539099999"),
+        String::from("31232189328123893128912983"),
+        String::from("24535423544252452453"),
+    ];
+
+    let poly = ffi::DCRTPolyGenFromVec(n, size, k_res, &coeffs);
+    let poly_2 = ffi::DCRTPolyGenFromVec(n, size, k_res, &coeffs);
+
+    // assert that the two poly are equal
+    assert_eq!(poly, poly_2);
 }

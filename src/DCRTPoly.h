@@ -29,6 +29,13 @@ public:
     const rust::String& value
 );
 
+[[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromVec(
+    usint n,
+    size_t size,
+    size_t kRes,
+    const rust::Vec<rust::String>& values
+);
+
 class DCRTPolyParams final
 {
     std::shared_ptr<lbcrypto::DCRTPoly::Params> m_params;
@@ -45,5 +52,4 @@ public:
 
 // Generator functions
 [[nodiscard]] std::unique_ptr<DCRTPolyParams> DCRTPolyGenNullParams();
-
 } // openfhe

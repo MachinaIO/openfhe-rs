@@ -728,6 +728,9 @@ pub mod ffi
         // Generator functions
         fn DCRTPolyGenFromConst(n: u32, size: usize, kRes: usize, value: &String) 
             -> UniquePtr<DCRTPoly>;
+        fn DCRTPolyGenFromVec(n: u32, size: usize, kRes: usize, values: &Vec<String>) 
+            -> UniquePtr<DCRTPoly>;
+    
     }
 
     // DCRTPolyParams
