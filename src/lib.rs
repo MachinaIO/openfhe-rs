@@ -722,6 +722,9 @@ pub mod ffi
     // DCRTPoly
     unsafe extern "C++"
     {   
+        fn GetString(self: &DCRTPoly) -> String;
+        fn IsEqual(self: &DCRTPoly, other: &DCRTPoly) -> bool;
+    
         // Generator functions
         fn DCRTPolyGenFromConst(n: u32, size: usize, kRes: usize, value: &String) 
             -> UniquePtr<DCRTPoly>;
@@ -1133,6 +1136,22 @@ pub mod ffi
         fn DCRTPolySerializePrivateKeyToFile(privateKeyLocation: &CxxString,
                                              privateKey: &PrivateKeyDCRTPoly,
                                              serialMode: SerialMode) -> bool;
+    }
+}
+
+
+use crate::ffi::DCRTPoly;
+use std::fmt;
+
+impl fmt::Debug for DCRTPoly {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.GetString())
+    }
+}
+
+impl PartialEq for DCRTPoly {
+    fn eq(&self, other: &Self) -> bool {
+        self.IsEqual(other)
     }
 }
 

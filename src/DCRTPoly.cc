@@ -1,4 +1,5 @@
 #include "DCRTPoly.h"
+#include <sstream>
 
 namespace openfhe
 {
@@ -7,6 +8,20 @@ DCRTPoly::DCRTPoly(lbcrypto::DCRTPoly&& poly) noexcept
     : m_poly(std::move(poly))
 { }
 
+rust::String DCRTPoly::GetString() const
+{
+    std::stringstream stream;
+    stream << m_poly;
+    return rust::String(stream.str());
+}
+
+bool DCRTPoly::IsEqual(const DCRTPoly& other) const noexcept
+{
+    // Compare the internal DCRTPoly objects for equality
+    return m_poly == other.m_poly;
+}
+
+// Generator functions
 std::unique_ptr<DCRTPoly> DCRTPolyGenFromConst(
     usint n,
     size_t size,

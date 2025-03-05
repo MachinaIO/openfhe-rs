@@ -7,5 +7,14 @@ fn main() {
     let size: usize = 4; // Number of CRT
     let k_res: usize = 51;
 
-    let poly = ffi::DCRTPolyGenFromConst(n, size, k_res, &val);
+    let const_poly = ffi::DCRTPolyGenFromConst(n, size, k_res, &val);
+    // print the const_poly
+    println!("const_poly: {:?}", const_poly);
+
+    let const_poly_2 = ffi::DCRTPolyGenFromConst(n, size, k_res, &val);
+    // print the const_poly_2
+    println!("const_poly_2: {:?}", const_poly_2);
+
+    // assert that the two const_poly are equal
+    assert_eq!(const_poly, const_poly_2);
 }

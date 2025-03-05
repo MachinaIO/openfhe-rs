@@ -15,6 +15,10 @@ public:
     DCRTPoly(DCRTPoly&&) = delete;
     DCRTPoly& operator=(const DCRTPoly&) = delete;
     DCRTPoly& operator=(DCRTPoly&&) = delete;
+
+    [[nodiscard]] const lbcrypto::DCRTPoly& GetPoly() const noexcept;
+    [[nodiscard]] rust::String GetString() const;
+    [[nodiscard]] bool IsEqual(const DCRTPoly& other) const noexcept;
 };
 
 // Generator functions 
