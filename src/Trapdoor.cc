@@ -46,4 +46,19 @@ std::unique_ptr<DCRTTrapdoor> DCRTTrapdoorGen(
         std::move(trapdoor.second)
     );
 }
+
+// Matrix functions
+std::unique_ptr<Matrix> MatrixGen(
+    usint n, 
+    size_t size, 
+    size_t kRes,
+    size_t nrow, 
+    size_t ncol)
+{
+    auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+    auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
+    Matrix matrix(zero_alloc, nrow, ncol);
+    return std::make_unique<Matrix>(std::move(matrix));
+}
+
 } // openfhe

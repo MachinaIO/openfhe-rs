@@ -33,4 +33,12 @@ public:
     double sigma,
     int64_t base,
     bool balanced);
+
+// Matrix functions
+[[nodiscard]] std::unique_ptr<Matrix> MatrixGen(
+    usint n, 
+    size_t size, 
+    size_t kRes,
+    size_t nrow, 
+    size_t ncol);
 } // openfhe

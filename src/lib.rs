@@ -753,6 +753,12 @@ pub mod ffi
         fn DCRTPolyGenNullParams() -> UniquePtr<DCRTPolyParams>;
     }
 
+    // Matrix
+    unsafe extern "C++"
+    {
+        fn MatrixGen(n: u32, size: usize, k_res: usize, nrow: usize, ncol: usize) -> UniquePtr<Matrix>;
+    }
+
     // KeyPairDCRTPoly
     unsafe extern "C++"
     {

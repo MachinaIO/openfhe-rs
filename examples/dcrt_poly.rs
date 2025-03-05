@@ -63,4 +63,8 @@ fn main() {
     // fetch a polynomial from the trapdoor public matrix
     let public_matrix_poly_0_0 = trapdoor.GetPublicMatrixElement(0, 0);
     println!("public_matrix_poly_0_0: {:?}", public_matrix_poly_0_0);
+
+    // Generate an empty matrix
+    let matrix_empty = ffi::MatrixGen(n, size, k_res, 2, 2);
+
 }
