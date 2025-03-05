@@ -13,9 +13,14 @@ std::unique_ptr<RLWETrapdoorPair> DCRTTrapdoor::GetTrapdoorPair() const
     return std::make_unique<RLWETrapdoorPair>(m_trapdoorPair);
 }
 
-std::unique_ptr<Matrix> DCRTTrapdoor::GetPublicMatrix() const
+std::unique_ptr<DCRTPoly> DCRTTrapdoor::GetPublicMatrixElement(size_t row, size_t col) const
 {
-    return std::make_unique<Matrix>(m_publicMatrix);
+    if (row >= m_publicMatrix.GetRows() || col >= m_publicMatrix.GetCols()) {
+        return nullptr;
+    }
+    
+    lbcrypto::DCRTPoly copy = m_publicMatrix(row, col);
+    return std::make_unique<DCRTPoly>(std::move(copy));
 }
 
 // Generator functions

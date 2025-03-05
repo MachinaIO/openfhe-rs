@@ -60,4 +60,7 @@ fn main() {
     // sample trapdoor
     let sigma = 4.57825;
     let trapdoor = ffi::DCRTTrapdoorGen(n, size, k_res, sigma, 2, false);
+    // fetch a polynomial from the trapdoor public matrix
+    let public_matrix_poly_0_0 = trapdoor.GetPublicMatrixElement(0, 0);
+    println!("public_matrix_poly_0_0: {:?}", public_matrix_poly_0_0);
 }
