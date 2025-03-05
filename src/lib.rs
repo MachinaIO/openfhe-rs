@@ -724,6 +724,7 @@ pub mod ffi
     {   
         fn GetString(self: &DCRTPoly) -> String;
         fn IsEqual(self: &DCRTPoly, other: &DCRTPoly) -> bool;
+        fn GetCoefficients(self: &DCRTPoly) -> Vec<String>;
     
         // Generator functions
         fn DCRTPolyGenFromConst(n: u32, size: usize, kRes: usize, value: &String) 

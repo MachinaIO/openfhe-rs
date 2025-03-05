@@ -26,6 +26,24 @@ bool DCRTPoly::IsEqual(const DCRTPoly& other) const noexcept
     return m_poly == other.m_poly;
 }
 
+rust::Vec<rust::String> DCRTPoly::GetCoefficients() const
+{   
+    auto tempPoly = m_poly;
+    tempPoly.SetFormat(Format::COEFFICIENT);
+
+    lbcrypto::DCRTPoly::PolyLargeType polyLarge = tempPoly.CRTInterpolate();
+
+    const lbcrypto::BigVector &coeffs = polyLarge.GetValues();
+
+    rust::Vec<rust::String> result;
+    for (size_t i = 0; i < coeffs.GetLength(); ++i)
+    {
+        result.push_back(rust::String(coeffs[i].ToString()));
+    }
+
+    return result;
+}
+
 // Generator functions
 std::unique_ptr<DCRTPoly> DCRTPolyGenFromConst(
     usint n,

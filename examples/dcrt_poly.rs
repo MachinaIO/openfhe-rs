@@ -41,4 +41,15 @@ fn main() {
     // perform polynomial multiplication
     let poly_mul = ffi::DCRTPolyMul(&poly, &poly_2);
     println!("poly_mul: {:?}", poly_mul);
+
+    // get the coefficients of the polynomials
+    let coeffs_poly = poly.GetCoefficients();
+    println!("coeffs_poly: {:?}", coeffs_poly);
+    let coeffs_poly_2 = poly_2.GetCoefficients();
+    println!("coeffs_poly_2: {:?}", coeffs_poly_2);
+    let coeffs_poly_add = poly_add.GetCoefficients();
+    println!("coeffs_poly_add: {:?}", coeffs_poly_add);
+
+    // the format of the poly should still be in evaluation format
+    println!("poly_add: {:?}", poly_add);
 }

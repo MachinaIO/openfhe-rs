@@ -19,6 +19,7 @@ public:
     [[nodiscard]] const lbcrypto::DCRTPoly& GetPoly() const noexcept;
     [[nodiscard]] rust::String GetString() const;
     [[nodiscard]] bool IsEqual(const DCRTPoly& other) const noexcept;
+    [[nodiscard]] rust::Vec<rust::String> GetCoefficients() const;
 };
 
 // Generator functions 
