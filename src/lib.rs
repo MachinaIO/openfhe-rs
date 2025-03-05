@@ -160,6 +160,7 @@ pub mod ffi
         include!("openfhe/src/Ciphertext.h");
         include!("openfhe/src/CryptoContext.h");
         include!("openfhe/src/CryptoParametersBase.h");
+        include!("openfhe/src/DCRTMatrix.h");
         include!("openfhe/src/DCRTPoly.h");
         include!("openfhe/src/DecryptResult.h");
         include!("openfhe/src/EncodingParams.h");
@@ -196,6 +197,7 @@ pub mod ffi
         type CiphertextDCRTPoly;
         type CryptoContextDCRTPoly;
         type CryptoParametersBaseDCRTPoly;
+        type DCRTMatrix;
         type DCRTPoly;
         type DCRTPolyParams;
         type DecryptResult;
@@ -717,6 +719,12 @@ pub mod ffi
         fn DCRTPolyGenCryptoContextByParamsBGVRNS(params: &ParamsBGVRNS)
                                                   -> UniquePtr<CryptoContextDCRTPoly>;
         fn DCRTPolyGenNullCryptoContext() -> UniquePtr<CryptoContextDCRTPoly>;
+    }
+
+    // DCRTMatrix
+    unsafe extern "C++"
+    {
+        fn GetElement(self: &DCRTMatrix, row: usize, col: usize) -> UniquePtr<DCRTPoly>;
     }
 
     // DCRTPoly
