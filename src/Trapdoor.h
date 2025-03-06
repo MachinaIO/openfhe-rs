@@ -22,6 +22,7 @@ public:
     DCRTTrapdoor& operator=(DCRTTrapdoor&&) = delete;
 
     [[nodiscard]] std::unique_ptr<RLWETrapdoorPair> GetTrapdoorPair() const;
+    [[nodiscard]] std::unique_ptr<Matrix> GetPublicMatrix() const;
     [[nodiscard]] std::unique_ptr<DCRTPoly> GetPublicMatrixElement(size_t row, size_t col) const;
 };
 
@@ -44,6 +45,15 @@ public:
     bool balanced);
 
 // Gauss sample functions
+[[nodiscard]] std::unique_ptr<Matrix> DCRTTrapdoorGaussSamp(
+    usint n, 
+    usint k,
+    const Matrix& publicMatrix, 
+    const RLWETrapdoorPair& trapdoor, 
+    const DCRTPoly& u, 
+    int64_t base, 
+    double sigma);
+
 [[nodiscard]] std::unique_ptr<Matrix> DCRTSquareMatTrapdoorGaussSamp(
     usint n, 
     usint k,

@@ -13,6 +13,11 @@ std::unique_ptr<RLWETrapdoorPair> DCRTTrapdoor::GetTrapdoorPair() const
     return std::make_unique<RLWETrapdoorPair>(m_trapdoorPair);
 }
 
+std::unique_ptr<Matrix> DCRTTrapdoor::GetPublicMatrix() const
+{
+    return std::make_unique<Matrix>(m_publicMatrix);
+}
+
 std::unique_ptr<DCRTPoly> DCRTTrapdoor::GetPublicMatrixElement(size_t row, size_t col) const
 {
     if (row >= m_publicMatrix.GetRows() || col >= m_publicMatrix.GetCols()) {
@@ -73,11 +78,33 @@ std::unique_ptr<DCRTTrapdoor> DCRTSquareMatTrapdoorGen(
 }
 
 // Gauss sample functions
+std::unique_ptr<Matrix> DCRTTrapdoorGaussSamp(usint n, usint k, const Matrix& publicMatrix, const RLWETrapdoorPair& trapdoor, const DCRTPoly& u, int64_t base, double sigma)
+{
+    lbcrypto::DCRTPoly::DggType dgg(sigma);
+
+    double c = (base + 1) * sigma;
+    double s = lbcrypto::SPECTRAL_BOUND(n, k, base);
+    lbcrypto::DCRTPoly::DggType dggLargeSigma(sqrt(s * s - c * c));
+
+    auto result = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::GaussSamp(
+        n,
+        k,
+        publicMatrix,
+        trapdoor,
+        u.GetPoly(),
+        dgg,
+        dggLargeSigma,
+        base
+    );
+
+    return std::make_unique<Matrix>(std::move(result));
+}
+
 std::unique_ptr<Matrix> DCRTSquareMatTrapdoorGaussSamp(usint n, usint k, const Matrix& publicMatrix, const RLWETrapdoorPair& trapdoor, const Matrix& U, int64_t base, double sigma)
 {
     lbcrypto::DCRTPoly::DggType dgg(sigma);
 
-    double c = (base + 1) * lbcrypto::SIGMA;
+    double c = (base + 1) * sigma;
     double s = lbcrypto::SPECTRAL_BOUND(n, k, base);
     lbcrypto::DCRTPoly::DggType dggLargeSigma(sqrt(s * s - c * c));
 

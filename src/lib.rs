@@ -1596,6 +1596,7 @@ pub mod ffi {
 
     // Trapdoor
     unsafe extern "C++" {
+        fn GetPublicMatrix(self: &DCRTTrapdoor) -> UniquePtr<Matrix>;
         fn GetPublicMatrixElement(
             self: &DCRTTrapdoor,
             row: usize,
@@ -1624,6 +1625,16 @@ pub mod ffi {
         ) -> UniquePtr<DCRTTrapdoor>;
 
         // Gauss sample functions
+        fn DCRTTrapdoorGaussSamp(
+            n: u32,
+            k: u32,
+            public_matrix: &Matrix,
+            trapdoor: &RLWETrapdoorPair,
+            u: &DCRTPoly,
+            base: i64,
+            sigma: f64,
+        ) -> UniquePtr<Matrix>;
+
         fn DCRTSquareMatTrapdoorGaussSamp(
             n: u32,
             k: u32,

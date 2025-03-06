@@ -1,3 +1,5 @@
+use num_bigint::BigUint;
+use num_traits::Num;
 use openfhe::ffi;
 
 fn main() {
@@ -57,27 +59,47 @@ fn main() {
     let poly_modulus = poly.GetModulus();
     assert_eq!(poly_modulus, modulus);
 
-    // gen trapdoor
     let sigma = 4.57825;
-    let trapdoor_output = ffi::DCRTTrapdoorGen(n, size, k_res, sigma, 2, false);
-    let _trapdoor = trapdoor_output.GetTrapdoorPair();
+    let base = 2;
+    let modulus_big_uint = BigUint::from_str_radix(&modulus, 10).unwrap();
+    let k = modulus_big_uint.bits() as u32;
 
-    // fetch a polynomial from the trapdoor public matrix
-    let public_matrix_poly_0_0 = trapdoor_output.GetPublicMatrixElement(0, 0);
-    println!("public_matrix_poly_0_0: {:?}", public_matrix_poly_0_0);
+    // ** gen trapdoor **
+    let trapdoor_output = ffi::DCRTTrapdoorGen(n, size, k_res, sigma, base, false);
+    let trapdoor = trapdoor_output.GetTrapdoorPair();
+    let public_matrix = trapdoor_output.GetPublicMatrix();
 
-    // Generate an empty matrix
-    let mut matrix = ffi::MatrixGen(n, size, k_res, 2, 2);
+    // sample a target polynomial
+    let u = ffi::DCRTPolyGenFromDug(n, size, k_res);
 
-    // set the 0, 0 element of the matrix
-    ffi::SetMatrixElement(matrix.as_mut().unwrap(), 0, 0, &poly_add);
+    // generate a preimage such that public_matrix * preimage = target_polynomial
+    let _preimage = ffi::DCRTTrapdoorGaussSamp(n, k, &public_matrix, &trapdoor, &u, base, sigma);
 
-    // get the 0, 0 element of the matrix
-    let matrix_poly_0_0 = ffi::GetMatrixElement(&matrix, 0, 0);
-    assert_eq!(matrix_poly_0_0, poly_add);
-
-    // gen trapdoor for a square matrix target of size 2x2
+    // ** gen trapdoor for a square matrix target of size 2x2 **
     let d = 2;
-    let trapdoor_output = ffi::DCRTSquareMatTrapdoorGen(n, size, k_res, d, sigma, 2, false);
-    let _trapdoor = trapdoor_output.GetTrapdoorPair();
+    let trapdoor_output_square =
+        ffi::DCRTSquareMatTrapdoorGen(n, size, k_res, d, sigma, base, false);
+
+    let trapdoor_square = trapdoor_output_square.GetTrapdoorPair();
+    let public_matrix_square = trapdoor_output_square.GetPublicMatrix();
+
+    // build the target matrix by sampling a random polynomial for each element
+    let mut target_matrix = ffi::MatrixGen(n, size, k_res, d, d);
+    for i in 0..d {
+        for j in 0..d {
+            let poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
+            ffi::SetMatrixElement(target_matrix.as_mut().unwrap(), i, j, &poly);
+        }
+    }
+
+    // generate a preimage such that public_matrix_square * preimage = target_matrix
+    let _preimage_square = ffi::DCRTSquareMatTrapdoorGaussSamp(
+        n,
+        k,
+        &public_matrix_square,
+        &trapdoor_square,
+        &target_matrix,
+        base,
+        sigma,
+    );
 }
