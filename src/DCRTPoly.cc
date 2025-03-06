@@ -158,12 +158,4 @@ std::unique_ptr<DCRTPolyParams> DCRTPolyGenNullParams()
 {
     return std::make_unique<DCRTPolyParams>();
 }
-
-std::unique_ptr<DCRTPolyImpl> DCRTPolyGenFromDug(const ILDCRTParams& params)
-{   
-    std::shared_ptr<ILDCRTParams> params_ptr = std::make_shared<ILDCRTParams>(params);
-    typename DCRTPolyImpl::DugType dug;
-    return std::make_unique<DCRTPolyImpl>(dug, params_ptr, Format::EVALUATION);
-}
-
 } // openfhe
