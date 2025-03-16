@@ -85,7 +85,7 @@ std::unique_ptr<Matrix> DCRTPoly::Decompose() const
     lbcrypto::Matrix<lbcrypto::DCRTPoly> decomposedMatrix(zero_alloc, 1, decomposed.size());
     
     for (size_t i = 0; i < decomposed.size(); i++) {
-        decomposedMatrix(0, i) = decomposed[i];
+        decomposedMatrix(0, i) = std::move(decomposed[i]);
     }
 
     // Measure memory after creating the Matrix
