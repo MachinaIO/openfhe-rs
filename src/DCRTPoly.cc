@@ -69,17 +69,17 @@ std::unique_ptr<DCRTPoly> DCRTPoly::Negate() const
 
 std::unique_ptr<Matrix> DCRTPoly::Decompose() const
 {
-    // Measure memory before CRTDecompose
+    // Measure memory before CRBaseDecomposeTDecompose
     size_t memBefore = getMemoryUsageBytes();
-    std::cout << "Memory before CRTDecompose: " << memBefore << "bytes" << std::endl;
+    std::cout << "Memory before BaseDecompose: " << memBefore << "bytes" << std::endl;
     
     // Run CRTDecompose
-    std::vector<lbcrypto::DCRTPoly> decomposed = m_poly.CRTDecompose(1);
+    std::vector<lbcrypto::DCRTPoly> decomposed = m_poly.BaseDecompose(1, true);
     
-    // Measure memory after CRTDecompose
+    // Measure memory after BaseDecompose
     size_t memAfter = getMemoryUsageBytes();
 
-    std::cout << "Memory after CRTDecompose: " << memAfter << "bytes" << std::endl;
+    std::cout << "Memory after BaseDecompose: " << memAfter << "bytes" << std::endl;
     
     auto zero_alloc = lbcrypto::DCRTPoly::Allocator(m_poly.GetParams(), Format::COEFFICIENT);
     lbcrypto::Matrix<lbcrypto::DCRTPoly> decomposedMatrix(zero_alloc, 1, decomposed.size());
