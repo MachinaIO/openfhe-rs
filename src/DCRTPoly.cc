@@ -72,9 +72,15 @@ std::unique_ptr<Matrix> DCRTPoly::Decompose() const
     // Measure memory before CRBaseDecomposeTDecompose
     size_t memBefore = getMemoryUsageBytes();
     std::cout << "Memory before BaseDecompose: " << memBefore << "bytes" << std::endl;
-    
+
+    // create a copy of m_poly
+    lbcrypto::DCRTPoly dcrtPoly = m_poly;
+
+    // Set the format to COEFFICIENT
+    dcrtPoly.SetFormat(Format::COEFFICIENT);
+
     // Run CRTDecompose
-    std::vector<lbcrypto::DCRTPoly> decomposed = m_poly.BaseDecompose(1, true);
+    std::vector<lbcrypto::DCRTPoly> decomposed = dcrtPoly.BaseDecompose(1, true);
     
     // Measure memory after BaseDecompose
     size_t memAfter = getMemoryUsageBytes();
