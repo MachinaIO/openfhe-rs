@@ -1,6 +1,6 @@
 use num_bigint::BigUint;
 use num_traits::Num;
-use openfhe::ffi;
+use openfhe::ffi::{self, GetMatrixElement};
 
 fn main() {
     let val = String::from("123456789099999");
@@ -102,4 +102,8 @@ fn main() {
         base,
         sigma,
     );
+
+    let dummy_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
+    let decomposed_poly = dummy_poly.Decompose();
+    let poly_0_0 = GetMatrixElement(&decomposed_poly, 0, 0);
 }

@@ -2,9 +2,12 @@
 
 #include "openfhe/core/lattice/hal/lat-backend.h"
 #include "rust/cxx.h"
+#include "openfhe/core/math/matrix.h"
 
 namespace openfhe
 {
+
+using Matrix = lbcrypto::Matrix<lbcrypto::DCRTPoly>;
 
 class DCRTPoly final
 {
@@ -22,6 +25,7 @@ public:
     [[nodiscard]] rust::Vec<rust::String> GetCoefficients() const;
     [[nodiscard]] rust::String GetModulus() const;
     [[nodiscard]] std::unique_ptr<DCRTPoly> Negate() const;
+    [[nodiscard]] std::unique_ptr<Matrix> Decompose() const;
 };
 
 // Generator functions 
@@ -63,4 +67,23 @@ public:
 
 // Generator functions
 [[nodiscard]] std::unique_ptr<DCRTPolyParams> DCRTPolyGenNullParams();
+
+// Matrix functions
+[[nodiscard]] std::unique_ptr<Matrix> MatrixGen(
+    usint n, 
+    size_t size, 
+    size_t kRes,
+    size_t nrow, 
+    size_t ncol);
+
+void SetMatrixElement(
+    Matrix& matrix, 
+    size_t row, 
+    size_t col, 
+    const DCRTPoly& element);
+
+[[nodiscard]] std::unique_ptr<DCRTPoly> GetMatrixElement(
+    const Matrix& matrix, 
+    size_t row, 
+    size_t col);
 } // openfhe

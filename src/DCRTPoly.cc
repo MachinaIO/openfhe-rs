@@ -54,6 +54,20 @@ std::unique_ptr<DCRTPoly> DCRTPoly::Negate() const
     return std::make_unique<DCRTPoly>(-m_poly);
 }
 
+std::unique_ptr<Matrix> DCRTPoly::Decompose() const
+{
+    std::vector<lbcrypto::DCRTPoly> decomposed = m_poly.CRTDecompose(1);
+    
+    auto zero_alloc = lbcrypto::DCRTPoly::Allocator(m_poly.GetParams(), Format::COEFFICIENT);
+    lbcrypto::Matrix<lbcrypto::DCRTPoly> decomposedMatrix(zero_alloc, 1, decomposed.size());
+    
+    for (size_t i = 0; i < decomposed.size(); i++) {
+        decomposedMatrix(0, i) = decomposed[i];
+    }
+    
+    return std::make_unique<Matrix>(std::move(decomposedMatrix));
+}
+
 // Arithmetic
 std::unique_ptr<DCRTPoly> DCRTPolyAdd(const DCRTPoly& rhs, const DCRTPoly& lhs)
 {
@@ -158,4 +172,37 @@ std::unique_ptr<DCRTPolyParams> DCRTPolyGenNullParams()
 {
     return std::make_unique<DCRTPolyParams>();
 }
+
+// Matrix functions
+std::unique_ptr<Matrix> MatrixGen(
+    usint n, 
+    size_t size, 
+    size_t kRes,
+    size_t nrow, 
+    size_t ncol)
+{
+    auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+    auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
+    Matrix matrix(zero_alloc, nrow, ncol);
+    return std::make_unique<Matrix>(std::move(matrix));
+}
+
+void SetMatrixElement(
+    Matrix& matrix, 
+    size_t row, 
+    size_t col, 
+    const DCRTPoly& element)
+{
+    matrix(row, col) = element.GetPoly();
+}
+
+std::unique_ptr<DCRTPoly> GetMatrixElement(
+    const Matrix& matrix, 
+    size_t row, 
+    size_t col)
+{   
+    lbcrypto::DCRTPoly copy = matrix(row, col);
+    return std::make_unique<DCRTPoly>(std::move(copy));
+}
+
 } // openfhe

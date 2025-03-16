@@ -1,13 +1,11 @@
 #pragma once
 #include "openfhe/core/lattice/trapdoor.h"
-#include "openfhe/core/math/matrix.h"
 #include "DCRTPoly.h"
 
 namespace openfhe
 {
 
 using RLWETrapdoorPair = lbcrypto::RLWETrapdoorPair<lbcrypto::DCRTPoly>;
-using Matrix = lbcrypto::Matrix<lbcrypto::DCRTPoly>;
 
 class DCRTTrapdoor final
 {
@@ -62,23 +60,4 @@ public:
     const Matrix& U, 
     int64_t base, 
     double sigma);
-
-// Matrix functions
-[[nodiscard]] std::unique_ptr<Matrix> MatrixGen(
-    usint n, 
-    size_t size, 
-    size_t kRes,
-    size_t nrow, 
-    size_t ncol);
-
-void SetMatrixElement(
-    Matrix& matrix, 
-    size_t row, 
-    size_t col, 
-    const DCRTPoly& element);
-
-[[nodiscard]] std::unique_ptr<DCRTPoly> GetMatrixElement(
-    const Matrix& matrix, 
-    size_t row, 
-    size_t col);
 } // openfhe

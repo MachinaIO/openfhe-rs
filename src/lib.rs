@@ -731,6 +731,7 @@ pub mod ffi
         fn GetCoefficients(self: &DCRTPoly) -> Vec<String>;
         fn GetModulus(self: &DCRTPoly) -> String;
         fn Negate(self: &DCRTPoly) -> UniquePtr<DCRTPoly>;
+        fn Decompose(self: &DCRTPoly) -> UniquePtr<Matrix>;
 
         // Generator functions
         fn DCRTPolyGenFromConst(n: u32, size: usize, k_res: usize, value: &String) 
