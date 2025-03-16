@@ -1,5 +1,18 @@
 #include "DCRTPoly.h"
 #include <sstream>
+#include <mach/mach.h>
+#include <iostream>
+
+// Function to get current memory usage in bytes
+size_t getMemoryUsageBytes() {
+    task_basic_info info;
+    mach_msg_type_number_t infoCount = TASK_BASIC_INFO_COUNT;
+
+    if (task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&info, &infoCount) != KERN_SUCCESS)
+        return 0;
+
+    return info.resident_size;
+}
 
 namespace openfhe
 {
@@ -56,7 +69,17 @@ std::unique_ptr<DCRTPoly> DCRTPoly::Negate() const
 
 std::unique_ptr<Matrix> DCRTPoly::Decompose() const
 {
+    // Measure memory before CRTDecompose
+    size_t memBefore = getMemoryUsageBytes();
+    std::cout << "Memory before CRTDecompose: " << memBefore << "bytes" << std::endl;
+    
+    // Run CRTDecompose
     std::vector<lbcrypto::DCRTPoly> decomposed = m_poly.CRTDecompose(1);
+    
+    // Measure memory after CRTDecompose
+    size_t memAfter = getMemoryUsageBytes();
+
+    std::cout << "Memory after CRTDecompose: " << memAfter << "bytes" << std::endl;
     
     auto zero_alloc = lbcrypto::DCRTPoly::Allocator(m_poly.GetParams(), Format::COEFFICIENT);
     lbcrypto::Matrix<lbcrypto::DCRTPoly> decomposedMatrix(zero_alloc, 1, decomposed.size());
@@ -64,6 +87,10 @@ std::unique_ptr<Matrix> DCRTPoly::Decompose() const
     for (size_t i = 0; i < decomposed.size(); i++) {
         decomposedMatrix(0, i) = decomposed[i];
     }
+
+    // Measure memory after creating the Matrix
+    size_t memAfterMatrix = getMemoryUsageBytes();
+    std::cout << "Memory after creating the Matrix: " << memAfterMatrix << "bytes" << std::endl;
     
     return std::make_unique<Matrix>(std::move(decomposedMatrix));
 }
