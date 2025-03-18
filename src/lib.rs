@@ -745,6 +745,8 @@ pub mod ffi
         // Arithmetic
         fn DCRTPolyAdd(rhs: &DCRTPoly, lhs: &DCRTPoly) -> UniquePtr<DCRTPoly>;
         fn DCRTPolyMul(rhs: &DCRTPoly, lhs: &DCRTPoly) -> UniquePtr<DCRTPoly>;
+
+        fn DropDCRTPoly(u: UniquePtr<DCRTPoly>);
     }
 
     // DCRTPolyParams

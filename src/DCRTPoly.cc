@@ -170,6 +170,11 @@ const std::shared_ptr<lbcrypto::DCRTPoly::Params>& DCRTPolyParams::GetRef() cons
     return m_params;
 }
 
+void DropDCRTPoly(std::unique_ptr<DCRTPoly> poly) noexcept
+{
+    poly.reset();
+}
+
 // Generator functions
 std::unique_ptr<DCRTPolyParams> DCRTPolyGenNullParams()
 {
