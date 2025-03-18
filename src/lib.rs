@@ -1172,7 +1172,8 @@ pub mod ffi
             row: usize,
             col: usize,
         ) -> UniquePtr<DCRTPoly>;
-        fn GetTrapdoorPair(self: &DCRTTrapdoor) -> UniquePtr<RLWETrapdoorPair>;
+        fn GetTrapdoorFirst(self: &DCRTTrapdoor) -> UniquePtr<Matrix>;
+        fn GetTrapdoorSecond(self: &DCRTTrapdoor) -> UniquePtr<Matrix>;
 
         // Generator functions
         fn DCRTTrapdoorGen(
@@ -1199,7 +1200,8 @@ pub mod ffi
             n: u32,
             k: u32,
             public_matrix: &Matrix,
-            trapdoor: &RLWETrapdoorPair,
+            trapdoor_first: &Matrix,
+            trapdoor_second: &Matrix,
             u: &DCRTPoly,
             base: i64,
             sigma: f64,
@@ -1209,7 +1211,8 @@ pub mod ffi
             n: u32,
             k: u32,
             public_matrix: &Matrix,
-            trapdoor: &RLWETrapdoorPair,
+            trapdoor_first: &Matrix,
+            trapdoor_second: &Matrix,
             u: &Matrix,
             base: i64,
             sigma: f64,

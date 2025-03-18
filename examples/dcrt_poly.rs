@@ -66,21 +66,32 @@ fn main() {
 
     // ** gen trapdoor **
     let trapdoor_output = ffi::DCRTTrapdoorGen(n, size, k_res, sigma, base, false);
-    let trapdoor = trapdoor_output.GetTrapdoorPair();
+    let trapdoor_first = trapdoor_output.GetTrapdoorFirst();
+    let trapdoor_second = trapdoor_output.GetTrapdoorSecond();
     let public_matrix = trapdoor_output.GetPublicMatrix();
 
     // sample a target polynomial
     let u = ffi::DCRTPolyGenFromDug(n, size, k_res);
 
     // generate a preimage such that public_matrix * preimage = target_polynomial
-    let _preimage = ffi::DCRTTrapdoorGaussSamp(n, k, &public_matrix, &trapdoor, &u, base, sigma);
+    let _preimage = ffi::DCRTTrapdoorGaussSamp(
+        n,
+        k,
+        &public_matrix,
+        &trapdoor_first,
+        &trapdoor_second,
+        &u,
+        base,
+        sigma,
+    );
 
     // ** gen trapdoor for a square matrix target of size 2x2 **
     let d = 2;
     let trapdoor_output_square =
         ffi::DCRTSquareMatTrapdoorGen(n, size, k_res, d, sigma, base, false);
 
-    let trapdoor_square = trapdoor_output_square.GetTrapdoorPair();
+    let trapdoor_square_first = trapdoor_output_square.GetTrapdoorFirst();
+    let trapdoor_square_second = trapdoor_output_square.GetTrapdoorSecond();
     let public_matrix_square = trapdoor_output_square.GetPublicMatrix();
 
     // build the target matrix by sampling a random polynomial for each element
@@ -97,7 +108,8 @@ fn main() {
         n,
         k,
         &public_matrix_square,
-        &trapdoor_square,
+        &trapdoor_square_first,
+        &trapdoor_square_second,
         &target_matrix,
         base,
         sigma,

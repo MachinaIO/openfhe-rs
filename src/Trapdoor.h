@@ -10,16 +10,18 @@ using RLWETrapdoorPair = lbcrypto::RLWETrapdoorPair<lbcrypto::DCRTPoly>;
 class DCRTTrapdoor final
 {
     Matrix m_publicMatrix;
-    RLWETrapdoorPair m_trapdoorPair;
+    Matrix m_trapdoorFirst;
+    Matrix m_trapdoorSecond;
 public:
     DCRTTrapdoor() = default;
-    DCRTTrapdoor(Matrix&& publicMatrix, RLWETrapdoorPair&& trapdoorPair) noexcept;
+    DCRTTrapdoor(Matrix&& publicMatrix, Matrix&& trapdoorFirst, Matrix&& trapdoorSecond) noexcept;
     DCRTTrapdoor(const DCRTTrapdoor&) = delete;
     DCRTTrapdoor(DCRTTrapdoor&&) = delete;
     DCRTTrapdoor& operator=(const DCRTTrapdoor&) = delete;
     DCRTTrapdoor& operator=(DCRTTrapdoor&&) = delete;
 
-    [[nodiscard]] std::unique_ptr<RLWETrapdoorPair> GetTrapdoorPair() const;
+    [[nodiscard]] std::unique_ptr<Matrix> GetTrapdoorFirst() const;
+    [[nodiscard]] std::unique_ptr<Matrix> GetTrapdoorSecond() const;
     [[nodiscard]] std::unique_ptr<Matrix> GetPublicMatrix() const;
     [[nodiscard]] std::unique_ptr<DCRTPoly> GetPublicMatrixElement(size_t row, size_t col) const;
 };
@@ -47,7 +49,8 @@ public:
     usint n, 
     usint k,
     const Matrix& publicMatrix, 
-    const RLWETrapdoorPair& trapdoor, 
+    const Matrix& trapdoorFirst, 
+    const Matrix& trapdoorSecond,
     const DCRTPoly& u, 
     int64_t base, 
     double sigma);
@@ -56,7 +59,8 @@ public:
     usint n, 
     usint k,
     const Matrix& publicMatrix, 
-    const RLWETrapdoorPair& trapdoor, 
+    const Matrix& trapdoorFirst, 
+    const Matrix& trapdoorSecond,
     const Matrix& U, 
     int64_t base, 
     double sigma);

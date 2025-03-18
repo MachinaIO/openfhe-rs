@@ -4,13 +4,18 @@
 namespace openfhe
 {
 
-DCRTTrapdoor::DCRTTrapdoor(Matrix&& publicMatrix, RLWETrapdoorPair&& trapdoorPair) noexcept
-    : m_publicMatrix(std::move(publicMatrix)), m_trapdoorPair(std::move(trapdoorPair))
+DCRTTrapdoor::DCRTTrapdoor(Matrix&& publicMatrix, Matrix&& trapdoorFirst, Matrix&& trapdoorSecond) noexcept
+    : m_publicMatrix(std::move(publicMatrix)), m_trapdoorFirst(std::move(trapdoorFirst)), m_trapdoorSecond(std::move(trapdoorSecond))
 { }
 
-std::unique_ptr<RLWETrapdoorPair> DCRTTrapdoor::GetTrapdoorPair() const
+std::unique_ptr<Matrix> DCRTTrapdoor::GetTrapdoorFirst() const
 {
-    return std::make_unique<RLWETrapdoorPair>(m_trapdoorPair);
+    return std::make_unique<Matrix>(m_trapdoorFirst);
+}
+
+std::unique_ptr<Matrix> DCRTTrapdoor::GetTrapdoorSecond() const
+{
+    return std::make_unique<Matrix>(m_trapdoorSecond);
 }
 
 std::unique_ptr<Matrix> DCRTTrapdoor::GetPublicMatrix() const
@@ -48,7 +53,8 @@ std::unique_ptr<DCRTTrapdoor> DCRTTrapdoorGen(
 
     return std::make_unique<DCRTTrapdoor>(
         std::move(trapdoor.first),
-        std::move(trapdoor.second)
+        std::move(trapdoor.second.m_e),
+        std::move(trapdoor.second.m_r)
     );
 }
 
@@ -73,18 +79,21 @@ std::unique_ptr<DCRTTrapdoor> DCRTSquareMatTrapdoorGen(
     
     return std::make_unique<DCRTTrapdoor>(
         std::move(trapdoor.first),
-        std::move(trapdoor.second)
+        std::move(trapdoor.second.m_e),
+        std::move(trapdoor.second.m_r)
     );
 }
 
 // Gauss sample functions
-std::unique_ptr<Matrix> DCRTTrapdoorGaussSamp(usint n, usint k, const Matrix& publicMatrix, const RLWETrapdoorPair& trapdoor, const DCRTPoly& u, int64_t base, double sigma)
+std::unique_ptr<Matrix> DCRTTrapdoorGaussSamp(usint n, usint k, const Matrix& publicMatrix, const Matrix& trapdoorFirst, const Matrix& trapdoorSecond, const DCRTPoly& u, int64_t base, double sigma)
 {
     lbcrypto::DCRTPoly::DggType dgg(sigma);
 
     double c = (base + 1) * sigma;
     double s = lbcrypto::SPECTRAL_BOUND(n, k, base);
     lbcrypto::DCRTPoly::DggType dggLargeSigma(sqrt(s * s - c * c));
+
+    lbcrypto::RLWETrapdoorPair trapdoor(trapdoorFirst, trapdoorSecond);
 
     auto result = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::GaussSamp(
         n,
@@ -100,13 +109,15 @@ std::unique_ptr<Matrix> DCRTTrapdoorGaussSamp(usint n, usint k, const Matrix& pu
     return std::make_unique<Matrix>(std::move(result));
 }
 
-std::unique_ptr<Matrix> DCRTSquareMatTrapdoorGaussSamp(usint n, usint k, const Matrix& publicMatrix, const RLWETrapdoorPair& trapdoor, const Matrix& U, int64_t base, double sigma)
+std::unique_ptr<Matrix> DCRTSquareMatTrapdoorGaussSamp(usint n, usint k, const Matrix& publicMatrix, const Matrix& trapdoorFirst, const Matrix& trapdoorSecond, const Matrix& U, int64_t base, double sigma)
 {
     lbcrypto::DCRTPoly::DggType dgg(sigma);
 
     double c = (base + 1) * sigma;
     double s = lbcrypto::SPECTRAL_BOUND(n, k, base);
     lbcrypto::DCRTPoly::DggType dggLargeSigma(sqrt(s * s - c * c));
+
+    lbcrypto::RLWETrapdoorPair trapdoor(trapdoorFirst, trapdoorSecond);
 
     auto result = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::GaussSampSquareMat(
         n,
