@@ -8,9 +8,11 @@ documentation = "https://openfhe-rust-wrapper.readthedocs.io/"
 repository = "https://github.com/fairmath/openfhe-rs"
 
 [dependencies]
-cxx = "1.0"
+cxx = { git = "https://github.com/rkdud007/cxx.git", branch = "feat/clone" }
 num-bigint = { version = "0.4", default-features = false }
 num-traits = "0.2"
+
+
 
 [build-dependencies]
 cxx-build = "1.0"
