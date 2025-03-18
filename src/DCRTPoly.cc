@@ -1,6 +1,5 @@
 #include "DCRTPoly.h"
 #include <sstream>
-#include <mach/mach.h>
 #include <iostream>
 
 namespace openfhe
