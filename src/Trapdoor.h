@@ -20,10 +20,9 @@ public:
     DCRTTrapdoor& operator=(const DCRTTrapdoor&) = delete;
     DCRTTrapdoor& operator=(DCRTTrapdoor&&) = delete;
 
+    [[nodiscard]] std::unique_ptr<Matrix> GetPublicMatrix() const;
     [[nodiscard]] std::unique_ptr<Matrix> GetTrapdoorFirst() const;
     [[nodiscard]] std::unique_ptr<Matrix> GetTrapdoorSecond() const;
-    [[nodiscard]] std::unique_ptr<Matrix> GetPublicMatrix() const;
-    [[nodiscard]] std::unique_ptr<DCRTPoly> GetPublicMatrixElement(size_t row, size_t col) const;
 };
 
 // Generator functions
