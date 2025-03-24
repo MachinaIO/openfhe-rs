@@ -729,6 +729,7 @@ pub mod ffi
         fn GetString(self: &DCRTPoly) -> String;
         fn IsEqual(self: &DCRTPoly, other: &DCRTPoly) -> bool;
         fn GetCoefficients(self: &DCRTPoly) -> Vec<String>;
+        fn GetCoefficientsBytes(self: &DCRTPoly) -> Vec<u8>;
         fn GetModulus(self: &DCRTPoly) -> String;
         fn Negate(self: &DCRTPoly) -> UniquePtr<DCRTPoly>;
         fn Decompose(self: &DCRTPoly) -> UniquePtr<Matrix>;

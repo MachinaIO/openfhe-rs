@@ -56,6 +56,9 @@ fn main() {
     let coeffs_poly_add = poly_add.GetCoefficients();
     println!("coeffs_poly_add: {:?}", coeffs_poly_add);
 
+    let coeffs_poly_bytes = poly.GetCoefficientsBytes();
+    println!("coeffs_poly_bytes: {:?}", coeffs_poly_bytes);
+
     let poly_modulus = poly.GetModulus();
     assert_eq!(poly_modulus, modulus);
 
