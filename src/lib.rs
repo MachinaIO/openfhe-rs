@@ -4,6 +4,7 @@
 
 use cxx::{CxxVector, let_cxx_string};
 pub use cxx;
+use num_bigint::BigUint;
 
 #[cxx::bridge(namespace = "openfhe")]
 pub mod ffi
@@ -1232,6 +1233,68 @@ impl PartialEq for DCRTPoly {
     fn eq(&self, other: &Self) -> bool {
         self.IsEqual(other)
     }
+}
+
+/// Parses raw bytes from the serialized format into a vector of BigUint values
+/// Returns a vector containing all coefficients followed by the modulus as the last element
+pub fn parse_coefficients_bytes(bytes: &[u8]) -> Vec<BigUint> {
+    if bytes.len() < 14 {
+        return Vec::new();
+    }
+
+    // Number of coefficients
+    let coeff_count = u64::from_le_bytes([bytes[5], bytes[6], bytes[7], bytes[8], 
+                                          bytes[9], bytes[10], bytes[11], bytes[12]]) as usize;
+    
+    let mut parsed_values = Vec::with_capacity(coeff_count + 1); // Coefficients + modulus
+    let mut offset = 17; // Start after the header
+    
+    // Parse coefficients
+    for _ in 0..coeff_count {
+        if offset + 8 > bytes.len() { break; }
+
+        // Number of chunks for this coefficient
+        let chunk_count = u64::from_le_bytes([bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3], 
+                                             bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]]) as usize;
+        offset += 8;
+        
+        // Read and combine chunks
+        let mut value = BigUint::from(0u32);
+        for i in 0..chunk_count {
+            if offset + 8 > bytes.len() { break; }
+            
+            let chunk = u64::from_le_bytes([bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3], 
+                                           bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]]);
+            // Add chunk with proper shifting (little-endian format)
+            value += BigUint::from(chunk) << (i * 64);
+            offset += 8;
+        }
+        
+        parsed_values.push(value);
+        offset += 4; // Skip the m value
+    }
+
+    // Parse modulus
+    if offset + 8 <= bytes.len() {
+        let mod_chunk_count = u64::from_le_bytes([bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3], 
+                                                 bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]]) as usize;
+        offset += 8;
+        
+        let mut modulus = BigUint::from(0u32);
+        for i in 0..mod_chunk_count {
+            if offset + 8 > bytes.len() { break; }
+            
+            let chunk = u64::from_le_bytes([bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3], 
+                                           bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]]);
+            // Add chunk with proper shifting (little-endian format)
+            modulus += BigUint::from(chunk) << (i * 64);
+            offset += 8;
+        }
+        
+        parsed_values.push(modulus);
+    }
+
+    parsed_values
 }
 
 #[cfg(test)]
