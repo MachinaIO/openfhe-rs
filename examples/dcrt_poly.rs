@@ -61,11 +61,11 @@ fn main() {
     println!("coeffs_poly_bytes: {:?}", coeffs_poly_bytes);
 
     // decode coeff_poly_bytes
-    let decoded_coeffs = parse_coefficients_bytes(&coeffs_poly_bytes);
-    println!("decoded mod: {:?}", decoded_coeffs.last().unwrap());
+    let parsed_coefficients = parse_coefficients_bytes(&coeffs_poly_bytes);
+    println!("decoded mod: {:?}", parsed_coefficients.modulus);
     println!(
         "decoded coeffs: {:?}",
-        &decoded_coeffs[..decoded_coeffs.len() - 1]
+        parsed_coefficients.coefficients
     );
 
     let poly_modulus = poly.GetModulus();

@@ -1235,18 +1235,26 @@ impl PartialEq for DCRTPoly {
     }
 }
 
+pub struct ParsedCoefficients {
+    pub coefficients: Vec<BigUint>,
+    pub modulus: BigUint,
+}
+
 /// Parses raw bytes from the serialized format into a vector of BigUint values
 /// Returns a vector containing all coefficients followed by the modulus as the last element
-pub fn parse_coefficients_bytes(bytes: &[u8]) -> Vec<BigUint> {
+pub fn parse_coefficients_bytes(bytes: &[u8]) -> ParsedCoefficients {
     if bytes.len() < 14 {
-        return Vec::new();
+        return ParsedCoefficients {
+            coefficients: Vec::new(),
+            modulus: BigUint::from(0u32),
+        };
     }
 
     // Number of coefficients
     let coeff_count = u64::from_le_bytes([bytes[5], bytes[6], bytes[7], bytes[8], 
                                           bytes[9], bytes[10], bytes[11], bytes[12]]) as usize;
     
-    let mut parsed_values = Vec::with_capacity(coeff_count + 1); // Coefficients + modulus
+    let mut coefficients = Vec::with_capacity(coeff_count);
     let mut offset = 17; // Start after the header
     
     // Parse coefficients
@@ -1270,17 +1278,17 @@ pub fn parse_coefficients_bytes(bytes: &[u8]) -> Vec<BigUint> {
             offset += 8;
         }
         
-        parsed_values.push(value);
+        coefficients.push(value);
         offset += 4; // Skip the m value
     }
 
     // Parse modulus
+    let mut modulus = BigUint::from(0u32);
     if offset + 8 <= bytes.len() {
         let mod_chunk_count = u64::from_le_bytes([bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3], 
                                                  bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]]) as usize;
         offset += 8;
         
-        let mut modulus = BigUint::from(0u32);
         for i in 0..mod_chunk_count {
             if offset + 8 > bytes.len() { break; }
             
@@ -1290,11 +1298,12 @@ pub fn parse_coefficients_bytes(bytes: &[u8]) -> Vec<BigUint> {
             modulus += BigUint::from(chunk) << (i * 64);
             offset += 8;
         }
-        
-        parsed_values.push(modulus);
     }
 
-    parsed_values
+    ParsedCoefficients {
+        coefficients,
+        modulus,
+    }
 }
 
 #[cfg(test)]
