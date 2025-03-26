@@ -104,8 +104,10 @@ std::unique_ptr<Matrix> DCRTSquareMatTrapdoorGaussSamp(usint n, usint k, const M
 {
     lbcrypto::DCRTPoly::DggType dgg(sigma);
 
+    size_t d = U.GetCols(); // U is a square matrix
+
     double c = (base + 1) * sigma;
-    double s = lbcrypto::SPECTRAL_BOUND(n, k, base);
+    double s = lbcrypto::SPECTRAL_BOUND_D(n, k, base, d);
     lbcrypto::DCRTPoly::DggType dggLargeSigma(sqrt(s * s - c * c));
 
     auto result = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::GaussSampSquareMat(
