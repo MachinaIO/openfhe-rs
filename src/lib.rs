@@ -1207,6 +1207,17 @@ pub mod ffi
             sigma: f64,
         ) -> UniquePtr<Matrix>;
 
+        fn DCRTTrapdoorGaussSampToFs(
+            n: u32,
+            k: u32,
+            public_matrix: &Matrix,
+            trapdoor: &RLWETrapdoorPair,
+            u: &DCRTPoly,
+            base: i64,
+            sigma: f64,
+            path: &String,
+        );
+
         fn DCRTSquareMatTrapdoorGaussSamp(
             n: u32,
             k: u32,
@@ -1216,6 +1227,17 @@ pub mod ffi
             base: i64,
             sigma: f64,
         ) -> UniquePtr<Matrix>;
+
+        fn DCRTSquareMatTrapdoorGaussSampToFs(
+            n: u32,
+            k: u32,
+            public_matrix: &Matrix,
+            trapdoor: &RLWETrapdoorPair,
+            u: &Matrix,
+            base: i64,
+            sigma: f64,
+            path: &String,
+        );
     }
 }
 

@@ -63,10 +63,7 @@ fn main() {
     // decode coeff_poly_bytes
     let parsed_coefficients = parse_coefficients_bytes(&coeffs_poly_bytes);
     println!("decoded mod: {:?}", parsed_coefficients.modulus);
-    println!(
-        "decoded coeffs: {:?}",
-        parsed_coefficients.coefficients
-    );
+    println!("decoded coeffs: {:?}", parsed_coefficients.coefficients);
 
     let poly_modulus = poly.GetModulus();
     assert_eq!(poly_modulus, modulus);
@@ -113,6 +110,20 @@ fn main() {
         &target_matrix,
         base,
         sigma,
+    );
+
+    // generate preimage and store it to file system
+    let path = String::from("data/preimageID.bin");
+
+    ffi::DCRTSquareMatTrapdoorGaussSampToFs(
+        n,
+        k,
+        &public_matrix_square,
+        &trapdoor_square,
+        &target_matrix,
+        base,
+        sigma,
+        &path,
     );
 
     let dummy_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);

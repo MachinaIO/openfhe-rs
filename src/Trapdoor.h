@@ -60,4 +60,26 @@ public:
     const Matrix& U, 
     int64_t base, 
     double sigma);
+
+void DCRTTrapdoorGaussSampToFs(
+    usint n, 
+    usint k,
+    const Matrix& publicMatrix, 
+    const RLWETrapdoorPair& trapdoor, 
+    const DCRTPoly& u, 
+    int64_t base, 
+    double sigma,
+    const rust::String& path
+);
+
+void DCRTSquareMatTrapdoorGaussSampToFs(
+    usint n, 
+    usint k,
+    const Matrix& publicMatrix, 
+    const RLWETrapdoorPair& trapdoor, 
+    const Matrix& U, 
+    int64_t base, 
+    double sigma,
+    const rust::String& path
+);
 } // openfhe
