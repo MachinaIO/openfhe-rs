@@ -760,8 +760,11 @@ pub mod ffi
     unsafe extern "C++"
     {
         fn MatrixGen(n: u32, size: usize, k_res: usize, nrow: usize, ncol: usize) -> UniquePtr<Matrix>;
+        fn GetMatrixFromFs(n: u32, size: usize, k_res: usize, path: &String) -> UniquePtr<Matrix>;
         fn SetMatrixElement(matrix: Pin<&mut Matrix>, row: usize, col: usize, element: &DCRTPoly);
         fn GetMatrixElement(matrix: &Matrix, row: usize, col: usize) -> UniquePtr<DCRTPoly>;
+        fn GetMatrixRows(matrix: &Matrix) -> usize;
+        fn GetMatrixCols(matrix: &Matrix) -> usize;
     }
 
     // KeyPairDCRTPoly

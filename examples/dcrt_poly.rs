@@ -126,6 +126,11 @@ fn main() {
         &path,
     );
 
+    // fetch the matrix from the file system
+    let preimage = ffi::GetMatrixFromFs(n, size, k_res, &path);
+    let nrow = ffi::GetMatrixRows(&preimage);
+    let ncol = ffi::GetMatrixCols(&preimage);
+
     let dummy_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
     let decomposed_poly = dummy_poly.Decompose();
     let poly_0_0 = GetMatrixElement(&decomposed_poly, 0, 0);
