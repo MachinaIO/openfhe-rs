@@ -49,6 +49,34 @@ rust::Vec<rust::String> DCRTPoly::GetCoefficients() const
     return result;
 }
 
+rust::Vec<rust::u8> DCRTPoly::GetCoefficientsBytes() const
+{   
+    auto tempPoly = m_poly;
+    tempPoly.SetFormat(Format::COEFFICIENT);
+
+    lbcrypto::DCRTPoly::PolyLargeType polyLarge = tempPoly.CRTInterpolate();
+
+    const lbcrypto::BigVector &coeffs = polyLarge.GetValues();
+
+    // Serialize the coefficients to a binary format
+    std::stringstream ss;
+    lbcrypto::Serial::Serialize(coeffs, ss, lbcrypto::SerType::BINARY);
+    
+    // Get the binary data as a string
+    std::string serializedData = ss.str();
+    
+    // Convert to a rust::Vec<rust::u8>
+    rust::Vec<rust::u8> result;
+    result.reserve(serializedData.size());
+    
+    // Copy each byte from the serialized data to the result vector
+    for (size_t i = 0; i < serializedData.size(); ++i) {
+        result.push_back(static_cast<rust::u8>(static_cast<unsigned char>(serializedData[i])));
+    }
+
+    return result;
+}
+
 std::unique_ptr<DCRTPoly> DCRTPoly::Negate() const
 {
     return std::make_unique<DCRTPoly>(-m_poly);

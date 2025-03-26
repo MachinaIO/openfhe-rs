@@ -1,6 +1,7 @@
 use num_bigint::BigUint;
 use num_traits::Num;
 use openfhe::ffi::{self, GetMatrixElement};
+use openfhe::parse_coefficients_bytes;
 
 fn main() {
     let val = String::from("123456789099999");
@@ -55,6 +56,17 @@ fn main() {
     println!("coeffs_poly_2: {:?}", coeffs_poly_2);
     let coeffs_poly_add = poly_add.GetCoefficients();
     println!("coeffs_poly_add: {:?}", coeffs_poly_add);
+
+    let coeffs_poly_bytes = poly.GetCoefficientsBytes();
+    println!("coeffs_poly_bytes: {:?}", coeffs_poly_bytes);
+
+    // decode coeff_poly_bytes
+    let parsed_coefficients = parse_coefficients_bytes(&coeffs_poly_bytes);
+    println!("decoded mod: {:?}", parsed_coefficients.modulus);
+    println!(
+        "decoded coeffs: {:?}",
+        parsed_coefficients.coefficients
+    );
 
     let poly_modulus = poly.GetModulus();
     assert_eq!(poly_modulus, modulus);
