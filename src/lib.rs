@@ -4,6 +4,7 @@
 
 use cxx::{CxxVector, let_cxx_string};
 pub use cxx;
+use num_bigint::BigUint;
 
 #[cxx::bridge(namespace = "openfhe")]
 pub mod ffi
@@ -198,13 +199,12 @@ pub mod ffi
         type CryptoContextDCRTPoly;
         type CryptoParametersBaseDCRTPoly;
         type DCRTPoly;
-        type DCRTPolyImpl;
         type DCRTPolyParams;
+        type DCRTTrapdoor;
         type DecryptResult;
         type EncodingParams;
         type EvalKeyDCRTPoly;
         type KeyPairDCRTPoly;
-        type ILDCRTParams;
         type LWEPrivateKey;
         type MapFromIndexToEvalKey;
         type MapFromStringToMapFromIndexToEvalKey;
@@ -217,6 +217,7 @@ pub mod ffi
         type Plaintext;
         type PrivateKeyDCRTPoly;
         type PublicKeyDCRTPoly;
+        type RLWETrapdoorPair;
         type SchemeBaseDCRTPoly;
         type SetOfUints;
         type UnorderedMapFromIndexToDCRTPoly;
@@ -226,7 +227,6 @@ pub mod ffi
         type VectorOfLWECiphertexts;
         type VectorOfPrivateKeys;
         type VectorOfVectorOfCiphertexts;
-        type TrapdoorOutput;
     }
 
     // CiphertextDCRTPoly
@@ -724,6 +724,31 @@ pub mod ffi
         fn DCRTPolyGenNullCryptoContext() -> UniquePtr<CryptoContextDCRTPoly>;
     }
 
+    // DCRTPoly
+    unsafe extern "C++"
+    {   
+        fn GetString(self: &DCRTPoly) -> String;
+        fn IsEqual(self: &DCRTPoly, other: &DCRTPoly) -> bool;
+        fn GetCoefficients(self: &DCRTPoly) -> Vec<String>;
+        fn GetCoefficientsBytes(self: &DCRTPoly) -> Vec<u8>;
+        fn GetModulus(self: &DCRTPoly) -> String;
+        fn Negate(self: &DCRTPoly) -> UniquePtr<DCRTPoly>;
+        fn Decompose(self: &DCRTPoly) -> UniquePtr<Matrix>;
+
+        // Generator functions
+        fn DCRTPolyGenFromConst(n: u32, size: usize, k_res: usize, value: &String) 
+            -> UniquePtr<DCRTPoly>;
+        fn DCRTPolyGenFromVec(n: u32, size: usize, k_res: usize, values: &Vec<String>) 
+            -> UniquePtr<DCRTPoly>;
+        fn DCRTPolyGenFromBug(n: u32, size: usize, k_res: usize) -> UniquePtr<DCRTPoly>;
+        fn DCRTPolyGenFromDug(n: u32, size: usize, k_res: usize) -> UniquePtr<DCRTPoly>;
+        fn DCRTPolyGenFromDgg(n: u32, size: usize, k_res: usize, sigma: f64) -> UniquePtr<DCRTPoly>;
+
+        // Arithmetic
+        fn DCRTPolyAdd(rhs: &DCRTPoly, lhs: &DCRTPoly) -> UniquePtr<DCRTPoly>;
+        fn DCRTPolyMul(rhs: &DCRTPoly, lhs: &DCRTPoly) -> UniquePtr<DCRTPoly>;
+    }
+
     // DCRTPolyParams
     unsafe extern "C++"
     {
@@ -731,10 +756,12 @@ pub mod ffi
         fn DCRTPolyGenNullParams() -> UniquePtr<DCRTPolyParams>;
     }
 
-    // DCRTPolyImpl
+    // Matrix
     unsafe extern "C++"
     {
-        fn DCRTPolyGenFromDug(params: &ILDCRTParams) -> UniquePtr<DCRTPolyImpl>;
+        fn MatrixGen(n: u32, size: usize, k_res: usize, nrow: usize, ncol: usize) -> UniquePtr<Matrix>;
+        fn SetMatrixElement(matrix: Pin<&mut Matrix>, row: usize, col: usize, element: &DCRTPoly);
+        fn GetMatrixElement(matrix: &Matrix, row: usize, col: usize) -> UniquePtr<DCRTPoly>;
     }
 
     // KeyPairDCRTPoly
@@ -742,12 +769,6 @@ pub mod ffi
     {
         fn GetPrivateKey(self: &KeyPairDCRTPoly) -> UniquePtr<PrivateKeyDCRTPoly>;
         fn GetPublicKey(self: &KeyPairDCRTPoly) -> UniquePtr<PublicKeyDCRTPoly>;
-    }
-
-    // ILDCRTParams
-    unsafe extern "C++"
-    {
-        fn GenILDCRTParamsByOrderSizeBits(corder: u32, depth: u32, bits: u32) -> UniquePtr<ILDCRTParams>;
     }
 
     // Params
@@ -818,6 +839,7 @@ pub mod ffi
         // Generator functions
         fn GenParamsByScheme(scheme: SCHEME) -> UniquePtr<Params>;
         fn GenParamsByVectorOfString(vals: &CxxVector<CxxString>) -> UniquePtr<Params>;
+        fn GenModulus(n: u32, size: usize, k_res: usize) -> String;
     }
 
     // ParamsBFVRNS
@@ -1145,11 +1167,142 @@ pub mod ffi
     }
 
     // Trapdoor
-    unsafe extern "C++"
-    {   
+    unsafe extern "C++" {
+        fn GetPublicMatrix(self: &DCRTTrapdoor) -> UniquePtr<Matrix>;
+        fn GetPublicMatrixElement(
+            self: &DCRTTrapdoor,
+            row: usize,
+            col: usize,
+        ) -> UniquePtr<DCRTPoly>;
+        fn GetTrapdoorPair(self: &DCRTTrapdoor) -> UniquePtr<RLWETrapdoorPair>;
+
         // Generator functions
-        fn DCRTPolyTrapdoorGen(params: &ILDCRTParams, base: i64, balanced: bool) -> UniquePtr<TrapdoorOutput>;
-        fn DCRTPolyGaussSamp(n: usize, k: usize, trapdoor: &TrapdoorOutput, u: &DCRTPolyImpl, base: i64) -> UniquePtr<Matrix>;
+        fn DCRTTrapdoorGen(
+            n: u32,
+            size: usize,
+            k_res: usize,
+            sigma: f64,
+            base: i64,
+            balanced: bool,
+        ) -> UniquePtr<DCRTTrapdoor>;
+
+        fn DCRTSquareMatTrapdoorGen(
+            n: u32,
+            size: usize,
+            k_res: usize,
+            d: usize,
+            sigma: f64,
+            base: i64,
+            balanced: bool,
+        ) -> UniquePtr<DCRTTrapdoor>;
+
+        // Gauss sample functions
+        fn DCRTTrapdoorGaussSamp(
+            n: u32,
+            k: u32,
+            public_matrix: &Matrix,
+            trapdoor: &RLWETrapdoorPair,
+            u: &DCRTPoly,
+            base: i64,
+            sigma: f64,
+        ) -> UniquePtr<Matrix>;
+
+        fn DCRTSquareMatTrapdoorGaussSamp(
+            n: u32,
+            k: u32,
+            public_matrix: &Matrix,
+            trapdoor: &RLWETrapdoorPair,
+            u: &Matrix,
+            base: i64,
+            sigma: f64,
+        ) -> UniquePtr<Matrix>;
+    }
+}
+
+
+use crate::ffi::DCRTPoly;
+use std::fmt;
+
+impl fmt::Debug for DCRTPoly {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.GetString())
+    }
+}
+
+impl PartialEq for DCRTPoly {
+    fn eq(&self, other: &Self) -> bool {
+        self.IsEqual(other)
+    }
+}
+
+pub struct ParsedCoefficients {
+    pub coefficients: Vec<BigUint>,
+    pub modulus: BigUint,
+}
+
+/// Parses raw bytes from the serialized format into a vector of BigUint values
+/// Returns a vector containing all coefficients followed by the modulus as the last element
+pub fn parse_coefficients_bytes(bytes: &[u8]) -> ParsedCoefficients {
+    if bytes.len() < 14 {
+        return ParsedCoefficients {
+            coefficients: Vec::new(),
+            modulus: BigUint::from(0u32),
+        };
+    }
+
+    // Number of coefficients
+    let coeff_count = u64::from_le_bytes([bytes[5], bytes[6], bytes[7], bytes[8], 
+                                          bytes[9], bytes[10], bytes[11], bytes[12]]) as usize;
+    
+    let mut coefficients = Vec::with_capacity(coeff_count);
+    let mut offset = 17; // Start after the header
+    
+    // Parse coefficients
+    for _ in 0..coeff_count {
+        if offset + 8 > bytes.len() { break; }
+
+        // Number of chunks for this coefficient
+        let chunk_count = u64::from_le_bytes([bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3], 
+                                             bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]]) as usize;
+        offset += 8;
+        
+        // Read and combine chunks
+        let mut value = BigUint::from(0u32);
+        for i in 0..chunk_count {
+            if offset + 8 > bytes.len() { break; }
+            
+            let chunk = u64::from_le_bytes([bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3], 
+                                           bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]]);
+            // Add chunk with proper shifting (little-endian format)
+            value += BigUint::from(chunk) << (i * 64);
+            offset += 8;
+        }
+        
+        coefficients.push(value);
+        offset += 4; // Skip the m value
+    }
+
+    // Parse modulus
+    let mut modulus = BigUint::from(0u32);
+    if offset + 8 <= bytes.len() {
+        let mod_chunk_count = u64::from_le_bytes([bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3], 
+                                                 bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]]) as usize;
+        offset += 8;
+        
+        for i in 0..mod_chunk_count {
+            if offset + 8 > bytes.len() { break; }
+            
+            let chunk = u64::from_le_bytes([bytes[offset], bytes[offset+1], bytes[offset+2], bytes[offset+3], 
+                                           bytes[offset+4], bytes[offset+5], bytes[offset+6], bytes[offset+7]]);
+            // Add chunk with proper shifting (little-endian format)
+            modulus += BigUint::from(chunk) << (i * 64);
+            offset += 8;
+        }
+    }
+
+    ParsedCoefficients {
+        coefficients,
+        modulus,
     }
 }
 

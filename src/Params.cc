@@ -1,4 +1,5 @@
 #include "Params.h"
+#include "DCRTPoly.h"
 
 namespace openfhe
 {
@@ -36,9 +37,10 @@ std::unique_ptr<ParamsCKKSRNS> GenParamsCKKSRNSbyVectorOfString(
 {
     return std::make_unique<ParamsCKKSRNS>(vals);
 }
-std::unique_ptr<ILDCRTParams> GenILDCRTParamsByOrderSizeBits(
-    uint32_t corder, uint32_t depth, uint32_t bits)
-{   
-    return std::make_unique<ILDCRTParams>(corder, depth, bits);
+rust::String GenModulus(
+    usint n, size_t size, size_t kRes)
+{
+    auto params        = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+    return rust::String(params->GetModulus().ToString());
 }
 } // openfhe

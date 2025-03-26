@@ -5,8 +5,8 @@
 #include "openfhe/pke/scheme/bfvrns/gen-cryptocontext-bfvrns-params.h"
 #include "openfhe/pke/scheme/bgvrns/gen-cryptocontext-bgvrns-params.h"
 #include "openfhe/pke/scheme/ckksrns/gen-cryptocontext-ckksrns-params.h"
-#include "openfhe/core/lattice/hal/default/ildcrtparams.h"
-#include "openfhe/core/math/math-hal.h"
+
+#include "rust/cxx.h"
 
 #include <memory>
 
@@ -30,7 +30,6 @@ using Params = lbcrypto::Params;
 using ParamsBFVRNS = lbcrypto::CCParams<lbcrypto::CryptoContextBFVRNS>;
 using ParamsBGVRNS = lbcrypto::CCParams<lbcrypto::CryptoContextBGVRNS>;
 using ParamsCKKSRNS = lbcrypto::CCParams<lbcrypto::CryptoContextCKKSRNS>;
-using ILDCRTParams = lbcrypto::ILDCRTParams<lbcrypto::BigInteger>;
 
 // Generator functions
 [[nodiscard]] std::unique_ptr<ParamsBFVRNS> GenParamsBFVRNS();
@@ -45,6 +44,6 @@ using ILDCRTParams = lbcrypto::ILDCRTParams<lbcrypto::BigInteger>;
 [[nodiscard]] std::unique_ptr<ParamsCKKSRNS> GenParamsCKKSRNS();
 [[nodiscard]] std::unique_ptr<ParamsCKKSRNS> GenParamsCKKSRNSbyVectorOfString(
     const std::vector<std::string>& vals);
-[[nodiscard]] std::unique_ptr<ILDCRTParams> GenILDCRTParamsByOrderSizeBits(
-    uint32_t corder, uint32_t depth, uint32_t bits);
+[[nodiscard]] rust::String GenModulus(
+    usint n, size_t size, size_t kRes);
 } // openfhe

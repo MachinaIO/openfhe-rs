@@ -125,6 +125,7 @@ cargo run --example function_evaluation
 cargo run --example polynomial_evaluation
 cargo run --example simple_integers
 cargo run --example simple_real_numbers
+cargo run --example dcrt_poly
 ```
 
 # Contributing
