@@ -21,7 +21,6 @@ public:
 
     [[nodiscard]] std::unique_ptr<RLWETrapdoorPair> GetTrapdoorPair() const;
     [[nodiscard]] std::unique_ptr<Matrix> GetPublicMatrix() const;
-    [[nodiscard]] std::unique_ptr<DCRTPoly> GetPublicMatrixElement(size_t row, size_t col) const;
 };
 
 // Generator functions

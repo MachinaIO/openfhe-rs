@@ -1173,11 +1173,6 @@ pub mod ffi
     // Trapdoor
     unsafe extern "C++" {
         fn GetPublicMatrix(self: &DCRTTrapdoor) -> UniquePtr<Matrix>;
-        fn GetPublicMatrixElement(
-            self: &DCRTTrapdoor,
-            row: usize,
-            col: usize,
-        ) -> UniquePtr<DCRTPoly>;
         fn GetTrapdoorPair(self: &DCRTTrapdoor) -> UniquePtr<RLWETrapdoorPair>;
 
         // Generator functions
