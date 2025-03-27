@@ -40,18 +40,12 @@ std::unique_ptr<DCRTTrapdoor> DCRTTrapdoorGen(
 {
     auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
 
-    size_t memoryUsageBefore = getMemoryUsageBytes();
-    std::cout << "Memory usage before trapdoor generation: " << memoryUsageBefore << " bytes" << std::endl;
-
     auto trapdoor = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::TrapdoorGen(
         params,
         sigma,
         base,
         balanced
     );
-
-    size_t memoryUsageAfter = getMemoryUsageBytes();
-    std::cout << "Memory usage after trapdoor generation: " << memoryUsageAfter << " bytes" << std::endl;
 
     return std::make_unique<DCRTTrapdoor>(
         std::move(trapdoor.first),
@@ -70,9 +64,6 @@ std::unique_ptr<DCRTTrapdoor> DCRTSquareMatTrapdoorGen(
 {
     auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
 
-    size_t memoryUsageBefore = getMemoryUsageBytes();
-    std::cout << "Memory usage before trapdoor generation: " << memoryUsageBefore << " bytes" << std::endl;
-
     auto trapdoor = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::TrapdoorGenSquareMat(
         params,
         sigma,
@@ -80,9 +71,6 @@ std::unique_ptr<DCRTTrapdoor> DCRTSquareMatTrapdoorGen(
         base,
         balanced
     );
-
-    size_t memoryUsageAfter = getMemoryUsageBytes();
-    std::cout << "Memory usage after trapdoor generation: " << memoryUsageAfter << " bytes" << std::endl;
     
     return std::make_unique<DCRTTrapdoor>(
         std::move(trapdoor.first),
