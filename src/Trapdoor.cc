@@ -26,8 +26,12 @@ std::unique_ptr<DCRTPoly> DCRTTrapdoor::GetPublicMatrixElement(size_t row, size_
         return nullptr;
     }
     
-    lbcrypto::DCRTPoly copy = m_publicMatrix(row, col);
-    return std::make_unique<DCRTPoly>(std::move(copy));
+    lbcrypto::DCRTPoly& polyRef = const_cast<lbcrypto::DCRTPoly&>(m_publicMatrix(row, col));
+    // Get a reference to the element in the matrix
+    // Move that element out of the matrix into the new DCRTPoly object
+    // Leave the original matrix element in a moved-from state (which is fine since you don't care about preserving the matrix)
+
+    return std::make_unique<DCRTPoly>(std::move(polyRef));
 }
 
 // Generator functions
