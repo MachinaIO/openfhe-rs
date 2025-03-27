@@ -1,6 +1,7 @@
 #include "Trapdoor.h"
 #include "Params.h"
 #include <filesystem>
+#include <mach/mach.h>
 
 namespace openfhe
 {
@@ -39,13 +40,20 @@ std::unique_ptr<DCRTTrapdoor> DCRTTrapdoorGen(
     bool balanced)
 {
     auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
-    
+
+    size_t memoryUsageBefore = getMemoryUsageBytes();
+    std::cout << "Memory usage before trapdoor generation: " << memoryUsageBefore << " bytes" << std::endl;
+
     auto trapdoor = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::TrapdoorGen(
         params,
         sigma,
         base,
         balanced
     );
+
+    // measure memory usage after trapdoor generation
+    size_t memoryUsageAfter = getMemoryUsageBytes();
+    std::cout << "Memory usage after trapdoor generation: " << memoryUsageAfter << " bytes" << std::endl;
 
     return std::make_unique<DCRTTrapdoor>(
         std::move(trapdoor.first),
@@ -186,4 +194,17 @@ void DCRTSquareMatTrapdoorGaussSampToFs(usint n, usint k, const Matrix& publicMa
         throw std::runtime_error("Failed to serialize result to file");
     }
 }
+
+// Function to get current memory usage in bytes
+size_t getMemoryUsageBytes() {
+    task_basic_info info;
+    mach_msg_type_number_t infoCount = TASK_BASIC_INFO_COUNT;
+
+    if (task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&info, &infoCount) != KERN_SUCCESS)
+        return 0;
+
+    return info.resident_size;
+}
+
+
 } // openfhe
