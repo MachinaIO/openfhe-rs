@@ -1173,7 +1173,7 @@ pub mod ffi
     unsafe extern "C++" {
         fn GetPublicMatrix(self: &DCRTTrapdoor) -> UniquePtr<Matrix>;
         fn GetPublicMatrixElement(
-            self: &DCRTTrapdoor,
+            self: Pin<&mut DCRTTrapdoor>,
             row: usize,
             col: usize,
         ) -> UniquePtr<DCRTPoly>;
