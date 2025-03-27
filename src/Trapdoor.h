@@ -83,5 +83,5 @@ void DCRTSquareMatTrapdoorGaussSampToFs(
     const rust::String& path
 );
 
-size_t getMemoryUsageBytes(); 
+// size_t getMemoryUsageBytes(); 
 } // openfhe

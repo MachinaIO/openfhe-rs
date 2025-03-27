@@ -1,7 +1,7 @@
 #include "Trapdoor.h"
 #include "Params.h"
 #include <filesystem>
-#include <mach/mach.h>
+// #include <mach/mach.h>
 
 namespace openfhe
 {
@@ -187,16 +187,16 @@ void DCRTSquareMatTrapdoorGaussSampToFs(usint n, usint k, const Matrix& publicMa
     }
 }
 
-// Function to get current memory usage in bytes
-size_t getMemoryUsageBytes() {
-    task_basic_info info;
-    mach_msg_type_number_t infoCount = TASK_BASIC_INFO_COUNT;
+// // Function to get current memory usage in bytes
+// size_t getMemoryUsageBytes() {
+//     task_basic_info info;
+//     mach_msg_type_number_t infoCount = TASK_BASIC_INFO_COUNT;
 
-    if (task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&info, &infoCount) != KERN_SUCCESS)
-        return 0;
+//     if (task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&info, &infoCount) != KERN_SUCCESS)
+//         return 0;
 
-    return info.resident_size;
-}
+//     return info.resident_size;
+// }
 
 
 } // openfhe
