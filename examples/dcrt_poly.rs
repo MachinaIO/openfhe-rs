@@ -86,11 +86,16 @@ fn main() {
 
     // ** gen trapdoor for a square matrix target of size 2x2 **
     let d = 2;
-    let trapdoor_output_square =
+    let mut trapdoor_output_square =
         ffi::DCRTSquareMatTrapdoorGen(n, size, k_res, d, sigma, base, false);
 
     let trapdoor_square = trapdoor_output_square.GetTrapdoorPair();
     let public_matrix_square = trapdoor_output_square.GetPublicMatrix();
+
+    let poly_0_0 = trapdoor_output_square
+        .as_mut()
+        .unwrap()
+        .GetPublicMatrixElement(0, 0);
 
     // build the target matrix by sampling a random polynomial for each element
     let mut target_matrix = ffi::MatrixGen(n, size, k_res, d, d);

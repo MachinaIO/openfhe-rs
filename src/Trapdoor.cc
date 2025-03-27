@@ -1,6 +1,7 @@
 #include "Trapdoor.h"
 #include "Params.h"
 #include <filesystem>
+// #include <mach/mach.h>
 
 namespace openfhe
 {
@@ -19,14 +20,13 @@ std::unique_ptr<Matrix> DCRTTrapdoor::GetPublicMatrix() const
     return std::make_unique<Matrix>(m_publicMatrix);
 }
 
-std::unique_ptr<DCRTPoly> DCRTTrapdoor::GetPublicMatrixElement(size_t row, size_t col) const
+std::unique_ptr<DCRTPoly> DCRTTrapdoor::GetPublicMatrixElement(size_t row, size_t col)
 {
     if (row >= m_publicMatrix.GetRows() || col >= m_publicMatrix.GetCols()) {
         return nullptr;
     }
-    
-    lbcrypto::DCRTPoly copy = m_publicMatrix(row, col);
-    return std::make_unique<DCRTPoly>(std::move(copy));
+
+    return std::make_unique<DCRTPoly>(std::move(m_publicMatrix(row, col)));
 }
 
 // Generator functions
@@ -39,7 +39,7 @@ std::unique_ptr<DCRTTrapdoor> DCRTTrapdoorGen(
     bool balanced)
 {
     auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
-    
+
     auto trapdoor = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::TrapdoorGen(
         params,
         sigma,
@@ -186,4 +186,17 @@ void DCRTSquareMatTrapdoorGaussSampToFs(usint n, usint k, const Matrix& publicMa
         throw std::runtime_error("Failed to serialize result to file");
     }
 }
+
+// // Function to get current memory usage in bytes
+// size_t getMemoryUsageBytes() {
+//     task_basic_info info;
+//     mach_msg_type_number_t infoCount = TASK_BASIC_INFO_COUNT;
+
+//     if (task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t)&info, &infoCount) != KERN_SUCCESS)
+//         return 0;
+
+//     return info.resident_size;
+// }
+
+
 } // openfhe
