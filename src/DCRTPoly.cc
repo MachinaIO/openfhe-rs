@@ -251,8 +251,12 @@ std::unique_ptr<DCRTPoly> GetMatrixElement(
     size_t row, 
     size_t col)
 {   
-    lbcrypto::DCRTPoly copy = matrix(row, col);
-    return std::make_unique<DCRTPoly>(std::move(copy));
+    lbcrypto::DCRTPoly& polyRef = const_cast<lbcrypto::DCRTPoly&>(matrix(row, col));
+    // Get a reference to the element in the matrix
+    // Move that element out of the matrix into the new DCRTPoly object
+    // Leave the original matrix element in a moved-from state (which is fine since you don't care about preserving the matrix)
+
+    return std::make_unique<DCRTPoly>(std::move(polyRef));
 }
 
 size_t GetMatrixRows(const Matrix& matrix)
