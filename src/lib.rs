@@ -760,8 +760,11 @@ pub mod ffi
     unsafe extern "C++"
     {
         fn MatrixGen(n: u32, size: usize, k_res: usize, nrow: usize, ncol: usize) -> UniquePtr<Matrix>;
+        fn GetMatrixFromFs(n: u32, size: usize, k_res: usize, path: &String) -> UniquePtr<Matrix>;
         fn SetMatrixElement(matrix: Pin<&mut Matrix>, row: usize, col: usize, element: &DCRTPoly);
         fn GetMatrixElement(matrix: &Matrix, row: usize, col: usize) -> UniquePtr<DCRTPoly>;
+        fn GetMatrixRows(matrix: &Matrix) -> usize;
+        fn GetMatrixCols(matrix: &Matrix) -> usize;
     }
 
     // KeyPairDCRTPoly
@@ -1207,6 +1210,17 @@ pub mod ffi
             sigma: f64,
         ) -> UniquePtr<Matrix>;
 
+        fn DCRTTrapdoorGaussSampToFs(
+            n: u32,
+            k: u32,
+            public_matrix: &Matrix,
+            trapdoor: &RLWETrapdoorPair,
+            u: &DCRTPoly,
+            base: i64,
+            sigma: f64,
+            path: &String,
+        );
+
         fn DCRTSquareMatTrapdoorGaussSamp(
             n: u32,
             k: u32,
@@ -1216,6 +1230,17 @@ pub mod ffi
             base: i64,
             sigma: f64,
         ) -> UniquePtr<Matrix>;
+
+        fn DCRTSquareMatTrapdoorGaussSampToFs(
+            n: u32,
+            k: u32,
+            public_matrix: &Matrix,
+            trapdoor: &RLWETrapdoorPair,
+            u: &Matrix,
+            base: i64,
+            sigma: f64,
+            path: &String,
+        );
     }
 }
 

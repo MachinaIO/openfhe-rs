@@ -215,6 +215,28 @@ std::unique_ptr<Matrix> MatrixGen(
     return std::make_unique<Matrix>(std::move(matrix));
 }
 
+std::unique_ptr<Matrix> GetMatrixFromFs(
+    usint n, 
+    size_t size, 
+    size_t kRes,
+    const rust::String& path) 
+{
+    auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+
+    std::string dataPath = std::string(path);
+
+    lbcrypto::Matrix<lbcrypto::DCRTPoly> deserializedMatrix;
+    bool deserializeSuccessResult = lbcrypto::Serial::DeserializeFromFile(dataPath, deserializedMatrix, lbcrypto::SerType::BINARY);
+    if (!deserializeSuccessResult) {
+        throw std::runtime_error("Failed to deserialize result from file");
+    }
+    
+    auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
+    deserializedMatrix.SetAllocator(zero_alloc);
+
+    return std::make_unique<Matrix>(std::move(deserializedMatrix));
+}
+
 void SetMatrixElement(
     Matrix& matrix, 
     size_t row, 
@@ -231,6 +253,16 @@ std::unique_ptr<DCRTPoly> GetMatrixElement(
 {   
     lbcrypto::DCRTPoly copy = matrix(row, col);
     return std::make_unique<DCRTPoly>(std::move(copy));
+}
+
+size_t GetMatrixRows(const Matrix& matrix)
+{
+    return matrix.GetRows();
+}
+
+size_t GetMatrixCols(const Matrix& matrix)
+{
+    return matrix.GetCols();
 }
 
 } // openfhe

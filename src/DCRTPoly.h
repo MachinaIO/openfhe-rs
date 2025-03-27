@@ -78,6 +78,12 @@ public:
     size_t nrow, 
     size_t ncol);
 
+std::unique_ptr<Matrix> GetMatrixFromFs(
+    usint n, 
+    size_t size, 
+    size_t kRes,
+    const rust::String& path);
+    
 void SetMatrixElement(
     Matrix& matrix, 
     size_t row, 
@@ -88,4 +94,7 @@ void SetMatrixElement(
     const Matrix& matrix, 
     size_t row, 
     size_t col);
+
+size_t GetMatrixRows(const Matrix& matrix);
+size_t GetMatrixCols(const Matrix& matrix);
 } // openfhe
