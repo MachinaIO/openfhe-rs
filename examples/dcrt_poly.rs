@@ -1,6 +1,6 @@
 use num_bigint::BigUint;
 use num_traits::Num;
-use openfhe::ffi::{self, GetMatrixElement};
+use openfhe::ffi::{self, GetMatrixElement, GetMatrixElementUnsafe};
 use openfhe::parse_coefficients_bytes;
 
 fn main() {
@@ -132,6 +132,9 @@ fn main() {
     let ncol = ffi::GetMatrixCols(&preimage);
 
     let dummy_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
-    let decomposed_poly = dummy_poly.Decompose();
-    let poly_0_0 = GetMatrixElement(&decomposed_poly, 0, 0);
+    let mut decomposed_poly_mat = dummy_poly.Decompose();
+    let poly_0_0 = GetMatrixElement(&decomposed_poly_mat, 0, 0);
+
+    // use the unsafe method if you don't need the matrix anymore
+    let poly_0_1 = GetMatrixElementUnsafe(decomposed_poly_mat.as_mut().unwrap(), 0, 1);
 }

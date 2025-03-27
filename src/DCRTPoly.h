@@ -95,6 +95,11 @@ void SetMatrixElement(
     size_t row, 
     size_t col);
 
+[[nodiscard]] std::unique_ptr<DCRTPoly> GetMatrixElementUnsafe(
+    Matrix& matrix, 
+    size_t row, 
+    size_t col);
+    
 size_t GetMatrixRows(const Matrix& matrix);
 size_t GetMatrixCols(const Matrix& matrix);
 } // openfhe

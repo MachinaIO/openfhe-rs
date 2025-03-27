@@ -255,6 +255,15 @@ std::unique_ptr<DCRTPoly> GetMatrixElement(
     return std::make_unique<DCRTPoly>(std::move(copy));
 }
 
+std::unique_ptr<DCRTPoly> GetMatrixElementUnsafe(
+    Matrix& matrix, 
+    size_t row, 
+    size_t col)
+{   
+    return std::make_unique<DCRTPoly>(std::move(matrix(row, col)));
+}
+
+
 size_t GetMatrixRows(const Matrix& matrix)
 {
     return matrix.GetRows();
