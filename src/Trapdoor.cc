@@ -187,9 +187,10 @@ void DCRTSquareMatTrapdoorGaussSampToFs(usint n, usint k, const Matrix& publicMa
     }
 }
 
-int64_t GenerateIntegerKarneyDgg(double sigma, double mean, double stddev)
-{
-    lbcrypto::DCRTPoly::DggType dgg(sigma);
+int64_t GenerateIntegerKarney(double mean, double stddev)
+{   
+    // dgg is not used in the Karney method
+    lbcrypto::DCRTPoly::DggType dgg(0.0);
     return dgg.GenerateIntegerKarney(mean, stddev);
 }
 } // openfhe

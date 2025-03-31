@@ -135,6 +135,6 @@ fn main() {
     let decomposed_poly = dummy_poly.Decompose();
     let poly_0_0 = GetMatrixElement(&decomposed_poly, 0, 0);
 
-    let sample = ffi::GenerateIntegerKarneyDgg(sigma, 0.0, 4.0);
+    let sample = ffi::GenerateIntegerKarney(0.0, 4.0);
     println!("sample: {:?}", sample);
 }
