@@ -143,25 +143,13 @@ fn main() {
     // Parameters
     let c: f64 = (base as f64 + 1.0) * sigma; // Typically c = (base + 1) * sigma
 
-    let random_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
-
-    // Create a 1x1 matrix and set the random polynomial as its element
-    let mut syndrome_matrix = ffi::MatrixGen(n, size, k_res, 1, 1);
-    ffi::SetMatrixElement(syndrome_matrix.as_mut().unwrap(), 0, 0, &random_poly);
+    let syndrome_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
 
     // Loop over each tower_idx which is taken from `size`
     for tower_idx in 0..size {
         // Call DCRTGaussSampGqArbBase for each tower
-        let digits = ffi::DCRTGaussSampGqArbBase(
-            &syndrome_matrix,
-            c,
-            n,
-            size,
-            k_res,
-            base,
-            sigma,
-            tower_idx,
-        );
+        let digits =
+            ffi::DCRTGaussSampGqArbBase(&syndrome_poly, c, n, size, k_res, base, sigma, tower_idx);
 
         println!("Tower {}: Sampled {} digits", tower_idx, digits.len());
 

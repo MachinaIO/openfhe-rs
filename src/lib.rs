@@ -1110,7 +1110,7 @@ pub mod ffi {
         fn DCRTPolyGenFromDug(n: u32, size: usize, k_res: usize) -> UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromDgg(n: u32, size: usize, k_res: usize, sigma: f64)
             -> UniquePtr<DCRTPoly>;
-            
+
         // Arithmetic
         fn DCRTPolyAdd(rhs: &DCRTPoly, lhs: &DCRTPoly) -> UniquePtr<DCRTPoly>;
         fn DCRTPolyMul(rhs: &DCRTPoly, lhs: &DCRTPoly) -> UniquePtr<DCRTPoly>;
@@ -1675,7 +1675,7 @@ pub mod ffi {
 
         fn GenerateIntegerKarney(mean: f64, stddev: f64) -> i64;
         fn DCRTGaussSampGqArbBase(
-            syndrome: &Matrix,
+            syndrome: &DCRTPoly,
             c: f64,
             n: u32,
             size: usize,

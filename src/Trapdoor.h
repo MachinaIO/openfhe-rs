@@ -88,7 +88,7 @@ void DCRTSquareMatTrapdoorGaussSampToFs(
     double stddev);
 
 [[nodiscard]] rust::Vec<int64_t> DCRTGaussSampGqArbBase(
-    const Matrix& syndrome,
+    const DCRTPoly& syndrome,
     double c,
     usint n,
     size_t size,

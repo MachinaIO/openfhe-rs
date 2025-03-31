@@ -195,7 +195,7 @@ int64_t GenerateIntegerKarney(double mean, double stddev)
 }
 
 rust::Vec<int64_t> DCRTGaussSampGqArbBase(
-    const Matrix& syndrome,
+    const DCRTPoly& syndrome,
     double c,
     usint n,
     size_t size,
@@ -210,7 +210,7 @@ rust::Vec<int64_t> DCRTGaussSampGqArbBase(
     
     lbcrypto::DCRTPoly::DggType dgg(sigma);
     
-    lbcrypto::DCRTPoly syndromePoly = syndrome(0, 0);
+    lbcrypto::DCRTPoly syndromePoly = syndrome.GetPoly();
     
     lbcrypto::Matrix<int64_t> digits([]() { return 0; }, kRes, n);
     
