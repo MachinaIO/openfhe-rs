@@ -96,4 +96,15 @@ void DCRTSquareMatTrapdoorGaussSampToFs(
     int64_t base,
     double sigma,
     size_t tower_idx);
+
+[[nodiscard]] std::unique_ptr<Matrix> SampleP1ForPertSquareMat(
+    Matrix& A,
+    Matrix& B,
+    Matrix& D,
+    Matrix& tp2,
+    usint n,
+    size_t size,
+    size_t kRes,
+    double sigma,
+    double s);
 } // openfhe

@@ -1684,6 +1684,18 @@ pub mod ffi {
             sigma: f64,
             tower_idx: usize,
         ) -> Vec<i64>;
+
+        fn SampleP1ForPertSquareMat(
+            a: Pin<&mut Matrix>,
+            b: Pin<&mut Matrix>,
+            d: Pin<&mut Matrix>,
+            tp2: Pin<&mut Matrix>,
+            n: u32,
+            size: usize,
+            k_res: usize,
+            sigma: f64,
+            s: f64,
+        ) -> UniquePtr<Matrix>;
     }
 }
 

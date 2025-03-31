@@ -227,7 +227,83 @@ rust::Vec<int64_t> DCRTGaussSampGqArbBase(
             result.push_back(digits(i, j));
         }
     }
-    
     return result;
+}
+
+std::unique_ptr<Matrix> SampleP1ForPertSquareMat(
+    Matrix& A,
+    Matrix& B,
+    Matrix& D,
+    Matrix& tp2,
+    usint n,
+    size_t size,
+    size_t kRes,
+    double sigma,
+    double s)
+{
+    size_t d = A.GetRows();
+    
+    auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+    
+    lbcrypto::DCRTPoly::DggType dgg(sigma);
+
+    auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
+
+    // Switch the ring elements (Polynomials) to coefficient representation
+    A.SetFormat(Format::COEFFICIENT);
+    B.SetFormat(Format::COEFFICIENT);
+    D.SetFormat(Format::COEFFICIENT);
+    tp2.SetFormat(Format::COEFFICIENT);
+
+    lbcrypto::Matrix<lbcrypto::Field2n> AF([&]() { return lbcrypto::Field2n(n, Format::COEFFICIENT); }, d, d);
+    lbcrypto::Matrix<lbcrypto::Field2n> BF([&]() { return lbcrypto::Field2n(n, Format::COEFFICIENT); }, d, d);
+    lbcrypto::Matrix<lbcrypto::Field2n> DF([&]() { return lbcrypto::Field2n(n, Format::COEFFICIENT); }, d, d);
+    
+    
+    double scalarFactor = -sigma * sigma;
+
+    for (size_t i = 0; i < d; i++) {
+        for (size_t j = 0; j < d; j++) {
+            AF(i, j) = lbcrypto::Field2n(A(i, j));
+            AF(i, j) = AF(i, j).ScalarMult(scalarFactor);
+            BF(i, j) = lbcrypto::Field2n(B(i, j));
+            BF(i, j) = BF(i, j).ScalarMult(scalarFactor);
+            DF(i, j) = lbcrypto::Field2n(D(i, j));
+            DF(i, j) = DF(i, j).ScalarMult(scalarFactor);
+            if (i == j) {
+                AF(i, j) = AF(i, j) + s * s;
+                DF(i, j) = DF(i, j) + s * s;
+            }
+        }
+    }
+
+    // converts the field elements to DFT representation
+    AF.SetFormat(Format::EVALUATION);
+    BF.SetFormat(Format::EVALUATION);
+    DF.SetFormat(Format::EVALUATION);
+
+    Matrix p1(zero_alloc, 1, 1);
+
+    for (size_t j = 0; j < d; j++) {
+        lbcrypto::Matrix<lbcrypto::Field2n> c([&]() { return lbcrypto::Field2n(n, Format::COEFFICIENT); }, 2 * d, 1);
+
+        for (size_t i = 0; i < d; i++) {
+            c(i, 0)     = lbcrypto::Field2n(tp2(i, j)).ScalarMult(-sigma * sigma / (s * s - sigma * sigma));
+            c(i + d, 0) = lbcrypto::Field2n(tp2(i + d, j)).ScalarMult(-sigma * sigma / (s * s - sigma * sigma));
+        }
+
+        auto p1ZVector = std::make_shared<lbcrypto::Matrix<int64_t>>([]() { return 0; }, n * 2 * d, 1);
+
+        lbcrypto::LatticeGaussSampUtility<lbcrypto::DCRTPoly>::SampleMat(AF, BF, DF, c, dgg, p1ZVector);
+
+        if (j == 0)
+            p1 = lbcrypto::SplitInt64IntoElements<lbcrypto::DCRTPoly>(*p1ZVector, n, params);
+        else
+            p1.HStack(lbcrypto::SplitInt64IntoElements<lbcrypto::DCRTPoly>(*p1ZVector, n, params));
+    }
+
+    p1.SetFormat(Format::EVALUATION);
+
+    return std::make_unique<Matrix>(std::move(p1));
 }
 } // openfhe
