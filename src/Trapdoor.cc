@@ -252,7 +252,7 @@ namespace openfhe
         A.SetFormat(Format::COEFFICIENT);
         B.SetFormat(Format::COEFFICIENT);
         D.SetFormat(Format::COEFFICIENT);
-        tp2.SetFormat(Format::EVALUATION);
+        tp2.SetFormat(Format::COEFFICIENT);
 
         lbcrypto::Matrix<lbcrypto::Field2n> AF([&]()
                                                { return lbcrypto::Field2n(n, Format::EVALUATION); }, d, d);
