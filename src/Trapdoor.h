@@ -83,7 +83,7 @@ void DCRTSquareMatTrapdoorGaussSampToFs(
     const rust::String& path
 );
 
-[[nodiscard]] int64_t GenerateIntegerKarney(
+[[nodiscard]] int64_t GenerateIntegerKarneyDgg(
     double sigma,
     double mean,
     double stddev);

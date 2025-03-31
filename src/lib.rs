@@ -1673,7 +1673,7 @@ pub mod ffi {
             path: &String,
         );
 
-        fn GenerateIntegerKarney(sigma: f64, mean: f64, stddev: f64) -> i64;
+        fn GenerateIntegerKarneyDgg(sigma: f64, mean: f64, stddev: f64) -> i64;
     }
 }
 

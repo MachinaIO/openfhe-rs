@@ -187,7 +187,7 @@ void DCRTSquareMatTrapdoorGaussSampToFs(usint n, usint k, const Matrix& publicMa
     }
 }
 
-int64_t GenerateIntegerKarney(double sigma, double mean, double stddev)
+int64_t GenerateIntegerKarneyDgg(double sigma, double mean, double stddev)
 {
     lbcrypto::DCRTPoly::DggType dgg(sigma);
     return dgg.GenerateIntegerKarney(mean, stddev);
