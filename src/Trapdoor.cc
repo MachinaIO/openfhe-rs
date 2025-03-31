@@ -188,9 +188,46 @@ void DCRTSquareMatTrapdoorGaussSampToFs(usint n, usint k, const Matrix& publicMa
 }
 
 int64_t GenerateIntegerKarney(double mean, double stddev)
-{   
+{
     // dgg is not used in the Karney method
     lbcrypto::DCRTPoly::DggType dgg(0.0);
     return dgg.GenerateIntegerKarney(mean, stddev);
+}
+
+rust::Vec<int64_t> DCRTGaussSampGqArbBase(
+    const Matrix& syndrome,
+    double c,
+    usint n,
+    size_t size,
+    size_t kRes,
+    int64_t base,
+    double sigma,
+    size_t tower_idx)
+{
+    auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+    
+    lbcrypto::NativeInteger qu = params->GetParams()[tower_idx]->GetModulus();
+    
+    lbcrypto::DCRTPoly::DggType dgg(sigma);
+    
+    lbcrypto::DCRTPoly syndromePoly = syndrome(0, 0);
+    
+    lbcrypto::Matrix<int64_t> digits([]() { return 0; }, kRes, n);
+    
+    lbcrypto::LatticeGaussSampUtility<lbcrypto::NativePoly>::GaussSampGqArbBase(
+        syndromePoly.GetElementAtIndex(tower_idx), c, kRes, qu, base, dgg, &digits);
+    
+    // Convert the matrix to a flattened vector
+    rust::Vec<int64_t> result;
+    result.reserve(kRes * n);
+    
+    // Flatten the matrix into a vector
+    for (size_t i = 0; i < kRes; i++) {
+        for (size_t j = 0; j < n; j++) {
+            result.push_back(digits(i, j));
+        }
+    }
+    
+    return result;
 }
 } // openfhe

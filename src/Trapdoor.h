@@ -86,4 +86,14 @@ void DCRTSquareMatTrapdoorGaussSampToFs(
 [[nodiscard]] int64_t GenerateIntegerKarney(
     double mean,
     double stddev);
+
+[[nodiscard]] rust::Vec<int64_t> DCRTGaussSampGqArbBase(
+    const Matrix& syndrome,
+    double c,
+    usint n,
+    size_t size,
+    size_t kRes,
+    int64_t base,
+    double sigma,
+    size_t tower_idx);
 } // openfhe
