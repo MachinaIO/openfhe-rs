@@ -134,4 +134,7 @@ fn main() {
     let dummy_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
     let decomposed_poly = dummy_poly.Decompose();
     let poly_0_0 = GetMatrixElement(&decomposed_poly, 0, 0);
+
+    let sample = ffi::GenerateIntegerKarney(sigma, 0.0, 4.0);
+    println!("sample: {:?}", sample);
 }

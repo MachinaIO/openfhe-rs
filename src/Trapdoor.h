@@ -73,13 +73,18 @@ void DCRTTrapdoorGaussSampToFs(
 );
 
 void DCRTSquareMatTrapdoorGaussSampToFs(
-    usint n, 
+    usint n,
     usint k,
-    const Matrix& publicMatrix, 
-    const RLWETrapdoorPair& trapdoor, 
-    const Matrix& U, 
-    int64_t base, 
+    const Matrix& publicMatrix,
+    const RLWETrapdoorPair& trapdoor,
+    const Matrix& U,
+    int64_t base,
     double sigma,
     const rust::String& path
 );
+
+[[nodiscard]] int64_t GenerateIntegerKarney(
+    double sigma,
+    double mean,
+    double stddev);
 } // openfhe

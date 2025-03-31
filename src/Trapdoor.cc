@@ -186,4 +186,10 @@ void DCRTSquareMatTrapdoorGaussSampToFs(usint n, usint k, const Matrix& publicMa
         throw std::runtime_error("Failed to serialize result to file");
     }
 }
+
+int64_t GenerateIntegerKarney(double sigma, double mean, double stddev)
+{
+    lbcrypto::DCRTPoly::DggType dgg(sigma);
+    return dgg.GenerateIntegerKarney(mean, stddev);
+}
 } // openfhe
