@@ -201,7 +201,7 @@ namespace openfhe
         
         auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
                 
-        return std::make_unique<Matrix>(std::move(Matrix(zero_alloc, 1, len).GadgetVector(base)));
+        return std::make_unique<Matrix>(Matrix(zero_alloc, 1, len).GadgetVector(base));
     }
 
     rust::Vec<int64_t> DCRTGaussSampGqArbBase(
