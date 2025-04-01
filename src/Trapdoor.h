@@ -87,6 +87,13 @@ void DCRTSquareMatTrapdoorGaussSampToFs(
     double mean,
     double stddev);
 
+[[nodiscard]] std::unique_ptr<Matrix> DCRTPolyGadgetVector(
+    usint n,
+    size_t size,
+    size_t kRes,
+    size_t len,
+    int64_t base);
+
 [[nodiscard]] rust::Vec<int64_t> DCRTGaussSampGqArbBase(
     const DCRTPoly& syndrome,
     double c,

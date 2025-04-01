@@ -1675,6 +1675,14 @@ pub mod ffi {
 
         fn GenerateIntegerKarney(mean: f64, stddev: f64) -> i64;
 
+        fn DCRTPolyGadgetVector(
+            n: u32,
+            size: usize,
+            k_res: usize,
+            len: usize,
+            base: i64,
+        ) -> UniquePtr<Matrix>;
+
         fn DCRTGaussSampGqArbBase(
             syndrome: &DCRTPoly,
             c: f64,

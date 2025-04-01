@@ -190,6 +190,20 @@ namespace openfhe
         return dgg.GenerateIntegerKarney(mean, stddev);
     }
 
+    std::unique_ptr<Matrix> DCRTPolyGadgetVector(
+        usint n,
+        size_t size,
+        size_t kRes,
+        size_t len,
+        int64_t base)
+    {
+        auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+        
+        auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
+                
+        return std::make_unique<Matrix>(std::move(Matrix(zero_alloc, 1, len).GadgetVector(base)));
+    }
+
     rust::Vec<int64_t> DCRTGaussSampGqArbBase(
         const DCRTPoly &syndrome,
         double c,
