@@ -214,6 +214,7 @@ namespace openfhe
         double dggStddev,
         size_t towerIdx)
     {
+
         auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
 
         lbcrypto::NativeInteger qu = params->GetParams()[towerIdx]->GetModulus();
@@ -221,6 +222,7 @@ namespace openfhe
         lbcrypto::DCRTPoly::DggType dgg(dggStddev);
 
         lbcrypto::DCRTPoly syndromePoly = syndrome.GetPoly();
+        syndromePoly.SetFormat(Format::COEFFICIENT);
 
         lbcrypto::Matrix<int64_t> digits([]()
                                          { return 0; }, kRes, n);
