@@ -325,7 +325,7 @@ namespace openfhe
                 p1.HStack(lbcrypto::SplitInt64IntoElements<lbcrypto::DCRTPoly>(*p1ZVector, n, params));
         }
 
-        p1.SetFormat(Format::COEFFICIENT);
+        p1.SetFormat(Format::EVALUATION);
 
         return std::make_unique<Matrix>(std::move(p1));
     }
