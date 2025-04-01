@@ -255,11 +255,11 @@ namespace openfhe
         tp2.SetFormat(Format::COEFFICIENT);
 
         lbcrypto::Matrix<lbcrypto::Field2n> AF([&]()
-                                               { return lbcrypto::Field2n(n, Format::EVALUATION); }, d, d);
+                                               { return lbcrypto::Field2n(n, Format::EVALUATION, true); }, d, d);
         lbcrypto::Matrix<lbcrypto::Field2n> BF([&]()
-                                               { return lbcrypto::Field2n(n, Format::EVALUATION); }, d, d);
+                                               { return lbcrypto::Field2n(n, Format::EVALUATION, true); }, d, d);
         lbcrypto::Matrix<lbcrypto::Field2n> DF([&]()
-                                               { return lbcrypto::Field2n(n, Format::EVALUATION); }, d, d);
+                                               { return lbcrypto::Field2n(n, Format::EVALUATION, true); }, d, d);
 
         double scalarFactor = -sigma * sigma;
 
