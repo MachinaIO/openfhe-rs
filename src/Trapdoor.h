@@ -29,7 +29,7 @@ public:
     usint n, 
     size_t size, 
     size_t kRes,
-    double sigma,
+    double stddev,
     int64_t base,
     bool balanced);
 
@@ -38,7 +38,7 @@ public:
     size_t size, 
     size_t kRes,
     size_t d,
-    double sigma,
+    double stddev,
     int64_t base,
     bool balanced);
 
@@ -50,7 +50,7 @@ public:
     const RLWETrapdoorPair& trapdoor, 
     const DCRTPoly& u, 
     int64_t base, 
-    double sigma);
+    double dggStddev);
 
 [[nodiscard]] std::unique_ptr<Matrix> DCRTSquareMatTrapdoorGaussSamp(
     usint n, 
@@ -59,7 +59,7 @@ public:
     const RLWETrapdoorPair& trapdoor, 
     const Matrix& U, 
     int64_t base, 
-    double sigma);
+    double dggStddev);
 
 void DCRTTrapdoorGaussSampToFs(
     usint n, 
@@ -68,7 +68,7 @@ void DCRTTrapdoorGaussSampToFs(
     const RLWETrapdoorPair& trapdoor, 
     const DCRTPoly& u, 
     int64_t base, 
-    double sigma,
+    double dggStddev,
     const rust::String& path
 );
 
@@ -79,7 +79,7 @@ void DCRTSquareMatTrapdoorGaussSampToFs(
     const RLWETrapdoorPair& trapdoor,
     const Matrix& U,
     int64_t base,
-    double sigma,
+    double dggStddev,
     const rust::String& path
 );
 
@@ -94,8 +94,8 @@ void DCRTSquareMatTrapdoorGaussSampToFs(
     size_t size,
     size_t kRes,
     int64_t base,
-    double sigma,
-    size_t tower_idx);
+    double dggStddev,
+    size_t towerIdx);
 
 [[nodiscard]] std::unique_ptr<Matrix> SampleP1ForPertSquareMat(
     Matrix& A,
@@ -106,5 +106,6 @@ void DCRTSquareMatTrapdoorGaussSampToFs(
     size_t size,
     size_t kRes,
     double sigma,
-    double s);
+    double s,
+    double dggStddev);
 } // openfhe

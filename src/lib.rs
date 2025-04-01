@@ -1615,7 +1615,7 @@ pub mod ffi {
             n: u32,
             size: usize,
             k_res: usize,
-            sigma: f64,
+            stddev: f64,
             base: i64,
             balanced: bool,
         ) -> UniquePtr<DCRTTrapdoor>;
@@ -1625,7 +1625,7 @@ pub mod ffi {
             size: usize,
             k_res: usize,
             d: usize,
-            sigma: f64,
+            stddev: f64,
             base: i64,
             balanced: bool,
         ) -> UniquePtr<DCRTTrapdoor>;
@@ -1638,7 +1638,7 @@ pub mod ffi {
             trapdoor: &RLWETrapdoorPair,
             u: &DCRTPoly,
             base: i64,
-            sigma: f64,
+            dgg_stddev: f64,
         ) -> UniquePtr<Matrix>;
 
         fn DCRTTrapdoorGaussSampToFs(
@@ -1648,7 +1648,7 @@ pub mod ffi {
             trapdoor: &RLWETrapdoorPair,
             u: &DCRTPoly,
             base: i64,
-            sigma: f64,
+            dgg_stddev: f64,
             path: &String,
         );
 
@@ -1659,7 +1659,7 @@ pub mod ffi {
             trapdoor: &RLWETrapdoorPair,
             u: &Matrix,
             base: i64,
-            sigma: f64,
+            dgg_stddev: f64,
         ) -> UniquePtr<Matrix>;
 
         fn DCRTSquareMatTrapdoorGaussSampToFs(
@@ -1669,11 +1669,12 @@ pub mod ffi {
             trapdoor: &RLWETrapdoorPair,
             u: &Matrix,
             base: i64,
-            sigma: f64,
+            dgg_stddev: f64,
             path: &String,
         );
 
         fn GenerateIntegerKarney(mean: f64, stddev: f64) -> i64;
+
         fn DCRTGaussSampGqArbBase(
             syndrome: &DCRTPoly,
             c: f64,
@@ -1681,7 +1682,7 @@ pub mod ffi {
             size: usize,
             k_res: usize,
             base: i64,
-            sigma: f64,
+            dgg_stddev: f64,
             tower_idx: usize,
         ) -> Vec<i64>;
 
@@ -1695,6 +1696,7 @@ pub mod ffi {
             k_res: usize,
             sigma: f64,
             s: f64,
+            dgg_stddev: f64,
         ) -> UniquePtr<Matrix>;
     }
 }

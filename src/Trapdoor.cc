@@ -36,7 +36,7 @@ namespace openfhe
         usint n,
         size_t size,
         size_t kRes,
-        double sigma,
+        double stddev,
         int64_t base,
         bool balanced)
     {
@@ -44,7 +44,7 @@ namespace openfhe
 
         auto trapdoor = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::TrapdoorGen(
             params,
-            sigma,
+            stddev,
             base,
             balanced);
 
@@ -58,7 +58,7 @@ namespace openfhe
         size_t size,
         size_t kRes,
         size_t d,
-        double sigma,
+        double stddev,
         int64_t base,
         bool balanced)
     {
@@ -66,7 +66,7 @@ namespace openfhe
 
         auto trapdoor = lbcrypto::RLWETrapdoorUtility<lbcrypto::DCRTPoly>::TrapdoorGenSquareMat(
             params,
-            sigma,
+            stddev,
             d,
             base,
             balanced);
@@ -77,11 +77,11 @@ namespace openfhe
     }
 
     // Gauss sample functions
-    std::unique_ptr<Matrix> DCRTTrapdoorGaussSamp(usint n, usint k, const Matrix &publicMatrix, const RLWETrapdoorPair &trapdoor, const DCRTPoly &u, int64_t base, double sigma)
+    std::unique_ptr<Matrix> DCRTTrapdoorGaussSamp(usint n, usint k, const Matrix &publicMatrix, const RLWETrapdoorPair &trapdoor, const DCRTPoly &u, int64_t base, double dggStddev)
     {
-        lbcrypto::DCRTPoly::DggType dgg(sigma);
+        lbcrypto::DCRTPoly::DggType dgg(dggStddev);
 
-        double c = (base + 1) * sigma;
+        double c = (base + 1) * lbcrypto::SIGMA;
         double s = lbcrypto::SPECTRAL_BOUND(n, k, base);
         lbcrypto::DCRTPoly::DggType dggLargeSigma(sqrt(s * s - c * c));
 
@@ -98,11 +98,11 @@ namespace openfhe
         return std::make_unique<Matrix>(std::move(result));
     }
 
-    void DCRTTrapdoorGaussSampToFs(usint n, usint k, const Matrix &publicMatrix, const RLWETrapdoorPair &trapdoor, const DCRTPoly &u, int64_t base, double sigma, const rust::String &path)
+    void DCRTTrapdoorGaussSampToFs(usint n, usint k, const Matrix &publicMatrix, const RLWETrapdoorPair &trapdoor, const DCRTPoly &u, int64_t base, double dggStddev, const rust::String &path)
     {
-        lbcrypto::DCRTPoly::DggType dgg(sigma);
+        lbcrypto::DCRTPoly::DggType dgg(dggStddev);
 
-        double c = (base + 1) * sigma;
+        double c = (base + 1) * lbcrypto::SIGMA;
         double s = lbcrypto::SPECTRAL_BOUND(n, k, base);
         lbcrypto::DCRTPoly::DggType dggLargeSigma(sqrt(s * s - c * c));
 
@@ -128,13 +128,13 @@ namespace openfhe
         }
     }
 
-    std::unique_ptr<Matrix> DCRTSquareMatTrapdoorGaussSamp(usint n, usint k, const Matrix &publicMatrix, const RLWETrapdoorPair &trapdoor, const Matrix &U, int64_t base, double sigma)
+    std::unique_ptr<Matrix> DCRTSquareMatTrapdoorGaussSamp(usint n, usint k, const Matrix &publicMatrix, const RLWETrapdoorPair &trapdoor, const Matrix &U, int64_t base, double dggStddev)
     {
-        lbcrypto::DCRTPoly::DggType dgg(sigma);
+        lbcrypto::DCRTPoly::DggType dgg(dggStddev);
 
         size_t d = U.GetCols(); // U is a square matrix
 
-        double c = (base + 1) * sigma;
+        double c = (base + 1) * lbcrypto::SIGMA;
         double s = lbcrypto::SPECTRAL_BOUND_D(n, k, base, d);
         lbcrypto::DCRTPoly::DggType dggLargeSigma(sqrt(s * s - c * c));
 
@@ -151,13 +151,13 @@ namespace openfhe
         return std::make_unique<Matrix>(std::move(result));
     }
 
-    void DCRTSquareMatTrapdoorGaussSampToFs(usint n, usint k, const Matrix &publicMatrix, const RLWETrapdoorPair &trapdoor, const Matrix &U, int64_t base, double sigma, const rust::String &path)
+    void DCRTSquareMatTrapdoorGaussSampToFs(usint n, usint k, const Matrix &publicMatrix, const RLWETrapdoorPair &trapdoor, const Matrix &U, int64_t base, double dggStddev, const rust::String &path)
     {
-        lbcrypto::DCRTPoly::DggType dgg(sigma);
+        lbcrypto::DCRTPoly::DggType dgg(dggStddev);
 
         size_t d = U.GetCols(); // U is a square matrix
 
-        double c = (base + 1) * sigma;
+        double c = (base + 1) * lbcrypto::SIGMA;
         double s = lbcrypto::SPECTRAL_BOUND_D(n, k, base, d);
         lbcrypto::DCRTPoly::DggType dggLargeSigma(sqrt(s * s - c * c));
 
@@ -197,14 +197,14 @@ namespace openfhe
         size_t size,
         size_t kRes,
         int64_t base,
-        double sigma,
-        size_t tower_idx)
+        double dggStddev,
+        size_t towerIdx)
     {
         auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
 
-        lbcrypto::NativeInteger qu = params->GetParams()[tower_idx]->GetModulus();
+        lbcrypto::NativeInteger qu = params->GetParams()[towerIdx]->GetModulus();
 
-        lbcrypto::DCRTPoly::DggType dgg(sigma);
+        lbcrypto::DCRTPoly::DggType dgg(dggStddev);
 
         lbcrypto::DCRTPoly syndromePoly = syndrome.GetPoly();
 
@@ -212,7 +212,7 @@ namespace openfhe
                                          { return 0; }, kRes, n);
 
         lbcrypto::LatticeGaussSampUtility<lbcrypto::NativePoly>::GaussSampGqArbBase(
-            syndromePoly.GetElementAtIndex(tower_idx), c, kRes, qu, base, dgg, &digits);
+            syndromePoly.GetElementAtIndex(towerIdx), c, kRes, qu, base, dgg, &digits);
 
         // Convert the matrix to a flattened vector
         rust::Vec<int64_t> result;
@@ -238,13 +238,14 @@ namespace openfhe
         size_t size,
         size_t kRes,
         double sigma,
-        double s)
+        double s,
+        double dggStddev)
     {
         size_t d = A.GetRows();
 
         auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
 
-        lbcrypto::DCRTPoly::DggType dgg(sigma);
+        lbcrypto::DCRTPoly::DggType dgg(dggStddev);
 
         auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
 
