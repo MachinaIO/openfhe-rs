@@ -246,10 +246,10 @@ namespace openfhe
     }
 
     std::unique_ptr<Matrix> SampleP1ForPertSquareMat(
-        Matrix &A,
-        Matrix &B,
-        Matrix &D,
-        Matrix &tp2,
+        const Matrix &A,
+        const Matrix &B,
+        const Matrix &D,
+        const Matrix &tp2,
         usint n,
         size_t size,
         size_t kRes,
@@ -267,10 +267,10 @@ namespace openfhe
         auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
 
         // Switch the ring elements (Polynomials) to coefficient representation
-        A.SetFormat(Format::COEFFICIENT);
-        B.SetFormat(Format::COEFFICIENT);
-        D.SetFormat(Format::COEFFICIENT);
-        tp2.SetFormat(Format::COEFFICIENT);
+        // A.SetFormat(Format::COEFFICIENT);
+        // B.SetFormat(Format::COEFFICIENT);
+        // D.SetFormat(Format::COEFFICIENT);
+        // tp2.SetFormat(Format::COEFFICIENT);
 
         lbcrypto::Matrix<lbcrypto::Field2n> AF([&]()
                                                { return lbcrypto::Field2n(n, Format::EVALUATION, true); }, d, d);

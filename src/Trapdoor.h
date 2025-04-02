@@ -104,10 +104,10 @@ namespace openfhe
         size_t towerIdx);
 
     [[nodiscard]] std::unique_ptr<Matrix> SampleP1ForPertSquareMat(
-        Matrix &A,
-        Matrix &B,
-        Matrix &D,
-        Matrix &tp2,
+        const Matrix &A,
+        const Matrix &B,
+        const Matrix &D,
+        const Matrix &tp2,
         usint n,
         size_t size,
         size_t kRes,
