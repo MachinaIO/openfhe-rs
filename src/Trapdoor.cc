@@ -198,9 +198,9 @@ namespace openfhe
         int64_t base)
     {
         auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
-        
+
         auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
-                
+
         return std::make_unique<Matrix>(Matrix(zero_alloc, 1, len).GadgetVector(base));
     }
 
@@ -253,6 +253,7 @@ namespace openfhe
         usint n,
         size_t size,
         size_t kRes,
+        size_t ncol,
         double sigma,
         double s,
         double dggStddev)
@@ -305,7 +306,7 @@ namespace openfhe
 
         Matrix p1(zero_alloc, 1, 1);
 
-        for (size_t j = 0; j < d; j++)
+        for (size_t j = 0; j < ncol; j++)
         {
             lbcrypto::Matrix<lbcrypto::Field2n> c([&]()
                                                   { return lbcrypto::Field2n(n, Format::COEFFICIENT); }, 2 * d, 1);

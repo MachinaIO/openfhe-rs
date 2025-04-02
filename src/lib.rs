@@ -1702,6 +1702,7 @@ pub mod ffi {
             n: u32,
             size: usize,
             k_res: usize,
+            ncol: usize,
             sigma: f64,
             s: f64,
             dgg_stddev: f64,
@@ -2263,7 +2264,7 @@ mod tests {
                 .fold(String::new(), |acc, &arg| acc + " " + &arg.to_string())
         );
         println!("{}\n", _plain_text_dec_2.GetString());
-        println!(" Expected result: (3.4515092326, 5.3752765397, 4.8993108833, 3.2495023573, 4.0485229982)");
+        println !(" Expected result: (3.4515092326, 5.3752765397, 4.8993108833, 3.2495023573, 4.0485229982)");
         print!("\n Evaluation time: {:.0?}\n", _time_eval_poly_2);
     }
 }
