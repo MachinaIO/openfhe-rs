@@ -29,7 +29,7 @@ public:
     usint n, 
     size_t size, 
     size_t kRes,
-    double sigma,
+    double stddev,
     int64_t base,
     bool balanced);
 
@@ -38,7 +38,7 @@ public:
     size_t size, 
     size_t kRes,
     size_t d,
-    double sigma,
+    double stddev,
     int64_t base,
     bool balanced);
 
@@ -50,7 +50,7 @@ public:
     const RLWETrapdoorPair& trapdoor, 
     const DCRTPoly& u, 
     int64_t base, 
-    double sigma);
+    double dggStddev);
 
 [[nodiscard]] std::unique_ptr<Matrix> DCRTSquareMatTrapdoorGaussSamp(
     usint n, 
@@ -59,7 +59,7 @@ public:
     const RLWETrapdoorPair& trapdoor, 
     const Matrix& U, 
     int64_t base, 
-    double sigma);
+    double dggStddev);
 
 void DCRTTrapdoorGaussSampToFs(
     usint n, 
@@ -68,18 +68,51 @@ void DCRTTrapdoorGaussSampToFs(
     const RLWETrapdoorPair& trapdoor, 
     const DCRTPoly& u, 
     int64_t base, 
-    double sigma,
+    double dggStddev,
     const rust::String& path
 );
 
 void DCRTSquareMatTrapdoorGaussSampToFs(
-    usint n, 
+    usint n,
     usint k,
-    const Matrix& publicMatrix, 
-    const RLWETrapdoorPair& trapdoor, 
-    const Matrix& U, 
-    int64_t base, 
-    double sigma,
+    const Matrix& publicMatrix,
+    const RLWETrapdoorPair& trapdoor,
+    const Matrix& U,
+    int64_t base,
+    double dggStddev,
     const rust::String& path
 );
+
+[[nodiscard]] int64_t GenerateIntegerKarney(
+    double mean,
+    double stddev);
+
+[[nodiscard]] std::unique_ptr<Matrix> DCRTPolyGadgetVector(
+    usint n,
+    size_t size,
+    size_t kRes,
+    size_t len,
+    int64_t base);
+
+[[nodiscard]] rust::Vec<int64_t> DCRTGaussSampGqArbBase(
+    const DCRTPoly& syndrome,
+    double c,
+    usint n,
+    size_t size,
+    size_t kRes,
+    int64_t base,
+    double dggStddev,
+    size_t towerIdx);
+
+[[nodiscard]] std::unique_ptr<Matrix> SampleP1ForPertSquareMat(
+    Matrix& A,
+    Matrix& B,
+    Matrix& D,
+    Matrix& tp2,
+    usint n,
+    size_t size,
+    size_t kRes,
+    double sigma,
+    double s,
+    double dggStddev);
 } // openfhe

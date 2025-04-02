@@ -134,4 +134,31 @@ fn main() {
     let dummy_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
     let decomposed_poly = dummy_poly.Decompose();
     let poly_0_0 = GetMatrixElement(&decomposed_poly, 0, 0);
+
+    let sample = ffi::GenerateIntegerKarney(0.0, 4.0);
+    println!("sample: {:?}", sample);
+
+    // Example of using DCRTGaussSampGqArbBase
+
+    // Parameters
+    let c: f64 = (base as f64 + 1.0) * sigma; // Typically c = (base + 1) * sigma
+
+    let syndrome_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
+
+    // Loop over each tower_idx which is taken from `size`
+    for tower_idx in 0..size {
+        // Call DCRTGaussSampGqArbBase for each tower
+        let digits =
+            ffi::DCRTGaussSampGqArbBase(&syndrome_poly, c, n, size, k_res, base, sigma, tower_idx);
+
+        println!("Tower {}: Sampled {} digits", tower_idx, digits.len());
+
+        // Print first few digits (to avoid excessive output)
+        let display_count = std::cmp::min(10, digits.len());
+        println!(
+            "First {} digits: {:?}",
+            display_count,
+            &digits[0..display_count]
+        );
+    }
 }
