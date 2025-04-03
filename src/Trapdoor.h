@@ -103,7 +103,7 @@ namespace openfhe
         double dggStddev,
         size_t towerIdx);
 
-    [[nodiscard]] std::unique_ptr<Matrix> SampleP1ForPertSquareMat(
+    [[nodiscard]] std::unique_ptr<Matrix> SampleP1ForPertMat(
         const Matrix &A,
         const Matrix &B,
         const Matrix &D,

@@ -245,7 +245,7 @@ namespace openfhe
         return result;
     }
 
-    std::unique_ptr<Matrix> SampleP1ForPertSquareMat(
+    std::unique_ptr<Matrix> SampleP1ForPertMat(
         const Matrix &A,
         const Matrix &B,
         const Matrix &D,
@@ -265,12 +265,6 @@ namespace openfhe
         lbcrypto::DCRTPoly::DggType dgg(dggStddev);
 
         auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
-
-        // Switch the ring elements (Polynomials) to coefficient representation
-        // A.SetFormat(Format::COEFFICIENT);
-        // B.SetFormat(Format::COEFFICIENT);
-        // D.SetFormat(Format::COEFFICIENT);
-        // tp2.SetFormat(Format::COEFFICIENT);
 
         lbcrypto::Matrix<lbcrypto::Field2n> AF([&]()
                                                { return lbcrypto::Field2n(n, Format::EVALUATION, true); }, d, d);

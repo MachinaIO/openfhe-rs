@@ -1682,7 +1682,7 @@ pub mod ffi
             tower_idx : usize, )
             ->Vec<i64>;
 
-        fn SampleP1ForPertSquareMat(
+        fn SampleP1ForPertMat(
             a : &Matrix,
             b : &Matrix,
             d : &Matrix,
