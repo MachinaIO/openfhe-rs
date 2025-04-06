@@ -83,9 +83,9 @@ namespace openfhe
         return std::make_unique<DCRTPoly>(-m_poly);
     }
 
-    std::unique_ptr<Matrix> DCRTPoly::Decompose() const
+    std::unique_ptr<Matrix> DCRTPoly::Decompose(uint32_t baseBits) const
     {
-        std::vector<lbcrypto::DCRTPoly> decomposed = m_poly.CRTDecompose(1);
+        std::vector<lbcrypto::DCRTPoly> decomposed = m_poly.CRTDecompose(baseBits);
 
         auto zero_alloc = lbcrypto::DCRTPoly::Allocator(m_poly.GetParams(), Format::COEFFICIENT);
         lbcrypto::Matrix<lbcrypto::DCRTPoly> decomposedMatrix(zero_alloc, 1, decomposed.size());
