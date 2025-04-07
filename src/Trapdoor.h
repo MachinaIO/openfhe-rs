@@ -98,7 +98,8 @@ namespace openfhe
         double c,
         usint n,
         size_t size,
-        size_t kRes,
+        size_t kResBits,
+        size_t kResDigits,
         int64_t base,
         double dggStddev,
         size_t towerIdx);

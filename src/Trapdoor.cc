@@ -209,13 +209,14 @@ namespace openfhe
         double c,
         usint n,
         size_t size,
-        size_t kRes,
+        size_t kResBits,
+        size_t kResDigits,
         int64_t base,
         double dggStddev,
         size_t towerIdx)
     {
 
-        auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+        auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kResBits);
 
         lbcrypto::NativeInteger qu = params->GetParams()[towerIdx]->GetModulus();
 
@@ -225,17 +226,17 @@ namespace openfhe
         syndromePoly.SetFormat(Format::COEFFICIENT);
 
         lbcrypto::Matrix<int64_t> digits([]()
-                                         { return 0; }, kRes, n);
+                                         { return 0; }, kResDigits, n);
 
         lbcrypto::LatticeGaussSampUtility<lbcrypto::NativePoly>::GaussSampGqArbBase(
-            syndromePoly.GetElementAtIndex(towerIdx), c, kRes, qu, base, dgg, &digits);
+            syndromePoly.GetElementAtIndex(towerIdx), c, kResDigits, qu, base, dgg, &digits);
 
         // Convert the matrix to a flattened vector
         rust::Vec<int64_t> result;
-        result.reserve(kRes * n);
+        result.reserve(kResDigits * n);
 
         // Flatten the matrix into a vector
-        for (size_t i = 0; i < kRes; i++)
+        for (size_t i = 0; i < kResDigits; i++)
         {
             for (size_t j = 0; j < n; j++)
             {
