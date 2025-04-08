@@ -1,8 +1,7 @@
-use openfhe::cxx::{CxxVector};
-use openfhe::ffi as ffi;
+use openfhe::cxx::CxxVector;
+use openfhe::ffi;
 
-fn main()
-{
+fn main() {
     let mut _cc_params_bfvrns = ffi::GenParamsBFVRNS();
     _cc_params_bfvrns.pin_mut().SetPlaintextModulus(65537);
     _cc_params_bfvrns.pin_mut().SetMultiplicativeDepth(2);
@@ -20,7 +19,11 @@ fn main()
     _index_list.pin_mut().push(2);
     _index_list.pin_mut().push(-1);
     _index_list.pin_mut().push(-2);
-    _cc.EvalRotateKeyGen(&_key_pair.GetPrivateKey(), &_index_list, &ffi::DCRTPolyGenNullPublicKey());
+    _cc.EvalRotateKeyGen(
+        &_key_pair.GetPrivateKey(),
+        &_index_list,
+        &ffi::DCRTPolyGenNullPublicKey(),
+    );
 
     let mut _vector_of_ints_1 = CxxVector::<i64>::new();
     _vector_of_ints_1.pin_mut().push(1);
@@ -75,7 +78,8 @@ fn main()
     let _cipher_text_add_result = _cc.EvalAddByCiphertexts(&_cipher_text_add_1_2, &_cipher_text_3);
 
     let _cipher_text_mul_1_2 = _cc.EvalMultByCiphertexts(&_cipher_text_1, &_cipher_text_2);
-    let _cipher_text_mult_result = _cc.EvalMultByCiphertexts(&_cipher_text_mul_1_2, &_cipher_text_3);
+    let _cipher_text_mult_result =
+        _cc.EvalMultByCiphertexts(&_cipher_text_mul_1_2, &_cipher_text_3);
 
     let _cipher_text_rot_1 = _cc.EvalRotate(&_cipher_text_1, 1);
     let _cipher_text_rot_2 = _cc.EvalRotate(&_cipher_text_1, 2);
@@ -83,17 +87,41 @@ fn main()
     let _cipher_text_rot_4 = _cc.EvalRotate(&_cipher_text_1, -2);
 
     let mut _plain_text_add_result = ffi::GenNullPlainText();
-    _cc.DecryptByPrivateKeyAndCiphertext(&_key_pair.GetPrivateKey(), &_cipher_text_add_result, _plain_text_add_result.pin_mut());
+    _cc.DecryptByPrivateKeyAndCiphertext(
+        &_key_pair.GetPrivateKey(),
+        &_cipher_text_add_result,
+        _plain_text_add_result.pin_mut(),
+    );
     let mut _plain_text_mult_result = ffi::GenNullPlainText();
-    _cc.DecryptByPrivateKeyAndCiphertext(&_key_pair.GetPrivateKey(), &_cipher_text_mult_result, _plain_text_mult_result.pin_mut());
+    _cc.DecryptByPrivateKeyAndCiphertext(
+        &_key_pair.GetPrivateKey(),
+        &_cipher_text_mult_result,
+        _plain_text_mult_result.pin_mut(),
+    );
     let mut _plain_text_rot_1 = ffi::GenNullPlainText();
-    _cc.DecryptByPrivateKeyAndCiphertext(&_key_pair.GetPrivateKey(), &_cipher_text_rot_1, _plain_text_rot_1.pin_mut());
+    _cc.DecryptByPrivateKeyAndCiphertext(
+        &_key_pair.GetPrivateKey(),
+        &_cipher_text_rot_1,
+        _plain_text_rot_1.pin_mut(),
+    );
     let mut _plain_text_rot_2 = ffi::GenNullPlainText();
-    _cc.DecryptByPrivateKeyAndCiphertext(&_key_pair.GetPrivateKey(), &_cipher_text_rot_2, _plain_text_rot_2.pin_mut());
+    _cc.DecryptByPrivateKeyAndCiphertext(
+        &_key_pair.GetPrivateKey(),
+        &_cipher_text_rot_2,
+        _plain_text_rot_2.pin_mut(),
+    );
     let mut _plain_text_rot_3 = ffi::GenNullPlainText();
-    _cc.DecryptByPrivateKeyAndCiphertext(&_key_pair.GetPrivateKey(), &_cipher_text_rot_3, _plain_text_rot_3.pin_mut());
+    _cc.DecryptByPrivateKeyAndCiphertext(
+        &_key_pair.GetPrivateKey(),
+        &_cipher_text_rot_3,
+        _plain_text_rot_3.pin_mut(),
+    );
     let mut _plain_text_rot_4 = ffi::GenNullPlainText();
-    _cc.DecryptByPrivateKeyAndCiphertext(&_key_pair.GetPrivateKey(), &_cipher_text_rot_4, _plain_text_rot_4.pin_mut());
+    _cc.DecryptByPrivateKeyAndCiphertext(
+        &_key_pair.GetPrivateKey(),
+        &_cipher_text_rot_4,
+        _plain_text_rot_4.pin_mut(),
+    );
 
     _plain_text_rot_1.SetLength(_vector_of_ints_1.len());
     _plain_text_rot_2.SetLength(_vector_of_ints_1.len());
@@ -107,8 +135,20 @@ fn main()
     println!("\nResults of homomorphic computations");
     println!("#1 + #2 + #3: {}", _plain_text_add_result.GetString());
     println!("#1 * #2 * #3: {}", _plain_text_mult_result.GetString());
-    println!("Left rotation of #1 by 1: {}", _plain_text_rot_1.GetString());
-    println!("Left rotation of #1 by 2: {}", _plain_text_rot_2.GetString());
-    println!("Right rotation of #1 by -1: {}", _plain_text_rot_3.GetString());
-    println!("Right rotation of #1 by -2: {}", _plain_text_rot_4.GetString());
+    println!(
+        "Left rotation of #1 by 1: {}",
+        _plain_text_rot_1.GetString()
+    );
+    println!(
+        "Left rotation of #1 by 2: {}",
+        _plain_text_rot_2.GetString()
+    );
+    println!(
+        "Right rotation of #1 by -1: {}",
+        _plain_text_rot_3.GetString()
+    );
+    println!(
+        "Right rotation of #1 by -2: {}",
+        _plain_text_rot_4.GetString()
+    );
 }

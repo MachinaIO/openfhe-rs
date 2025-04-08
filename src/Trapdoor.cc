@@ -198,9 +198,9 @@ namespace openfhe
         int64_t base)
     {
         auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
-        
+
         auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
-                
+
         return std::make_unique<Matrix>(Matrix(zero_alloc, 1, len).GadgetVector(base));
     }
 
@@ -209,13 +209,14 @@ namespace openfhe
         double c,
         usint n,
         size_t size,
-        size_t kRes,
+        size_t kResBits,
+        size_t kResDigits,
         int64_t base,
         double dggStddev,
         size_t towerIdx)
     {
 
-        auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+        auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kResBits);
 
         lbcrypto::NativeInteger qu = params->GetParams()[towerIdx]->GetModulus();
 
@@ -225,17 +226,17 @@ namespace openfhe
         syndromePoly.SetFormat(Format::COEFFICIENT);
 
         lbcrypto::Matrix<int64_t> digits([]()
-                                         { return 0; }, kRes, n);
+                                         { return 0; }, kResDigits, n);
 
         lbcrypto::LatticeGaussSampUtility<lbcrypto::NativePoly>::GaussSampGqArbBase(
-            syndromePoly.GetElementAtIndex(towerIdx), c, kRes, qu, base, dgg, &digits);
+            syndromePoly.GetElementAtIndex(towerIdx), c, kResDigits, qu, base, dgg, &digits);
 
         // Convert the matrix to a flattened vector
         rust::Vec<int64_t> result;
-        result.reserve(kRes * n);
+        result.reserve(kResDigits * n);
 
         // Flatten the matrix into a vector
-        for (size_t i = 0; i < kRes; i++)
+        for (size_t i = 0; i < kResDigits; i++)
         {
             for (size_t j = 0; j < n; j++)
             {
@@ -245,14 +246,15 @@ namespace openfhe
         return result;
     }
 
-    std::unique_ptr<Matrix> SampleP1ForPertSquareMat(
-        Matrix &A,
-        Matrix &B,
-        Matrix &D,
-        Matrix &tp2,
+    std::unique_ptr<Matrix> SampleP1ForPertMat(
+        const Matrix &A,
+        const Matrix &B,
+        const Matrix &D,
+        const Matrix &tp2,
         usint n,
         size_t size,
         size_t kRes,
+        size_t ncol,
         double sigma,
         double s,
         double dggStddev)
@@ -264,12 +266,6 @@ namespace openfhe
         lbcrypto::DCRTPoly::DggType dgg(dggStddev);
 
         auto zero_alloc = lbcrypto::DCRTPoly::Allocator(params, Format::EVALUATION);
-
-        // Switch the ring elements (Polynomials) to coefficient representation
-        A.SetFormat(Format::COEFFICIENT);
-        B.SetFormat(Format::COEFFICIENT);
-        D.SetFormat(Format::COEFFICIENT);
-        tp2.SetFormat(Format::COEFFICIENT);
 
         lbcrypto::Matrix<lbcrypto::Field2n> AF([&]()
                                                { return lbcrypto::Field2n(n, Format::EVALUATION, true); }, d, d);
@@ -305,7 +301,7 @@ namespace openfhe
 
         Matrix p1(zero_alloc, 1, 1);
 
-        for (size_t j = 0; j < d; j++)
+        for (size_t j = 0; j < ncol; j++)
         {
             lbcrypto::Matrix<lbcrypto::Field2n> c([&]()
                                                   { return lbcrypto::Field2n(n, Format::COEFFICIENT); }, 2 * d, 1);

@@ -1,15 +1,18 @@
-use openfhe::cxx::{CxxVector};
-use openfhe::ffi as ffi;
+use openfhe::cxx::CxxVector;
+use openfhe::ffi;
 
-fn main()
-{
+fn main() {
     let _mult_depth: u32 = 1;
     let _scale_mod_size: u32 = 50;
     let _batch_size: u32 = 8;
 
     let mut _cc_params_ckksrns = ffi::GenParamsCKKSRNS();
-    _cc_params_ckksrns.pin_mut().SetMultiplicativeDepth(_mult_depth);
-    _cc_params_ckksrns.pin_mut().SetScalingModSize(_scale_mod_size);
+    _cc_params_ckksrns
+        .pin_mut()
+        .SetMultiplicativeDepth(_mult_depth);
+    _cc_params_ckksrns
+        .pin_mut()
+        .SetScalingModSize(_scale_mod_size);
     _cc_params_ckksrns.pin_mut().SetBatchSize(_batch_size);
 
     let _cc = ffi::DCRTPolyGenCryptoContextByParamsCKKSRNS(&_cc_params_ckksrns);
@@ -17,14 +20,21 @@ fn main()
     _cc.EnableByFeature(ffi::PKESchemeFeature::KEYSWITCH);
     _cc.EnableByFeature(ffi::PKESchemeFeature::LEVELEDSHE);
 
-    println!("CKKS scheme is using ring dimension {}\n", _cc.GetRingDimension());
+    println!(
+        "CKKS scheme is using ring dimension {}\n",
+        _cc.GetRingDimension()
+    );
 
     let _key_pair = _cc.KeyGen();
     _cc.EvalMultKeyGen(&_key_pair.GetPrivateKey());
     let mut _index_list = CxxVector::<i32>::new();
     _index_list.pin_mut().push(1);
     _index_list.pin_mut().push(-2);
-    _cc.EvalRotateKeyGen(&_key_pair.GetPrivateKey(), &_index_list, &ffi::DCRTPolyGenNullPublicKey());
+    _cc.EvalRotateKeyGen(
+        &_key_pair.GetPrivateKey(),
+        &_index_list,
+        &ffi::DCRTPolyGenNullPublicKey(),
+    );
 
     let mut _x_1 = CxxVector::<f64>::new();
     _x_1.pin_mut().push(0.25);
@@ -68,11 +78,19 @@ fn main()
 
     _cc.DecryptByPrivateKeyAndCiphertext(&_key_pair.GetPrivateKey(), &_c1, _result.pin_mut());
     _result.SetLength(_batch_size.try_into().unwrap());
-    println!("x1 = {}Estimated precision in bits: {}", _result.GetString(), _result.GetLogPrecision());
+    println!(
+        "x1 = {}Estimated precision in bits: {}",
+        _result.GetString(),
+        _result.GetLogPrecision()
+    );
 
     _cc.DecryptByPrivateKeyAndCiphertext(&_key_pair.GetPrivateKey(), &_c_add, _result.pin_mut());
     _result.SetLength(_batch_size.try_into().unwrap());
-    println!("x1 + x2 = {}Estimated precision in bits: {}",_result.GetString(), _result.GetLogPrecision());
+    println!(
+        "x1 + x2 = {}Estimated precision in bits: {}",
+        _result.GetString(),
+        _result.GetLogPrecision()
+    );
 
     _cc.DecryptByPrivateKeyAndCiphertext(&_key_pair.GetPrivateKey(), &_c_sub, _result.pin_mut());
     _result.SetLength(_batch_size.try_into().unwrap());
