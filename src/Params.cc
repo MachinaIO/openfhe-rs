@@ -43,4 +43,24 @@ rust::String GenModulus(
     auto params        = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
     return rust::String(params->GetModulus().ToString());
 }
+
+/// Return the CRT primes q_0, ... ,q_{L‑1}
+rust::Vec<rust::String> GenCRTBasis(  
+        usint n,
+        std::size_t depth,
+        std::size_t bits) {
+
+    using lbcrypto::BigInteger;
+    using lbcrypto::ILDCRTParams;
+
+    auto params = std::make_shared<ILDCRTParams<BigInteger>>(2 * n, depth, bits);
+
+    rust::Vec<rust::String> out;
+    out.reserve(params->GetParams().size());
+
+    for (const auto& tower : params->GetParams())
+        out.push_back(rust::String(tower->GetModulus().ToString()));
+
+    return out;
+}
 } // openfhe
