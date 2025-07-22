@@ -1212,7 +1212,7 @@ pub mod ffi
         fn GenParamsByScheme(scheme : SCHEME)->UniquePtr<Params>;
         fn GenParamsByVectorOfString(vals : &CxxVector<CxxString>)->UniquePtr<Params>;
         fn GenModulus(n : u32, size : usize, k_res : usize)->String;
-        fn GenCRTBasis(n: u32, size: usize, k_res: usize) -> Vec<String>;
+        fn GenCRTBasis(n : u32, size : usize, k_res : usize)->Vec<String>;
     }
 
     // ParamsBFVRNS
@@ -1851,6 +1851,90 @@ parse_coefficients_bytes(bytes : &[u8]) -> ParsedCoefficients
     }
 }
 
+/// Serializes ParsedCoefficients back into the raw byte format
+/// This is the inverse operation of parse_coefficients_bytes
+pub fn serialize_coefficients_bytes(parsed : &ParsedCoefficients) -> Vec<u8>
+{
+    let mut bytes = Vec::new ();
+
+    // Add header (first 5 bytes - assuming some fixed format)
+    bytes.extend_from_slice(&[ 0x00, 0x00, 0x00, 0x00, 0x00 ]);
+
+    // Add coefficient count (8 bytes, little-endian)
+    bytes.extend_from_slice(&(parsed.coefficients.len() as u64).to_le_bytes());
+
+    // Add separator bytes (assuming 4 bytes based on offset pattern)
+    bytes.extend_from_slice(&[ 0x00, 0x00, 0x00, 0x00 ]);
+
+    // Serialize each coefficient
+    for
+        coeff in &parsed.coefficients
+        {
+            // Convert BigUint to u64 chunks
+            let chunks = bigint_to_chunks(coeff);
+
+            // Write chunk count (8 bytes, little-endian)
+            bytes.extend_from_slice(&(chunks.len() as u64).to_le_bytes());
+
+            // Write chunks
+        for
+            chunk in chunks
+            {
+                bytes.extend_from_slice(&chunk.to_le_bytes());
+            }
+
+        // Add m value (4 bytes - skipped in parsing)
+        bytes.extend_from_slice(&[ 0x00, 0x00, 0x00, 0x00 ]);
+        }
+
+    // Serialize modulus
+    let mod_chunks = bigint_to_chunks(&parsed.modulus);
+
+    // Write modulus chunk count (8 bytes, little-endian)
+    bytes.extend_from_slice(&(mod_chunks.len() as u64).to_le_bytes());
+
+    // Write modulus chunks
+    for
+        chunk in mod_chunks
+        {
+            bytes.extend_from_slice(&chunk.to_le_bytes());
+        }
+
+    bytes
+}
+
+/// Helper function to convert BigUint to u64 chunks (little-endian)
+fn bigint_to_chunks(value : &BigUint) -> Vec<u64>
+{
+    if value
+        == &BigUint::ZERO
+        {
+            return vec ![0];
+        }
+
+    let mut chunks = Vec::new ();
+    let mut remaining = value.clone();
+    let chunk_mask = BigUint::from((1u128 << 64) - 1);
+
+    while
+        remaining != BigUint::ZERO
+        {
+            let chunk = &remaining & &chunk_mask;
+            let chunk_digits = chunk.to_u64_digits();
+            let chunk_value = if chunk_digits.is_empty(){0} else {chunk_digits[0]};
+            chunks.push(chunk_value);
+            remaining >>= 64;
+        }
+
+    if chunks
+        .is_empty()
+        {
+            chunks.push(0);
+        }
+
+    chunks
+}
+
 #[cfg(test)]
 mod tests
 {
@@ -2260,5 +2344,92 @@ mod tests
         println !("{}\n", _plain_text_dec_2.GetString());
         println !(" Expected result: (3.4515092326, 5.3752765397, 4.8993108833, 3.2495023573, 4.0485229982)");
         print !("\n Evaluation time: {:.0?}\n", _time_eval_poly_2);
+    }
+
+#[test]
+    fn test_coefficients_round_trip_simple()
+    {
+        // Test with simple values
+        let original = ParsedCoefficients{
+            coefficients : vec ![
+                BigUint::from(42u32),
+                BigUint::from(123u32),
+                BigUint::from(0u32),
+            ],
+            modulus : BigUint::from(65537u32),
+        };
+
+        // Serialize to bytes
+        let bytes = serialize_coefficients_bytes(&original);
+
+        // Parse back from bytes
+        let parsed = parse_coefficients_bytes(&bytes);
+
+        // Verify round-trip
+        assert_eq !(original.coefficients, parsed.coefficients);
+        assert_eq !(original.modulus, parsed.modulus);
+    }
+
+#[test]
+    fn test_coefficients_round_trip_large_numbers()
+    {
+        // Test with large numbers that require multiple chunks
+        let large_number : BigUint = BigUint::from(1u64) << 100; // 2^100
+        let huge_number : BigUint = BigUint::from(1u64) << 200;  // 2^200
+
+        let original = ParsedCoefficients{
+            coefficients : vec ![
+                large_number.clone(),
+                huge_number.clone(),
+                BigUint::from(u64::MAX),
+            ],
+            modulus : large_number * 2u32,
+        };
+
+        // Serialize to bytes
+        let bytes = serialize_coefficients_bytes(&original);
+
+        // Parse back from bytes
+        let parsed = parse_coefficients_bytes(&bytes);
+
+        // Verify round-trip
+        assert_eq !(original.coefficients, parsed.coefficients);
+        assert_eq !(original.modulus, parsed.modulus);
+    }
+
+#[test]
+    fn test_coefficients_round_trip_empty()
+    {
+        // Test with empty coefficients
+        let original = ParsedCoefficients{
+            coefficients : vec ![],
+            modulus : BigUint::from(12345u32),
+        };
+
+        // Serialize to bytes
+        let bytes = serialize_coefficients_bytes(&original);
+
+        // Parse back from bytes
+        let parsed = parse_coefficients_bytes(&bytes);
+
+        // Verify round-trip
+        assert_eq !(original.coefficients, parsed.coefficients);
+        assert_eq !(original.modulus, parsed.modulus);
+    }
+
+#[test]
+    fn test_bigint_to_chunks()
+    {
+        // Test chunk conversion for various values
+        assert_eq !(bigint_to_chunks(&BigUint::from(0u32)), vec ![0]);
+        assert_eq !(bigint_to_chunks(&BigUint::from(42u32)), vec ![42]);
+        assert_eq !(bigint_to_chunks(&BigUint::from(u64::MAX)), vec ![u64::MAX]);
+
+        // Test multi-chunk number
+        let large = BigUint::from(1u64) << 64 | BigUint::from(123u64);
+        let chunks = bigint_to_chunks(&large);
+        assert_eq !(chunks.len(), 2);
+        assert_eq !(chunks[0], 123);
+        assert_eq !(chunks[1], 1);
     }
 }
