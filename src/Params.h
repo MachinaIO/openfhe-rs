@@ -46,4 +46,6 @@ using ParamsCKKSRNS = lbcrypto::CCParams<lbcrypto::CryptoContextCKKSRNS>;
     const std::vector<std::string>& vals);
 [[nodiscard]] rust::String GenModulus(
     usint n, size_t size, size_t kRes);
+[[nodiscard]] rust::Vec<rust::String> GenCRTBasis(
+    usint n, size_t size, size_t kRes);
 } // openfhe

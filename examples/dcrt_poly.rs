@@ -17,6 +17,9 @@ fn main() {
     let modulus = ffi::GenModulus(n, size, k_res);
     println!("modulus: {:?}", modulus);
 
+    let moduli = ffi::GenCRTBasis(n, size, k_res);
+    println!("moduli: {:?}", moduli);
+
     let const_poly_2 = ffi::DCRTPolyGenFromConst(n, size, k_res, &val);
     // print the const_poly_2
     println!("const_poly_2: {:?}", const_poly_2);
@@ -145,20 +148,20 @@ fn main() {
 
     let syndrome_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
 
-    // Loop over each tower_idx which is taken from `size`
-    for tower_idx in 0..size {
-        // Call DCRTGaussSampGqArbBase for each tower
-        let digits =
-            ffi::DCRTGaussSampGqArbBase(&syndrome_poly, c, n, size, k_res, base, sigma, tower_idx);
+    // // Loop over each tower_idx which is taken from `size`
+    // for tower_idx in 0..size {
+    //     // Call DCRTGaussSampGqArbBase for each tower
+    //     let digits =
+    //         ffi::DCRTGaussSampGqArbBase(&syndrome_poly, c, n, size, k_res, base, sigma, tower_idx);
 
-        println!("Tower {}: Sampled {} digits", tower_idx, digits.len());
+    //     println!("Tower {}: Sampled {} digits", tower_idx, digits.len());
 
-        // Print first few digits (to avoid excessive output)
-        let display_count = std::cmp::min(10, digits.len());
-        println!(
-            "First {} digits: {:?}",
-            display_count,
-            &digits[0..display_count]
-        );
-    }
+    //     // Print first few digits (to avoid excessive output)
+    //     let display_count = std::cmp::min(10, digits.len());
+    //     println!(
+    //         "First {} digits: {:?}",
+    //         display_count,
+    //         &digits[0..display_count]
+    //     );
+    // }
 }
