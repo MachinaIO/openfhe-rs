@@ -44,6 +44,14 @@ namespace openfhe
         size_t kRes,
         const rust::Vec<rust::String> &values);
 
+    // Generate a polynomial from integers interpreted as EVALUATION slots,
+    // and return the resulting DCRTPoly in EVALUATION format.
+    [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromEvalVec(
+        usint n,
+        size_t size,
+        size_t kRes,
+        const rust::Vec<rust::String> &values);
+
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromBug(usint n, size_t size, size_t kRes);
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromDug(usint n, size_t size, size_t kRes);
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromDgg(usint n, size_t size, size_t kRes, double sigma);
