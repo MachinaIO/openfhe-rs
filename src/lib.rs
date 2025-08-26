@@ -1093,6 +1093,13 @@ pub mod ffi
             k_res : usize,
             values : &Vec<String>, )
             ->UniquePtr<DCRTPoly>;
+        // Create DCRTPoly from EVALUATION-slot integers and return EVALUATION format
+        fn DCRTPolyGenFromEvalVec(
+            n : u32,
+            size : usize,
+            k_res : usize,
+            values : &Vec<String>, )
+            ->UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromBug(n : u32, size : usize, k_res : usize)->UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromDug(n : u32, size : usize, k_res : usize)->UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromDgg(n : u32, size : usize, k_res : usize, sigma : f64)
@@ -1212,7 +1219,7 @@ pub mod ffi
         fn GenParamsByScheme(scheme : SCHEME)->UniquePtr<Params>;
         fn GenParamsByVectorOfString(vals : &CxxVector<CxxString>)->UniquePtr<Params>;
         fn GenModulus(n : u32, size : usize, k_res : usize)->String;
-        fn GenCRTBasis(n: u32, size: usize, k_res: usize) -> Vec<String>;
+        fn GenCRTBasis(n : u32, size : usize, k_res : usize)->Vec<String>;
     }
 
     // ParamsBFVRNS
@@ -2260,5 +2267,48 @@ mod tests
         println !("{}\n", _plain_text_dec_2.GetString());
         println !(" Expected result: (3.4515092326, 5.3752765397, 4.8993108833, 3.2495023573, 4.0485229982)");
         print !("\n Evaluation time: {:.0?}\n", _time_eval_poly_2);
+    }
+
+#[test]
+    fn DCRTPolyGenFromEvalVec_slot_selection()
+    {
+        // Parameters: small ring, a couple of CRT towers, modest bit-size per tower
+        let n : u32 = 8;        // ring dimension
+        let size : usize = 2;   // number of CRT primes (towers)
+        let k_res : usize = 24; // bits per prime
+
+        // Deterministic pseudo-random values for evaluation slots
+        let mut values : Vec<String> = Vec::with_capacity(n as usize);
+        for
+            i in 0..(n as usize)
+            {
+                // simple deterministic sequence in [1, 1000)
+                let v = ((i * 73 + 17) % 997 + 1) as u64;
+                values.push(v.to_string());
+            }
+
+        // Build the polynomial from evaluation slots (returns coefficient representation)
+        let poly = ffi::DCRTPolyGenFromEvalVec(n, size, k_res, &values);
+
+        // For each slot i, multiply by selector with only i-th slot = 1
+        // and verify the result equals the polynomial constructed from
+        // evaluation vector with only i-th value preserved.
+        for
+            i in 0..(n as usize)
+            {
+                let mut selector_vals = vec ![String::from("0"); n as usize];
+                selector_vals[i] = String::from("1");
+                let selector = ffi::DCRTPolyGenFromEvalVec(n, size, k_res, &selector_vals);
+
+                let prod = ffi::DCRTPolyMul(&poly, &selector);
+
+                let mut expected_vals = vec ![String::from("0"); n as usize];
+                expected_vals[i] = values[i].clone();
+                let expected = ffi::DCRTPolyGenFromEvalVec(n, size, k_res, &expected_vals);
+
+                let prod_ref = prod.as_ref().expect("prod ref");
+                let expected_ref = expected.as_ref().expect("expected ref");
+                assert !(prod_ref.IsEqual(expected_ref), "slot {} selection failed", i);
+            }
     }
 }
