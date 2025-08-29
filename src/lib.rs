@@ -1104,6 +1104,7 @@ pub mod ffi
         fn DCRTPolyGenFromDug(n : u32, size : usize, k_res : usize)->UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromDgg(n : u32, size : usize, k_res : usize, sigma : f64)
             ->UniquePtr<DCRTPoly>;
+        fn DCRTPolyGenFromTug(n : u32, size : usize, k_res : usize)->UniquePtr<DCRTPoly>;
 
         // Arithmetic
         fn DCRTPolyAdd(rhs : &DCRTPoly, lhs : &DCRTPoly)->UniquePtr<DCRTPoly>;
