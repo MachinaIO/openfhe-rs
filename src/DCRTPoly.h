@@ -55,6 +55,7 @@ namespace openfhe
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromBug(usint n, size_t size, size_t kRes);
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromDug(usint n, size_t size, size_t kRes);
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromDgg(usint n, size_t size, size_t kRes, double sigma);
+    [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromTug(usint n, size_t size, size_t kRes);
 
     // Arithmetic
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyAdd(const DCRTPoly &rhs, const DCRTPoly &lhs);
