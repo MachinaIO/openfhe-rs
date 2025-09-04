@@ -52,6 +52,17 @@ namespace openfhe
         size_t kRes,
         const rust::Vec<rust::String> &values);
 
+    // Generate a polynomial from EVALUATION-slot integers using the i-th CRT
+    // prime from the auto-generated chain for (n, size, kRes) as the modulus.
+    // Returns the resulting DCRTPoly in EVALUATION format.
+    // Indexing is 0-based: 0 refers to the largest prime in the chain.
+    [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromEvalVecSingleMod(
+        usint n,
+        size_t size,
+        size_t kRes,
+        size_t index,
+        const rust::Vec<rust::String> &values);
+
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromBug(usint n, size_t size, size_t kRes);
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromDug(usint n, size_t size, size_t kRes);
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromDgg(usint n, size_t size, size_t kRes, double sigma);

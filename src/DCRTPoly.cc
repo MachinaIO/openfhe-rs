@@ -191,6 +191,45 @@ namespace openfhe
         return std::make_unique<DCRTPoly>(std::move(dcrtPoly));
     }
 
+    std::unique_ptr<DCRTPoly> DCRTPolyGenFromEvalVecSingleMod(
+        usint n,
+        size_t size,
+        size_t kRes,
+        size_t index,
+        const rust::Vec<rust::String> &values)
+    {
+        // Generate the full CRT chain for (n, size, kRes)
+        auto allParams = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+        const auto &towers = allParams->GetParams();
+        if (index >= towers.size())
+        {
+            throw std::out_of_range("DCRTPolyGenFromEvalVecSingleMod: index out of range");
+        }
+
+        // Select the i-th prime modulus from the chain (0-based; 0 is the largest prime)
+        std::vector<lbcrypto::NativeInteger> moduli;
+        moduli.emplace_back(towers[index]->GetModulus());
+
+        // Build single-limb params with the selected modulus
+        auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, moduli);
+
+        // Create a BigVector for evaluation slots under the selected modulus
+        lbcrypto::BigVector bigVec(params->GetRingDimension(), params->GetModulus());
+        for (size_t i = 0; i < values.size() && i < params->GetRingDimension(); i++)
+        {
+            bigVec[i] = lbcrypto::BigInteger(std::string(values[i]));
+        }
+
+        // Build a Poly with values interpreted in EVALUATION domain
+        lbcrypto::PolyImpl<lbcrypto::BigVector> polyLarge(params, Format::EVALUATION);
+        polyLarge.SetValues(bigVec, Format::EVALUATION);
+
+        // Convert to a DCRTPoly
+        lbcrypto::DCRTPoly dcrtPoly(polyLarge, params);
+
+        return std::make_unique<DCRTPoly>(std::move(dcrtPoly));
+    }
+
     std::unique_ptr<DCRTPoly> DCRTPolyGenFromBug(usint n, size_t size, size_t kRes)
     {
         auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);

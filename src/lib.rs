@@ -1100,6 +1100,14 @@ pub mod ffi
             k_res : usize,
             values : &Vec<String>, )
             ->UniquePtr<DCRTPoly>;
+        // Create DCRTPoly from EVALUATION-slot integers with i-th prime modulus
+        fn DCRTPolyGenFromEvalVecSingleMod(
+            n : u32,
+            size : usize,
+            k_res : usize,
+            index : usize,
+            values : &Vec<String>, )
+            ->UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromBug(n : u32, size : usize, k_res : usize)->UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromDug(n : u32, size : usize, k_res : usize)->UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromDgg(n : u32, size : usize, k_res : usize, sigma : f64)
@@ -2310,5 +2318,61 @@ mod tests
                 let expected_ref = expected.as_ref().expect("expected ref");
                 assert !(prod_ref.IsEqual(expected_ref), "slot {} selection failed", i);
             }
+    }
+
+#[test]
+    fn DCRTPolyGenFromEvalVecSingleMod_slot_selection()
+    {
+        use num_bigint::BigUint;
+        use num_traits::Num;
+
+        // Parameters: small ring, two CRT primes, modest bit-size per prime
+        let n : u32 = 8;        // ring dimension
+        let size : usize = 2;   // number of CRT primes (towers)
+        let k_res : usize = 24; // bits per prime
+
+        // Fetch the CRT primes so we can craft values > p and check reduction mod p
+        let primes = ffi::GenCRTBasis(n, size, k_res);
+
+        // Test the slot-selection property under each single-limb modulus (index 0..size-1)
+        for idx in 0..size {
+            let p_str = primes[idx].clone();
+            let p = BigUint::from_str_radix(&p_str, 10).expect("parse prime");
+
+            // Build values: each slot value = p + small_base (so definitely reduced mod p)
+            let mut values : Vec<String> = Vec::with_capacity(n as usize);
+            for j in 0..(n as usize) {
+                let base: u64 = ((j * 73 + 17) % 997 + 1) as u64; // small number < p
+                let v = &p + BigUint::from(base);
+                values.push(v.to_string());
+            }
+
+            // Build the polynomial from evaluation slots under single modulus idx
+            let poly = ffi::DCRTPolyGenFromEvalVecSingleMod(n, size, k_res, idx, &values);
+
+            // Sanity: modulus of the constructed poly equals the selected prime
+            assert_eq!(poly.GetModulus(), p_str, "unexpected modulus for idx {}", idx);
+
+            for i in 0..(n as usize) {
+                // Selector with 1 at slot i and 0 elsewhere
+                let mut selector_vals = vec![String::from("0"); n as usize];
+                selector_vals[i] = String::from("1");
+                let selector = ffi::DCRTPolyGenFromEvalVecSingleMod(n, size, k_res, idx, &selector_vals);
+
+                // Multiply and compare against expected mask-applied vector
+                let prod = ffi::DCRTPolyMul(&poly, &selector);
+
+                // Expected: all zeros except slot i reduced modulo p
+                let mut expected_vals = vec![String::from("0"); n as usize];
+                let vi = BigUint::from_str_radix(&values[i], 10).expect("parse value");
+                let vi_mod = vi % &p;
+                expected_vals[i] = vi_mod.to_string();
+                let expected = ffi::DCRTPolyGenFromEvalVecSingleMod(n, size, k_res, idx, &expected_vals);
+
+                let prod_ref = prod.as_ref().expect("prod ref");
+                let expected_ref = expected.as_ref().expect("expected ref");
+                assert!(prod_ref.IsEqual(expected_ref), "slot {} selection failed (idx {})", i, idx);
+            }
+        }
     }
 }
