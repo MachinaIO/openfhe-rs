@@ -254,6 +254,14 @@ namespace openfhe
         return std::make_unique<DCRTPoly>(std::move(poly));
     }
 
+    std::unique_ptr<DCRTPoly> DCRTPolyGenFromTug(usint n, size_t size, size_t kRes)
+    {
+        auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+        typename lbcrypto::DCRTPoly::TugType tug;
+        auto poly = lbcrypto::DCRTPoly(tug, params, Format::EVALUATION);
+        return std::make_unique<DCRTPoly>(std::move(poly));
+    }
+
     DCRTPolyParams::DCRTPolyParams(const std::shared_ptr<lbcrypto::DCRTPoly::Params> &params) noexcept
         : m_params(params)
     {
