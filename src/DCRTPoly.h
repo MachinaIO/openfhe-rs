@@ -26,6 +26,9 @@ namespace openfhe
         [[nodiscard]] bool IsEqual(const DCRTPoly &other) const noexcept;
         [[nodiscard]] rust::Vec<rust::String> GetCoefficients() const;
         [[nodiscard]] rust::Vec<rust::u8> GetCoefficientsBytes() const;
+        [[nodiscard]] rust::Vec<rust::String> GetEvalSlotOfTower(
+            size_t towerIndex,
+            size_t slotIndex) const;
         [[nodiscard]] rust::String GetModulus() const;
         [[nodiscard]] std::unique_ptr<DCRTPoly> Negate() const;
         [[nodiscard]] std::unique_ptr<Matrix> Decompose(uint32_t baseBits) const;
