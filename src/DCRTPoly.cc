@@ -78,7 +78,7 @@ namespace openfhe
         return result;
     }
 
-    rust::Vec<rust::String> DCRTPoly::GetEvalSlotOfTower(
+    rust::String DCRTPoly::GetEvalSlotOfTower(
         size_t towerIndex,
         size_t slotIndex) const
     {
@@ -88,9 +88,7 @@ namespace openfhe
         auto element = tempPoly.GetElementAtIndex(towerIndex); // EVALUATION domain
         const auto &vals = element.GetValues();
 
-        rust::Vec<rust::String> out;
-        out.push_back(rust::String(std::to_string(vals[slotIndex].ConvertToInt<BasicInteger>())));
-        return out;
+        return rust::String(std::to_string(vals[slotIndex].ConvertToInt<BasicInteger>()));
     }
 
     std::unique_ptr<DCRTPoly> DCRTPoly::Negate() const

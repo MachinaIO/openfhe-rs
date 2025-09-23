@@ -1076,7 +1076,7 @@ pub mod ffi
         fn IsEqual(self : &DCRTPoly, other : &DCRTPoly)->bool;
         fn GetCoefficients(self : &DCRTPoly)->Vec<String>;
         fn GetCoefficientsBytes(self : &DCRTPoly)->Vec<u8>;
-        fn GetEvalSlotOfTower(self : &DCRTPoly, tower_index : usize, slot_index : usize)->Vec<String>;
+        fn GetEvalSlotOfTower(self : &DCRTPoly, tower_index : usize, slot_index : usize)->String;
         fn GetModulus(self : &DCRTPoly)->String;
         fn Negate(self : &DCRTPoly)->UniquePtr<DCRTPoly>;
         fn Decompose(self : &DCRTPoly, base_bits : u32)->UniquePtr<Matrix>;
