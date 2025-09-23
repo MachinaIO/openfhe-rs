@@ -2313,4 +2313,30 @@ mod tests
                 assert !(prod_ref.IsEqual(expected_ref), "slot {} selection failed", i);
             }
     }
+
+    #[test]
+    fn GetEvalSlotOfTower_basic()
+    {
+        // Small ring with two CRT towers; ensure values are below each prime modulus
+        let n: u32 = 8;
+        let size: usize = 2;
+        let k_res: usize = 24; // ~24-bit primes
+
+        // Deterministic small evaluation-slot values (all < 2^24)
+        let values: Vec<String> = (0..n as usize)
+            .map(|i| ((i as u64) + 1).to_string())
+            .collect();
+
+        // Construct a DCRTPoly directly in EVALUATION format from the slot values
+        let poly = ffi::DCRTPolyGenFromEvalVec(n, size, k_res, &values);
+        let poly_ref = poly.as_ref().expect("poly ref");
+
+        // For each tower and slot, GetEvalSlotOfTower should match the provided value
+        for tower in 0..size {
+            for slot in 0..(n as usize) {
+                let got = poly_ref.GetEvalSlotOfTower(tower, slot);
+                assert_eq!(got, values[slot], "mismatch at tower {}, slot {}", tower, slot);
+            }
+        }
+    }
 }
