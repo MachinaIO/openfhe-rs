@@ -175,6 +175,7 @@ pub mod ffi
         include !("openfhe/src/PublicKey.h");
         include !("openfhe/src/SchemeBase.h");
         include !("openfhe/src/SchemeletRLWEMP.h");
+        include !("openfhe/src/Hermite.h");
         include !("openfhe/src/SequenceContainers.h");
         include !("openfhe/src/SerialDeserial.h");
         include !("openfhe/src/Trapdoor.h");
@@ -1173,6 +1174,31 @@ pub mod ffi
             q : &CxxString, )
             ->UniquePtr<VectorOfPolys>;
         fn SchemeletRLWEMPGetQPrime(publicKey : &PublicKeyDCRTPoly, lvls : u32)->String;
+    }
+
+    // Functional bootstrap helpers
+    unsafe extern "C++"
+    {
+        fn GetHermiteTrigCoefficientsByFunction(
+            func : fn(i64)->i64,
+            p : u32,
+            order : usize,
+            scale : f64, )
+            ->UniquePtr<CxxVector<ComplexPair>>;
+        fn GetFBTDepthByComplex(
+            levelBudget : &CxxVector<u32>,
+            coefficients : &CxxVector<ComplexPair>,
+            p_in : &CxxString,
+            order : usize,
+            skd : SecretKeyDist, )
+            ->u32;
+        fn GetFBTDepthByInt64(
+            levelBudget : &CxxVector<u32>,
+            coefficients : &CxxVector<i64>,
+            p_in : &CxxString,
+            order : usize,
+            skd : SecretKeyDist, )
+            ->u32;
     }
 
     // DCRTPoly

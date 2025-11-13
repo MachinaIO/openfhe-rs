@@ -6,6 +6,7 @@
 #include "openfhe/pke/gen-cryptocontext.h"
 #include "openfhe/pke/scheme/bfvrns/gen-cryptocontext-bfvrns.h"
 #include "openfhe/pke/scheme/bgvrns/gen-cryptocontext-bgvrns.h"
+#include "openfhe/pke/scheme/ckksrns/ckksrns-fhe.h"
 #include "openfhe/pke/scheme/ckksrns/gen-cryptocontext-ckksrns.h"
 
 #include "openfhe/src/lib.rs.h"
@@ -308,6 +309,23 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalFBTByInt64(
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalFBT(
         ciphertext.GetRef(), coefficients, digitBitSize, initScaling, postScaling,
         levelToReduce, order));
+}
+
+uint32_t GetFBTDepthByComplex(const std::vector<uint32_t>& levelBudget,
+    const std::vector<ComplexPair>& coefficients, const std::string& PInput,
+    const size_t order, const lbcrypto::SecretKeyDist skd)
+{
+    const lbcrypto::BigInteger bigP(PInput);
+    auto converted = ConvertComplexPairs(coefficients);
+    return lbcrypto::FHECKKSRNS::GetFBTDepth(levelBudget, converted, bigP, order, skd);
+}
+
+uint32_t GetFBTDepthByInt64(const std::vector<uint32_t>& levelBudget,
+    const std::vector<int64_t>& coefficients, const std::string& PInput,
+    const size_t order, const lbcrypto::SecretKeyDist skd)
+{
+    const lbcrypto::BigInteger bigP(PInput);
+    return lbcrypto::FHECKKSRNS::GetFBTDepth(levelBudget, coefficients, bigP, order, skd);
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalChebyshevFunction(
     rust::Fn<void(const double x, double& ret)> func, const CiphertextDCRTPoly& ciphertext,

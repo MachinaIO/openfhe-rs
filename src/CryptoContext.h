@@ -3,9 +3,13 @@
 #include "openfhe/core/lattice/hal/lat-backend.h"
 #include "openfhe/pke/constants.h"
 #include "openfhe/pke/cryptocontext-fwd.h"
+#include "openfhe/pke/scheme/gen-cryptocontext-params.h"
 #include "openfhe/pke/scheme/scheme-id.h"
 
 #include "rust/cxx.h"
+
+#include <string>
+#include <vector>
 
 namespace lbcrypto
 {
@@ -454,6 +458,13 @@ public:
     [[nodiscard]] const std::shared_ptr<CryptoContextImpl>& GetRef() const noexcept;
     [[nodiscard]] std::shared_ptr<CryptoContextImpl>& GetRef() noexcept;
 };
+
+uint32_t GetFBTDepthByComplex(const std::vector<uint32_t>& levelBudget,
+    const std::vector<ComplexPair>& coefficients, const std::string& PInput,
+    size_t order, lbcrypto::SecretKeyDist skd);
+uint32_t GetFBTDepthByInt64(const std::vector<uint32_t>& levelBudget,
+    const std::vector<int64_t>& coefficients, const std::string& PInput,
+    size_t order, lbcrypto::SecretKeyDist skd);
 
 // cxx currently does not support static class methods
 void DCRTPolyClearEvalAutomorphismKeys();
