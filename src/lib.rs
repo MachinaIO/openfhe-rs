@@ -394,9 +394,9 @@ pub mod ffi
             self : &CryptoContextDCRTPoly,
             coefficients : &CxxVector<ComplexPair>,
             numSlots : u32,
-            pIn : &CxxString,
-            pOut : &CxxString,
-            bigq : &CxxString,
+            pIn : &str,
+            pOut : &str,
+            bigq : &str,
             pubKey : &PublicKeyDCRTPoly,
             dim1 : &CxxVector<u32>,
             levelBudget : &CxxVector<u32>,
@@ -407,9 +407,9 @@ pub mod ffi
             self : &CryptoContextDCRTPoly,
             coefficients : &CxxVector<i64>,
             numSlots : u32,
-            pIn : &CxxString,
-            pOut : &CxxString,
-            bigq : &CxxString,
+            pIn : &str,
+            pOut : &str,
+            bigq : &str,
             pubKey : &PublicKeyDCRTPoly,
             dim1 : &CxxVector<u32>,
             levelBudget : &CxxVector<u32>,
@@ -421,7 +421,7 @@ pub mod ffi
             ciphertext : &CiphertextDCRTPoly,
             coefficients : &CxxVector<ComplexPair>,
             digitBitSize : u32,
-            initialScaling : &CxxString,
+            initialScaling : &str,
             postScaling : u64,
             levelToReduce : /* 0 */ u32,
             order : /* 1 */ usize, )
@@ -431,7 +431,7 @@ pub mod ffi
             ciphertext : &CiphertextDCRTPoly,
             coefficients : &CxxVector<i64>,
             digitBitSize : u32,
-            initialScaling : &CxxString,
+            initialScaling : &str,
             postScaling : u64,
             levelToReduce : /* 0 */ u32,
             order : /* 1 */ usize, )
@@ -1188,14 +1188,14 @@ pub mod ffi
         fn GetFBTDepthByComplex(
             levelBudget : &CxxVector<u32>,
             coefficients : &CxxVector<ComplexPair>,
-            p_in : &CxxString,
+            p_in : &str,
             order : usize,
             skd : SecretKeyDist, )
             ->u32;
         fn GetFBTDepthByInt64(
             levelBudget : &CxxVector<u32>,
             coefficients : &CxxVector<i64>,
-            p_in : &CxxString,
+            p_in : &str,
             order : usize,
             skd : SecretKeyDist, )
             ->u32;
