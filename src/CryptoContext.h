@@ -142,22 +142,22 @@ public:
         const std::vector<uint32_t>& dim1 /* {0, 0} */, const uint32_t slots /* 0 */,
         const uint32_t correctionFactor /* 0 */, const bool precompute /* true */) const;
     void EvalFBTSetupByComplex(const std::vector<ComplexPair>& coefficients, const uint32_t numSlots,
-        rust::Str PIn, rust::Str POut, rust::Str Bigq,
+        const std::string& PIn, const std::string& POut, const std::string& Bigq,
         const PublicKeyDCRTPoly& pubKey, const std::vector<uint32_t>& dim1,
         const std::vector<uint32_t>& levelBudget, const uint32_t lvlsAfterBoot /* 0 */,
         const uint32_t depthLeveledComputation /* 0 */, const size_t order /* 1 */) const;
     void EvalFBTSetupByInt64(const std::vector<int64_t>& coefficients, const uint32_t numSlots,
-        rust::Str PIn, rust::Str POut, rust::Str Bigq,
+        const std::string& PIn, const std::string& POut, const std::string& Bigq,
         const PublicKeyDCRTPoly& pubKey, const std::vector<uint32_t>& dim1,
         const std::vector<uint32_t>& levelBudget, const uint32_t lvlsAfterBoot /* 0 */,
         const uint32_t depthLeveledComputation /* 0 */, const size_t order /* 1 */) const;
     [[nodiscard]] std::unique_ptr<CiphertextDCRTPoly> EvalFBTByComplex(
         const CiphertextDCRTPoly& ciphertext, const std::vector<ComplexPair>& coefficients,
-        const uint32_t digitBitSize, rust::Str initialScaling, const uint64_t postScaling,
+        const uint32_t digitBitSize, const std::string& initialScaling, const uint64_t postScaling,
         const uint32_t levelToReduce /* 0 */, const size_t order /* 1 */) const;
     [[nodiscard]] std::unique_ptr<CiphertextDCRTPoly> EvalFBTByInt64(
         const CiphertextDCRTPoly& ciphertext, const std::vector<int64_t>& coefficients,
-        const uint32_t digitBitSize, rust::Str initialScaling, const uint64_t postScaling,
+        const uint32_t digitBitSize, const std::string& initialScaling, const uint64_t postScaling,
         const uint32_t levelToReduce /* 0 */, const size_t order /* 1 */) const;
     [[nodiscard]] std::unique_ptr<VectorOfLWECiphertexts> EvalCKKStoFHEW(
         const CiphertextDCRTPoly& ciphertext, const uint32_t numCtxts /* 0 */) const;
@@ -460,10 +460,10 @@ public:
 };
 
 uint32_t GetFBTDepthByComplex(const std::vector<uint32_t>& levelBudget,
-    const std::vector<ComplexPair>& coefficients, rust::Str PInput,
+    const std::vector<ComplexPair>& coefficients, const std::string& PInput,
     size_t order, lbcrypto::SecretKeyDist skd);
 uint32_t GetFBTDepthByInt64(const std::vector<uint32_t>& levelBudget,
-    const std::vector<int64_t>& coefficients, rust::Str PInput,
+    const std::vector<int64_t>& coefficients, const std::string& PInput,
     size_t order, lbcrypto::SecretKeyDist skd);
 
 // cxx currently does not support static class methods

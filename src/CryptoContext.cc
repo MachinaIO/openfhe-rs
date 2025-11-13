@@ -1,7 +1,6 @@
 #include "CryptoContext.h"
 
 #include <complex>
-#include <string>
 
 #include "openfhe/pke/cryptocontext.h"
 #include "openfhe/pke/gen-cryptocontext.h"
@@ -44,11 +43,6 @@ std::vector<std::complex<double>> ConvertComplexPairs(const std::vector<ComplexP
         converted.emplace_back(elem.re, elem.im);
     }
     return converted;
-}
-
-lbcrypto::BigInteger MakeBigInteger(rust::Str value)
-{
-    return lbcrypto::BigInteger(std::string(value.data(), value.size()));
 }
 
 } // namespace
@@ -251,14 +245,14 @@ void CryptoContextDCRTPoly::EvalBootstrapSetup(const std::vector<uint32_t>& leve
 }
 void CryptoContextDCRTPoly::EvalFBTSetupByComplex(
     const std::vector<ComplexPair>& coefficients, const uint32_t numSlots,
-    rust::Str PIn, rust::Str POut, rust::Str Bigq,
+    const std::string& PIn, const std::string& POut, const std::string& Bigq,
     const PublicKeyDCRTPoly& pubKey, const std::vector<uint32_t>& dim1,
     const std::vector<uint32_t>& levelBudget, const uint32_t lvlsAfterBoot,
     const uint32_t depthLeveledComputation, const size_t order) const
 {
-    const lbcrypto::BigInteger bigPIn = MakeBigInteger(PIn);
-    const lbcrypto::BigInteger bigPOut = MakeBigInteger(POut);
-    const lbcrypto::BigInteger bigBigq = MakeBigInteger(Bigq);
+    const lbcrypto::BigInteger bigPIn(PIn);
+    const lbcrypto::BigInteger bigPOut(POut);
+    const lbcrypto::BigInteger bigBigq(Bigq);
     auto coeffs = ConvertComplexPairs(coefficients);
 
     m_cryptoContextImplSharedPtr->EvalFBTSetup(coeffs, numSlots, bigPIn, bigPOut, bigBigq,
@@ -266,14 +260,14 @@ void CryptoContextDCRTPoly::EvalFBTSetupByComplex(
 }
 void CryptoContextDCRTPoly::EvalFBTSetupByInt64(
     const std::vector<int64_t>& coefficients, const uint32_t numSlots,
-    rust::Str PIn, rust::Str POut, rust::Str Bigq,
+    const std::string& PIn, const std::string& POut, const std::string& Bigq,
     const PublicKeyDCRTPoly& pubKey, const std::vector<uint32_t>& dim1,
     const std::vector<uint32_t>& levelBudget, const uint32_t lvlsAfterBoot,
     const uint32_t depthLeveledComputation, const size_t order) const
 {
-    const lbcrypto::BigInteger bigPIn = MakeBigInteger(PIn);
-    const lbcrypto::BigInteger bigPOut = MakeBigInteger(POut);
-    const lbcrypto::BigInteger bigBigq = MakeBigInteger(Bigq);
+    const lbcrypto::BigInteger bigPIn(PIn);
+    const lbcrypto::BigInteger bigPOut(POut);
+    const lbcrypto::BigInteger bigBigq(Bigq);
 
     m_cryptoContextImplSharedPtr->EvalFBTSetup(coefficients, numSlots, bigPIn, bigPOut, bigBigq,
         pubKey.GetRef(), dim1, levelBudget, lvlsAfterBoot, depthLeveledComputation, order);
@@ -295,10 +289,10 @@ void CryptoContextDCRTPoly::EvalCKKStoFHEWPrecompute(const double scale) const
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalFBTByComplex(
     const CiphertextDCRTPoly& ciphertext, const std::vector<ComplexPair>& coefficients,
-    const uint32_t digitBitSize, rust::Str initialScaling, const uint64_t postScaling,
+    const uint32_t digitBitSize, const std::string& initialScaling, const uint64_t postScaling,
     const uint32_t levelToReduce, const size_t order) const
 {
-    const lbcrypto::BigInteger initScaling = MakeBigInteger(initialScaling);
+    const lbcrypto::BigInteger initScaling(initialScaling);
     auto coeffs = ConvertComplexPairs(coefficients);
 
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalFBT(
@@ -307,10 +301,10 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalFBTByComplex(
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalFBTByInt64(
     const CiphertextDCRTPoly& ciphertext, const std::vector<int64_t>& coefficients,
-    const uint32_t digitBitSize, rust::Str initialScaling, const uint64_t postScaling,
+    const uint32_t digitBitSize, const std::string& initialScaling, const uint64_t postScaling,
     const uint32_t levelToReduce, const size_t order) const
 {
-    const lbcrypto::BigInteger initScaling = MakeBigInteger(initialScaling);
+    const lbcrypto::BigInteger initScaling(initialScaling);
 
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalFBT(
         ciphertext.GetRef(), coefficients, digitBitSize, initScaling, postScaling,
@@ -318,19 +312,19 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalFBTByInt64(
 }
 
 uint32_t GetFBTDepthByComplex(const std::vector<uint32_t>& levelBudget,
-    const std::vector<ComplexPair>& coefficients, rust::Str PInput,
+    const std::vector<ComplexPair>& coefficients, const std::string& PInput,
     const size_t order, const lbcrypto::SecretKeyDist skd)
 {
-    const lbcrypto::BigInteger bigP = MakeBigInteger(PInput);
+    const lbcrypto::BigInteger bigP(PInput);
     auto converted = ConvertComplexPairs(coefficients);
     return lbcrypto::FHECKKSRNS::GetFBTDepth(levelBudget, converted, bigP, order, skd);
 }
 
 uint32_t GetFBTDepthByInt64(const std::vector<uint32_t>& levelBudget,
-    const std::vector<int64_t>& coefficients, rust::Str PInput,
+    const std::vector<int64_t>& coefficients, const std::string& PInput,
     const size_t order, const lbcrypto::SecretKeyDist skd)
 {
-    const lbcrypto::BigInteger bigP = MakeBigInteger(PInput);
+    const lbcrypto::BigInteger bigP(PInput);
     return lbcrypto::FHECKKSRNS::GetFBTDepth(levelBudget, coefficients, bigP, order, skd);
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalChebyshevFunction(
