@@ -25,6 +25,18 @@ const std::shared_ptr<std::vector<lbcrypto::DCRTPoly>>& VectorOfDCRTPolys::GetRe
     return m_elements;
 }
 
+VectorOfPolys::VectorOfPolys(std::vector<lbcrypto::Poly>&& polys) noexcept
+    : m_polys(std::move(polys))
+{ }
+const std::vector<lbcrypto::Poly>& VectorOfPolys::GetRef() const noexcept
+{
+    return m_polys;
+}
+std::vector<lbcrypto::Poly>& VectorOfPolys::GetRef() noexcept
+{
+    return m_polys;
+}
+
 VectorOfEvalKeys::VectorOfEvalKeys(std::vector<std::shared_ptr<EvalKeyImpl>> evalKeys)
     : m_evalKeys(std::move(evalKeys))
 { }

@@ -6,6 +6,8 @@
 #include "openfhe/pke/key/evalkey-fwd.h"
 #include "openfhe/pke/key/privatekey-fwd.h"
 
+#include <vector>
+
 // cxx currently does not support std::vector of opaque type
 
 namespace openfhe
@@ -30,6 +32,16 @@ public:
     VectorOfDCRTPolys(std::shared_ptr<std::vector<lbcrypto::DCRTPoly>>&& elements) noexcept;
 
     [[nodiscard]] const std::shared_ptr<std::vector<lbcrypto::DCRTPoly>>& GetRef() const noexcept;
+};
+
+class VectorOfPolys final
+{
+    std::vector<lbcrypto::Poly> m_polys;
+public:
+    explicit VectorOfPolys(std::vector<lbcrypto::Poly>&& polys) noexcept;
+
+    [[nodiscard]] const std::vector<lbcrypto::Poly>& GetRef() const noexcept;
+    [[nodiscard]] std::vector<lbcrypto::Poly>& GetRef() noexcept;
 };
 
 using EvalKeyImpl = lbcrypto::EvalKeyImpl<lbcrypto::DCRTPoly>;

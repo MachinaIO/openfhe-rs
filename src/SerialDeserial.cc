@@ -2,6 +2,8 @@
 
 #include "openfhe/pke/cryptocontext-ser.h"
 
+#include <utility>
+
 #include "Ciphertext.h"
 #include "CryptoContext.h"
 #include "PrivateKey.h"
@@ -50,12 +52,12 @@ template <typename Object>
 
 template <typename ST, typename Stream, typename FStream, typename... Types>
 [[nodiscard]] bool SerialDeserial(const std::string& location,
-    bool (* const funcPtr) (Stream&, const ST&, Types... args), Types... args)
+    bool (* const funcPtr) (Stream&, const ST&, Types... args), Types&&... args)
 {
     const auto close = [](FStream* const fs){ if (fs->is_open()) { fs->close(); } };
     const std::unique_ptr<FStream, decltype(close)> fs(
         new FStream(location, std::ios::binary), close);
-    return fs->is_open() ? funcPtr(*fs, ST{}, args...) : false;
+    return fs->is_open() ? funcPtr(*fs, ST{}, std::forward<Types>(args)...) : false;
 }
 
 // Ciphertext
@@ -118,15 +120,17 @@ bool DCRTPolySerializeEvalAutomorphismKeyToFile(const std::string& automorphismK
 {
     if (serialMode == SerialMode::BINARY)
     {
+        auto context = cryptoContext.GetRef();
         return SerialDeserial<lbcrypto::SerType::SERBINARY, std::ostream, std::ofstream>(
             automorphismKeyLocation, CryptoContextImpl::SerializeEvalAutomorphismKey,
-            cryptoContext.GetRef());
+            std::move(context));
     }
     if (serialMode == SerialMode::JSON)
     {
+        auto context = cryptoContext.GetRef();
         return SerialDeserial<lbcrypto::SerType::SERJSON, std::ostream, std::ofstream>(
             automorphismKeyLocation, CryptoContextImpl::SerializeEvalAutomorphismKey,
-            cryptoContext.GetRef());
+            std::move(context));
     }
     return false;
 }
@@ -167,13 +171,15 @@ bool DCRTPolySerializeEvalMultKeyToFile(const std::string& multKeyLocation,
 {
     if (serialMode == SerialMode::BINARY)
     {
+        auto context = cryptoContext.GetRef();
         return SerialDeserial<lbcrypto::SerType::SERBINARY, std::ostream, std::ofstream>(
-            multKeyLocation, CryptoContextImpl::SerializeEvalMultKey, cryptoContext.GetRef());
+            multKeyLocation, CryptoContextImpl::SerializeEvalMultKey, std::move(context));
     }
     if (serialMode == SerialMode::JSON)
     {
+        auto context = cryptoContext.GetRef();
         return SerialDeserial<lbcrypto::SerType::SERJSON, std::ostream, std::ofstream>(
-            multKeyLocation, CryptoContextImpl::SerializeEvalMultKey, cryptoContext.GetRef());
+            multKeyLocation, CryptoContextImpl::SerializeEvalMultKey, std::move(context));
     }
     return false;
 }
@@ -213,15 +219,15 @@ bool DCRTPolySerializeEvalSumKeyToFile(const std::string& sumKeyLocation,
 {
     if (serialMode == SerialMode::BINARY)
     {
+        auto context = cryptoContext.GetRef();
         return SerialDeserial<lbcrypto::SerType::SERBINARY, std::ostream, std::ofstream>(
-            sumKeyLocation, CryptoContextImpl::SerializeEvalAutomorphismKey,
-            cryptoContext.GetRef());
+            sumKeyLocation, CryptoContextImpl::SerializeEvalAutomorphismKey, std::move(context));
     }
     if (serialMode == SerialMode::JSON)
     {
+        auto context = cryptoContext.GetRef();
         return SerialDeserial<lbcrypto::SerType::SERJSON, std::ostream, std::ofstream>(
-            sumKeyLocation, CryptoContextImpl::SerializeEvalAutomorphismKey,
-            cryptoContext.GetRef());
+            sumKeyLocation, CryptoContextImpl::SerializeEvalAutomorphismKey, std::move(context));
     }
     return false;
 }

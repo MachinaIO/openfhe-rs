@@ -1,5 +1,7 @@
 #include "CryptoContext.h"
 
+#include <complex>
+
 #include "openfhe/pke/cryptocontext.h"
 #include "openfhe/pke/gen-cryptocontext.h"
 #include "openfhe/pke/scheme/bfvrns/gen-cryptocontext-bfvrns.h"
@@ -27,6 +29,22 @@ namespace openfhe
 {
 
 using PlaintextImpl = lbcrypto::PlaintextImpl;
+
+namespace
+{
+
+std::vector<std::complex<double>> ConvertComplexPairs(const std::vector<ComplexPair>& value)
+{
+    std::vector<std::complex<double>> converted;
+    converted.reserve(value.size());
+    for (const ComplexPair& elem : value)
+    {
+        converted.emplace_back(elem.re, elem.im);
+    }
+    return converted;
+}
+
+} // namespace
 
 CryptoContextDCRTPoly::CryptoContextDCRTPoly(const ParamsBFVRNS& params)
     : m_cryptoContextImplSharedPtr(lbcrypto::GenCryptoContext(params))
@@ -92,7 +110,7 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalAddByCiphertextAn
         ciphertext.GetRef(), constant));
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalAddByCiphertextAndPlaintext(
-    const CiphertextDCRTPoly& ciphertext, const Plaintext& plaintext) const
+    const CiphertextDCRTPoly& ciphertext, Plaintext& plaintext) const
 {
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalAdd(
         ciphertext.GetRef(), plaintext.GetRef()));
@@ -110,7 +128,7 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalAddByConstAndCiph
         ciphertext.GetRef()));
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalAddByPlaintextAndCiphertext(
-    const Plaintext& plaintext, const CiphertextDCRTPoly& ciphertext) const
+    Plaintext& plaintext, const CiphertextDCRTPoly& ciphertext) const
 {
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalAdd(
         plaintext.GetRef(), ciphertext.GetRef()));
@@ -121,7 +139,7 @@ void CryptoContextDCRTPoly::EvalAddInPlaceByCiphertextAndConst(CiphertextDCRTPol
     m_cryptoContextImplSharedPtr->EvalAddInPlace(ciphertext.GetRef(), constant);
 }
 void CryptoContextDCRTPoly::EvalAddInPlaceByCiphertextAndPlaintext(CiphertextDCRTPoly& ciphertext,
-    const Plaintext& plaintext) const
+    Plaintext& plaintext) const
 {
     m_cryptoContextImplSharedPtr->EvalAddInPlace(ciphertext.GetRef(), plaintext.GetRef());
 }
@@ -135,7 +153,7 @@ void CryptoContextDCRTPoly::EvalAddInPlaceByConstAndCiphertext(const double cons
 {
     m_cryptoContextImplSharedPtr->EvalAddInPlace(constant, ciphertext.GetRef());
 }
-void CryptoContextDCRTPoly::EvalAddInPlaceByPlaintextAndCiphertext(const Plaintext& plaintext,
+void CryptoContextDCRTPoly::EvalAddInPlaceByPlaintextAndCiphertext(Plaintext& plaintext,
     CiphertextDCRTPoly& ciphertext) const
 {
     m_cryptoContextImplSharedPtr->EvalAddInPlace(plaintext.GetRef(), ciphertext.GetRef());
@@ -153,7 +171,7 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalAddManyInPlace(
         ciphertextVec.GetRef()));
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalAddMutableByCiphertextAndPlaintext(
-    CiphertextDCRTPoly& ciphertext, const Plaintext& plaintext) const
+    CiphertextDCRTPoly& ciphertext, Plaintext& plaintext) const
 {
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalAddMutable(
         ciphertext.GetRef(), plaintext.GetRef()));
@@ -165,7 +183,7 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalAddMutableByCiphe
         ciphertext1.GetRef(), ciphertext2.GetRef()));
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalAddMutableByPlaintextAndCiphertext(
-    const Plaintext& plaintext, CiphertextDCRTPoly& ciphertext) const
+    Plaintext& plaintext, CiphertextDCRTPoly& ciphertext) const
 {
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalAddMutable(
         plaintext.GetRef(), ciphertext.GetRef()));
@@ -224,6 +242,35 @@ void CryptoContextDCRTPoly::EvalBootstrapSetup(const std::vector<uint32_t>& leve
     m_cryptoContextImplSharedPtr->EvalBootstrapSetup(levelBudget, dim1, slots, correctionFactor,
         precompute);
 }
+void CryptoContextDCRTPoly::EvalFBTSetupByComplex(
+    const std::vector<ComplexPair>& coefficients, const uint32_t numSlots,
+    const std::string& PIn, const std::string& POut, const std::string& Bigq,
+    const PublicKeyDCRTPoly& pubKey, const std::vector<uint32_t>& dim1,
+    const std::vector<uint32_t>& levelBudget, const uint32_t lvlsAfterBoot,
+    const uint32_t depthLeveledComputation, const size_t order) const
+{
+    const lbcrypto::BigInteger bigPIn(PIn);
+    const lbcrypto::BigInteger bigPOut(POut);
+    const lbcrypto::BigInteger bigBigq(Bigq);
+    auto coeffs = ConvertComplexPairs(coefficients);
+
+    m_cryptoContextImplSharedPtr->EvalFBTSetup(coeffs, numSlots, bigPIn, bigPOut, bigBigq,
+        pubKey.GetRef(), dim1, levelBudget, lvlsAfterBoot, depthLeveledComputation, order);
+}
+void CryptoContextDCRTPoly::EvalFBTSetupByInt64(
+    const std::vector<int64_t>& coefficients, const uint32_t numSlots,
+    const std::string& PIn, const std::string& POut, const std::string& Bigq,
+    const PublicKeyDCRTPoly& pubKey, const std::vector<uint32_t>& dim1,
+    const std::vector<uint32_t>& levelBudget, const uint32_t lvlsAfterBoot,
+    const uint32_t depthLeveledComputation, const size_t order) const
+{
+    const lbcrypto::BigInteger bigPIn(PIn);
+    const lbcrypto::BigInteger bigPOut(POut);
+    const lbcrypto::BigInteger bigBigq(Bigq);
+
+    m_cryptoContextImplSharedPtr->EvalFBTSetup(coefficients, numSlots, bigPIn, bigPOut, bigBigq,
+        pubKey.GetRef(), dim1, levelBudget, lvlsAfterBoot, depthLeveledComputation, order);
+}
 std::unique_ptr<VectorOfLWECiphertexts> CryptoContextDCRTPoly::EvalCKKStoFHEW(
     const CiphertextDCRTPoly& ciphertext, const uint32_t numCtxts) const
 {
@@ -238,6 +285,29 @@ void CryptoContextDCRTPoly::EvalCKKStoFHEWKeyGen(const KeyPairDCRTPoly& keyPair,
 void CryptoContextDCRTPoly::EvalCKKStoFHEWPrecompute(const double scale) const
 {
     m_cryptoContextImplSharedPtr->EvalCKKStoFHEWPrecompute(scale);
+}
+std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalFBTByComplex(
+    const CiphertextDCRTPoly& ciphertext, const std::vector<ComplexPair>& coefficients,
+    const uint32_t digitBitSize, const std::string& initialScaling, const uint64_t postScaling,
+    const uint32_t levelToReduce, const size_t order) const
+{
+    const lbcrypto::BigInteger initScaling(initialScaling);
+    auto coeffs = ConvertComplexPairs(coefficients);
+
+    return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalFBT(
+        ciphertext.GetRef(), coeffs, digitBitSize, initScaling, postScaling, levelToReduce,
+        order));
+}
+std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalFBTByInt64(
+    const CiphertextDCRTPoly& ciphertext, const std::vector<int64_t>& coefficients,
+    const uint32_t digitBitSize, const std::string& initialScaling, const uint64_t postScaling,
+    const uint32_t levelToReduce, const size_t order) const
+{
+    const lbcrypto::BigInteger initScaling(initialScaling);
+
+    return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalFBT(
+        ciphertext.GetRef(), coefficients, digitBitSize, initScaling, postScaling,
+        levelToReduce, order));
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalChebyshevFunction(
     rust::Fn<void(const double x, double& ret)> func, const CiphertextDCRTPoly& ciphertext,
@@ -376,7 +446,7 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalLogistic(
         ciphertext.GetRef(), a, b, degree));
 }
 std::unique_ptr<VectorOfCiphertexts> CryptoContextDCRTPoly::EvalMaxSchemeSwitching(
-    const CiphertextDCRTPoly& ciphertext, const PublicKeyDCRTPoly& publicKey,
+    const CiphertextDCRTPoly& ciphertext, PublicKeyDCRTPoly& publicKey,
     const uint32_t numValues, const uint32_t numSlots, const uint32_t pLWE,
     const double scaleSign) const
 {
@@ -385,7 +455,7 @@ std::unique_ptr<VectorOfCiphertexts> CryptoContextDCRTPoly::EvalMaxSchemeSwitchi
         publicKey.GetRef(), numValues, numSlots, pLWE, scaleSign));
 }
 std::unique_ptr<VectorOfCiphertexts> CryptoContextDCRTPoly::EvalMaxSchemeSwitchingAlt(
-    const CiphertextDCRTPoly& ciphertext, const PublicKeyDCRTPoly& publicKey,
+    const CiphertextDCRTPoly& ciphertext, PublicKeyDCRTPoly& publicKey,
     const uint32_t numValues, const uint32_t numSlots, const uint32_t pLWE,
     const double scaleSign) const
 {
@@ -400,7 +470,7 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalMerge(
         ciphertextVec.GetRef()));
 }
 std::unique_ptr<VectorOfCiphertexts> CryptoContextDCRTPoly::EvalMinSchemeSwitching(
-    const CiphertextDCRTPoly& ciphertext, const PublicKeyDCRTPoly& publicKey,
+    const CiphertextDCRTPoly& ciphertext, PublicKeyDCRTPoly& publicKey,
     const uint32_t numValues, const uint32_t numSlots, const uint32_t pLWE,
     const double scaleSign) const
 {
@@ -409,7 +479,7 @@ std::unique_ptr<VectorOfCiphertexts> CryptoContextDCRTPoly::EvalMinSchemeSwitchi
         publicKey.GetRef(), numValues, numSlots, pLWE, scaleSign));
 }
 std::unique_ptr<VectorOfCiphertexts> CryptoContextDCRTPoly::EvalMinSchemeSwitchingAlt(
-    const CiphertextDCRTPoly& ciphertext, const PublicKeyDCRTPoly& publicKey,
+    const CiphertextDCRTPoly& ciphertext, PublicKeyDCRTPoly& publicKey,
     const uint32_t numValues, const uint32_t numSlots, const uint32_t pLWE,
     const double scaleSign) const
 {
@@ -479,7 +549,7 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalMultMany(
         ciphertextVec.GetRef()));
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalMultMutableByCiphertextAndPlaintext(
-    CiphertextDCRTPoly& ciphertext, const Plaintext& plaintext) const
+    CiphertextDCRTPoly& ciphertext, Plaintext& plaintext) const
 {
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalMultMutable(
         ciphertext.GetRef(), plaintext.GetRef()));
@@ -491,7 +561,7 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalMultMutableByCiph
         ciphertext1.GetRef(), ciphertext2.GetRef()));
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalMultMutableByPlaintextAndCiphertext(
-    const Plaintext& plaintext, CiphertextDCRTPoly& ciphertext) const
+    Plaintext& plaintext, CiphertextDCRTPoly& ciphertext) const
 {
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalMultMutable(
         plaintext.GetRef(), ciphertext.GetRef()));
@@ -583,7 +653,7 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalSubByCiphertextAn
         ciphertext.GetRef(), constant));
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalSubByCiphertextAndPlaintext(
-    const CiphertextDCRTPoly& ciphertext, const Plaintext& plaintext) const
+    const CiphertextDCRTPoly& ciphertext, Plaintext& plaintext) const
 {
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalSub(
         ciphertext.GetRef(), plaintext.GetRef()));
@@ -601,7 +671,7 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalSubByConstAndCiph
         constant, ciphertext.GetRef()));
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalSubByPlaintextAndCiphertext(
-    const Plaintext& plaintext, const CiphertextDCRTPoly& ciphertext) const
+    Plaintext& plaintext, const CiphertextDCRTPoly& ciphertext) const
 {
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalSub(
         plaintext.GetRef(), ciphertext.GetRef()));
@@ -622,7 +692,7 @@ void CryptoContextDCRTPoly::EvalSubInPlaceByConstAndCiphertext(const double cons
     m_cryptoContextImplSharedPtr->EvalSubInPlace(constant, ciphertext.GetRef());
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalSubMutableByCiphertextAndPlaintext(
-    CiphertextDCRTPoly& ciphertext, const Plaintext& plaintext) const
+    CiphertextDCRTPoly& ciphertext, Plaintext& plaintext) const
 {
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalSubMutable(
         ciphertext.GetRef(), plaintext.GetRef()));
@@ -634,7 +704,7 @@ std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalSubMutableByCiphe
         ciphertext1.GetRef(), ciphertext2.GetRef()));
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalSubMutableByPlaintextAndCiphertext(
-    const Plaintext& plaintext, CiphertextDCRTPoly& ciphertext) const
+    Plaintext& plaintext, CiphertextDCRTPoly& ciphertext) const
 {
     return std::make_unique<CiphertextDCRTPoly>(m_cryptoContextImplSharedPtr->EvalSubMutable(
         plaintext.GetRef(), ciphertext.GetRef()));
