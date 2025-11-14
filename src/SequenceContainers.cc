@@ -1,5 +1,9 @@
 #include "SequenceContainers.h"
 
+#include "openfhe/pke/constants.h"
+
+#include <cstddef>
+
 namespace openfhe
 {
 
@@ -35,6 +39,26 @@ const std::vector<lbcrypto::Poly>& VectorOfPolys::GetRef() const noexcept
 std::vector<lbcrypto::Poly>& VectorOfPolys::GetRef() noexcept
 {
     return m_polys;
+}
+rust::Vec<rust::String> VectorOfPolys::GetElementCoefficients(const size_t index) const
+{
+    rust::Vec<rust::String> result;
+    if (index >= m_polys.size())
+    {
+        return result;
+    }
+
+    auto poly = m_polys[index];
+    poly.SetFormat(Format::COEFFICIENT);
+
+    const auto& coeffs = poly.GetValues();
+    result.reserve(coeffs.GetLength());
+    for (usint i = 0; i < coeffs.GetLength(); ++i)
+    {
+        result.push_back(rust::String(coeffs[i].ToString()));
+    }
+
+    return result;
 }
 
 VectorOfEvalKeys::VectorOfEvalKeys(std::vector<std::shared_ptr<EvalKeyImpl>> evalKeys)

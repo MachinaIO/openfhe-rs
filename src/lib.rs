@@ -1174,6 +1174,10 @@ pub mod ffi
             q : &CxxString, )
             ->UniquePtr<VectorOfPolys>;
         fn SchemeletRLWEMPGetQPrime(publicKey : &PublicKeyDCRTPoly, lvls : u32)->String;
+        fn GetElementCoefficients(
+            self : &VectorOfPolys,
+            index : usize, )
+            ->Vec<String>;
     }
 
     // Functional bootstrap helpers
