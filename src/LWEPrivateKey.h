@@ -6,6 +6,7 @@ namespace openfhe
 {
 
 using LWEPrivateKeyImpl = lbcrypto::LWEPrivateKeyImpl;
+class DCRTPoly;
 
 class LWEPrivateKey final
 {
@@ -18,6 +19,7 @@ public:
     LWEPrivateKey& operator=(LWEPrivateKey&&) = delete;
 
     [[nodiscard]] const std::shared_ptr<LWEPrivateKeyImpl>& GetRef() const noexcept;
+    [[nodiscard]] std::unique_ptr<DCRTPoly> GetElementAsDCRTPoly() const;
 };
 
 } // openfhe

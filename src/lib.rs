@@ -1135,11 +1135,10 @@ pub mod ffi
             privateKey : &PrivateKeyDCRTPoly,
             elementParams : &ElementParams,
             bitReverse : bool, )
-            ->UniquePtr<VectorOfPolys>;
+            -> UniquePtr<VectorOfPolys>;
         fn SchemeletRLWEMPEncryptCoeffWithZeroB(
             q : &CxxString,
-            a : &DCRTPoly,
-            elementParams : &ElementParams, )
+            a : &DCRTPoly, )
             ->UniquePtr<VectorOfPolys>;
         fn SchemeletRLWEMPDecryptCoeff(
             input : &VectorOfPolys,
@@ -1150,7 +1149,7 @@ pub mod ffi
             numSlots : u32,
             length : u32,
             bitReverse : bool, )
-            ->UniquePtr<CxxVector<i64>>;
+            -> UniquePtr<CxxVector<i64>>;
         fn SchemeletRLWEMPDecryptCoeffWithoutRound(
             input : &VectorOfPolys,
             q : &CxxString,
@@ -1159,7 +1158,7 @@ pub mod ffi
             numSlots : u32,
             length : u32,
             bitReverse : bool, )
-            ->UniquePtr<CxxVector<i64>>;
+            -> UniquePtr<CxxVector<i64>>;
         fn SchemeletRLWEMPModSwitch(input : Pin<&mut VectorOfPolys>, q1 : &CxxString, q2 : &CxxString);
         fn SchemeletRLWEMPConvertRLWEToCKKS(
             cryptoContext : &CryptoContextDCRTPoly,
@@ -1277,6 +1276,12 @@ pub mod ffi
     {
         fn GetPrivateKey(self : &KeyPairDCRTPoly)->UniquePtr<PrivateKeyDCRTPoly>;
         fn GetPublicKey(self : &KeyPairDCRTPoly)->UniquePtr<PublicKeyDCRTPoly>;
+    }
+
+    // LWEPrivateKey
+    unsafe extern "C++"
+    {
+        fn GetElementAsDCRTPoly(self : &LWEPrivateKey)->UniquePtr<DCRTPoly>;
     }
 
     // Params
@@ -1881,7 +1886,7 @@ impl PartialEq for DCRTPoly
 pub struct ParsedCoefficients
 {
     pub coefficients : Vec<BigUint>,
-                       pub modulus : BigUint,
+        pub modulus : BigUint,
 }
 
 /// Parses raw bytes from the serialized format into a vector of BigUint values
