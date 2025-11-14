@@ -240,6 +240,7 @@ pub mod ffi
     {
         // Generator functions
         fn DCRTPolyGenNullCiphertext() -> UniquePtr<CiphertextDCRTPoly>;
+        fn GetModulus(self : &CiphertextDCRTPoly)->String;
     }
 
     // CryptoContextDCRTPoly

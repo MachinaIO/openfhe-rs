@@ -3,6 +3,8 @@
 #include "openfhe/core/lattice/hal/lat-backend.h"
 #include "openfhe/pke/ciphertext-fwd.h"
 
+#include "rust/cxx.h"
+
 namespace openfhe
 {
 
@@ -21,6 +23,7 @@ public:
 
     [[nodiscard]] const std::shared_ptr<CiphertextImpl>& GetRef() const noexcept;
     [[nodiscard]] std::shared_ptr<CiphertextImpl>& GetRef() noexcept;
+    [[nodiscard]] rust::String GetModulus() const;
 };
 
 // Generator functions

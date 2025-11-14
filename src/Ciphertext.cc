@@ -5,22 +5,38 @@
 namespace openfhe
 {
 
-CiphertextDCRTPoly::CiphertextDCRTPoly(std::shared_ptr<CiphertextImpl>&& ciphertext) noexcept
-    : m_ciphertext(std::move(ciphertext))
-{ }
-const std::shared_ptr<CiphertextImpl>& CiphertextDCRTPoly::GetRef() const noexcept
-{
-    return m_ciphertext;
-}
-std::shared_ptr<CiphertextImpl>& CiphertextDCRTPoly::GetRef() noexcept
-{
-    return m_ciphertext;
-}
+    CiphertextDCRTPoly::CiphertextDCRTPoly(std::shared_ptr<CiphertextImpl> &&ciphertext) noexcept
+        : m_ciphertext(std::move(ciphertext))
+    {
+    }
+    const std::shared_ptr<CiphertextImpl> &CiphertextDCRTPoly::GetRef() const noexcept
+    {
+        return m_ciphertext;
+    }
+    std::shared_ptr<CiphertextImpl> &CiphertextDCRTPoly::GetRef() noexcept
+    {
+        return m_ciphertext;
+    }
+    rust::String CiphertextDCRTPoly::GetModulus() const
+    {
+        if (!m_ciphertext)
+        {
+            return rust::String("");
+        }
 
-// Generator functions
-std::unique_ptr<CiphertextDCRTPoly> DCRTPolyGenNullCiphertext()
-{
-    return std::make_unique<CiphertextDCRTPoly>();
-}
+        const auto &elements = m_ciphertext->GetElements();
+        if (elements.empty())
+        {
+            return rust::String("");
+        }
+
+        return rust::String(elements.front().GetModulus().ToString());
+    }
+
+    // Generator functions
+    std::unique_ptr<CiphertextDCRTPoly> DCRTPolyGenNullCiphertext()
+    {
+        return std::make_unique<CiphertextDCRTPoly>();
+    }
 
 } // openfhe
