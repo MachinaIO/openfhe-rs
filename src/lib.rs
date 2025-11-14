@@ -1629,6 +1629,7 @@ pub mod ffi
     // PrivateKeyDCRTPoly
     unsafe extern "C++"
     {
+        fn GetElementAsDCRTPoly(self : &PrivateKeyDCRTPoly)->UniquePtr<DCRTPoly>;
         // Generator functions
         fn DCRTPolyGenNullPrivateKey() -> UniquePtr<PrivateKeyDCRTPoly>;
     }

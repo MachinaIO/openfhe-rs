@@ -7,6 +7,7 @@ namespace openfhe
 {
 
 using PrivateKeyImpl = lbcrypto::PrivateKeyImpl<lbcrypto::DCRTPoly>;
+class DCRTPoly;
 
 class PrivateKeyDCRTPoly final
 {
@@ -21,6 +22,7 @@ public:
 
     [[nodiscard]] const std::shared_ptr<PrivateKeyImpl>& GetRef() const noexcept;
     [[nodiscard]] std::shared_ptr<PrivateKeyImpl>& GetRef() noexcept;
+    [[nodiscard]] std::unique_ptr<DCRTPoly> GetElementAsDCRTPoly() const;
 };
 
 [[nodiscard]] std::unique_ptr<PrivateKeyDCRTPoly> DCRTPolyGenNullPrivateKey();
