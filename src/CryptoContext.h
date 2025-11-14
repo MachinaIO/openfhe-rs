@@ -8,6 +8,8 @@
 
 #include "rust/cxx.h"
 
+#include "SerialMode.h"
+
 #include <string>
 #include <vector>
 
@@ -498,6 +500,19 @@ void DCRTPolyInsertEvalAutomorphismKey(const MapFromIndexToEvalKey& evalKeyMap,
 void DCRTPolyInsertEvalMultKey(const VectorOfEvalKeys& evalKeyVec);
 void DCRTPolyInsertEvalSumKey(const MapFromIndexToEvalKey& mapToInsert,
     const std::string& keyTag /* "" */);
+
+rust::Vec<uint8_t> DCRTPolySerializeEvalAutomorphismKeyByIdToBytes(
+    const SerialMode serialMode, const std::string& id);
+rust::Vec<uint8_t> DCRTPolySerializeEvalAutomorphismKeyToBytes(
+    const SerialMode serialMode, const CryptoContextDCRTPoly& cryptoContext);
+bool DCRTPolyDeserializeEvalAutomorphismKeyFromBytes(rust::Slice<const uint8_t> data,
+    const SerialMode serialMode);
+rust::Vec<uint8_t> DCRTPolySerializeEvalMultKeyByIdToBytes(
+    const SerialMode serialMode, const std::string& id);
+rust::Vec<uint8_t> DCRTPolySerializeEvalMultKeyToBytes(
+    const SerialMode serialMode, const CryptoContextDCRTPoly& cryptoContext);
+bool DCRTPolyDeserializeEvalMultKeyFromBytes(rust::Slice<const uint8_t> data,
+    const SerialMode serialMode);
 
 // Generator functions
 [[nodiscard]] std::unique_ptr<CryptoContextDCRTPoly> DCRTPolyGenCryptoContextByParamsBFVRNS(

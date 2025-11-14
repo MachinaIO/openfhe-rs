@@ -1,6 +1,7 @@
 #include "CryptoContext.h"
 
 #include <complex>
+#include <sstream>
 
 #include "openfhe/pke/cryptocontext.h"
 #include "openfhe/pke/gen-cryptocontext.h"
@@ -43,6 +44,47 @@ std::vector<std::complex<double>> ConvertComplexPairs(const std::vector<ComplexP
         converted.emplace_back(elem.re, elem.im);
     }
     return converted;
+}
+
+template <typename Func>
+bool DispatchBySerialMode(const SerialMode mode, Func&& func)
+{
+    switch (mode)
+    {
+    case SerialMode::BINARY:
+        return func(lbcrypto::SerType::SERBINARY{});
+    case SerialMode::JSON:
+        return func(lbcrypto::SerType::SERJSON{});
+    default:
+        return false;
+    }
+}
+
+template <typename Func>
+rust::Vec<uint8_t> SerializeKeyToBytes(const SerialMode mode, Func&& func)
+{
+    rust::Vec<uint8_t> bytes;
+    std::ostringstream stream(std::ios::binary);
+    if (!DispatchBySerialMode(mode, [&](auto serType){ return func(stream, serType); }))
+    {
+        return bytes;
+    }
+    const std::string str = stream.str();
+    bytes.reserve(str.size());
+    for (const unsigned char c : str)
+    {
+        bytes.push_back(c);
+    }
+    return bytes;
+}
+
+template <typename Func>
+bool DeserializeKeyFromBytes(rust::Slice<const uint8_t> data, const SerialMode mode,
+    Func&& func)
+{
+    const std::string buffer(reinterpret_cast<const char*>(data.data()), data.size());
+    std::istringstream stream(buffer, std::ios::binary);
+    return DispatchBySerialMode(mode, [&](auto serType){ return func(stream, serType); });
 }
 
 } // namespace
@@ -326,6 +368,56 @@ uint32_t GetFBTDepthByInt64(const std::vector<uint32_t>& levelBudget,
 {
     const lbcrypto::BigInteger bigP(PInput);
     return lbcrypto::FHECKKSRNS::GetFBTDepth(levelBudget, coefficients, bigP, order, skd);
+}
+
+rust::Vec<uint8_t> DCRTPolySerializeEvalAutomorphismKeyByIdToBytes(
+    const SerialMode serialMode, const std::string& id)
+{
+    return SerializeKeyToBytes(serialMode, [&](std::ostream& os, const auto& serType){
+        return CryptoContextImpl::SerializeEvalAutomorphismKey(os, serType, id);
+    });
+}
+
+rust::Vec<uint8_t> DCRTPolySerializeEvalAutomorphismKeyToBytes(
+    const SerialMode serialMode, const CryptoContextDCRTPoly& cryptoContext)
+{
+    return SerializeKeyToBytes(serialMode, [&](std::ostream& os, const auto& serType){
+        return CryptoContextImpl::SerializeEvalAutomorphismKey(os, serType,
+            cryptoContext.GetRef());
+    });
+}
+
+bool DCRTPolyDeserializeEvalAutomorphismKeyFromBytes(rust::Slice<const uint8_t> data,
+    const SerialMode serialMode)
+{
+    return DeserializeKeyFromBytes(data, serialMode, [&](std::istream& is, const auto& serType){
+        return CryptoContextImpl::DeserializeEvalAutomorphismKey(is, serType);
+    });
+}
+
+rust::Vec<uint8_t> DCRTPolySerializeEvalMultKeyByIdToBytes(
+    const SerialMode serialMode, const std::string& id)
+{
+    return SerializeKeyToBytes(serialMode, [&](std::ostream& os, const auto& serType){
+        return CryptoContextImpl::SerializeEvalMultKey(os, serType, id);
+    });
+}
+
+rust::Vec<uint8_t> DCRTPolySerializeEvalMultKeyToBytes(
+    const SerialMode serialMode, const CryptoContextDCRTPoly& cryptoContext)
+{
+    return SerializeKeyToBytes(serialMode, [&](std::ostream& os, const auto& serType){
+        return CryptoContextImpl::SerializeEvalMultKey(os, serType,
+            cryptoContext.GetRef());
+    });
+}
+
+bool DCRTPolyDeserializeEvalMultKeyFromBytes(rust::Slice<const uint8_t> data,
+    const SerialMode serialMode)
+{
+    return DeserializeKeyFromBytes(data, serialMode, [&](std::istream& is, const auto& serType){
+        return CryptoContextImpl::DeserializeEvalMultKey(is, serType);
+    });
 }
 std::unique_ptr<CiphertextDCRTPoly> CryptoContextDCRTPoly::EvalChebyshevFunction(
     rust::Fn<void(const double x, double& ret)> func, const CiphertextDCRTPoly& ciphertext,

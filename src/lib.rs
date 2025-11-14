@@ -1670,6 +1670,18 @@ pub mod ffi
             cryptoContext : &CryptoContextDCRTPoly,
             serialMode : SerialMode, )
             ->bool;
+        fn DCRTPolySerializeEvalAutomorphismKeyByIdToBytes(
+            serialMode : SerialMode,
+            id : &CxxString, )
+            ->Vec<u8>;
+        fn DCRTPolySerializeEvalAutomorphismKeyToBytes(
+            serialMode : SerialMode,
+            cryptoContext : &CryptoContextDCRTPoly, )
+            ->Vec<u8>;
+        fn DCRTPolyDeserializeEvalAutomorphismKeyFromBytes(
+            data : &[u8],
+            serialMode : SerialMode, )
+            ->bool;
 
         // EvalMultKey
         fn DCRTPolyDeserializeEvalMultKeyFromFile(
@@ -1684,6 +1696,18 @@ pub mod ffi
         fn DCRTPolySerializeEvalMultKeyToFile(
             multKeyLocation : &CxxString,
             cryptoContext : &CryptoContextDCRTPoly,
+            serialMode : SerialMode, )
+            ->bool;
+        fn DCRTPolySerializeEvalMultKeyByIdToBytes(
+            serialMode : SerialMode,
+            id : &CxxString, )
+            ->Vec<u8>;
+        fn DCRTPolySerializeEvalMultKeyToBytes(
+            serialMode : SerialMode,
+            cryptoContext : &CryptoContextDCRTPoly, )
+            ->Vec<u8>;
+        fn DCRTPolyDeserializeEvalMultKeyFromBytes(
+            data : &[u8],
             serialMode : SerialMode, )
             ->bool;
 
