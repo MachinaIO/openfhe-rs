@@ -4,6 +4,16 @@
 namespace openfhe
 {
 
+ElementParams::ElementParams(
+    std::shared_ptr<lbcrypto::ILDCRTParams<lbcrypto::DCRTPoly::Integer>> params) noexcept
+    : m_params(std::move(params))
+{ }
+const std::shared_ptr<lbcrypto::ILDCRTParams<lbcrypto::DCRTPoly::Integer>>&
+    ElementParams::GetRef() const noexcept
+{
+    return m_params;
+}
+
 std::unique_ptr<ParamsBFVRNS> GenParamsBFVRNS()
 {
     return std::make_unique<ParamsBFVRNS>();

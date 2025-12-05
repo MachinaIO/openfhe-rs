@@ -3,8 +3,14 @@
 #include "openfhe/binfhe/lwe-ciphertext-fwd.h"
 #include "openfhe/core/lattice/hal/lat-backend.h"
 #include "openfhe/pke/ciphertext-fwd.h"
+#include "openfhe/pke/constants.h"
 #include "openfhe/pke/key/evalkey-fwd.h"
 #include "openfhe/pke/key/privatekey-fwd.h"
+
+#include "rust/cxx.h"
+
+#include <memory>
+#include <vector>
 
 // cxx currently does not support std::vector of opaque type
 
@@ -30,6 +36,17 @@ public:
     VectorOfDCRTPolys(std::shared_ptr<std::vector<lbcrypto::DCRTPoly>>&& elements) noexcept;
 
     [[nodiscard]] const std::shared_ptr<std::vector<lbcrypto::DCRTPoly>>& GetRef() const noexcept;
+};
+
+class VectorOfPolys final
+{
+    std::vector<lbcrypto::Poly> m_polys;
+public:
+    explicit VectorOfPolys(std::vector<lbcrypto::Poly>&& polys) noexcept;
+
+    [[nodiscard]] const std::vector<lbcrypto::Poly>& GetRef() const noexcept;
+    [[nodiscard]] std::vector<lbcrypto::Poly>& GetRef() noexcept;
+    [[nodiscard]] rust::Vec<rust::String> GetElementCoefficients(size_t index) const;
 };
 
 using EvalKeyImpl = lbcrypto::EvalKeyImpl<lbcrypto::DCRTPoly>;

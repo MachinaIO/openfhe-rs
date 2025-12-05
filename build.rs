@@ -8,6 +8,7 @@ fn main() {
         .file("src/DecryptResult.cc")
         .file("src/EncodingParams.cc")
         .file("src/EvalKey.cc")
+        .file("src/Hermite.cc")
         .file("src/KeyPair.cc")
         .file("src/LWEPrivateKey.cc")
         .file("src/Params.cc")
@@ -15,6 +16,7 @@ fn main() {
         .file("src/PrivateKey.cc")
         .file("src/PublicKey.cc")
         .file("src/SchemeBase.cc")
+        .file("src/SchemeletRLWEMP.cc")
         .file("src/SequenceContainers.cc")
         .file("src/SerialDeserial.cc")
         .file("src/Trapdoor.cc")
@@ -71,6 +73,10 @@ fn main() {
     println!("cargo::rerun-if-changed=src/PublicKey.cc");
     println!("cargo::rerun-if-changed=src/SchemeBase.h");
     println!("cargo::rerun-if-changed=src/SchemeBase.cc");
+    println!("cargo::rerun-if-changed=src/Hermite.h");
+    println!("cargo::rerun-if-changed=src/Hermite.cc");
+    println!("cargo::rerun-if-changed=src/SchemeletRLWEMP.h");
+    println!("cargo::rerun-if-changed=src/SchemeletRLWEMP.cc");
     println!("cargo::rerun-if-changed=src/SequenceContainers.h");
     println!("cargo::rerun-if-changed=src/SequenceContainers.cc");
     println!("cargo::rerun-if-changed=src/SerialDeserial.h");

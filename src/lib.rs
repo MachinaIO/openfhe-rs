@@ -108,6 +108,8 @@ pub mod ffi
         FIXEDAUTO,
         FLEXIBLEAUTO,
         FLEXIBLEAUTOEXT,
+        COMPOSITESCALINGAUTO,
+        COMPOSITESCALINGMANUAL,
         NORESCALE,
         INVALID_RS_TECHNIQUE,
     }
@@ -172,6 +174,8 @@ pub mod ffi
         include !("openfhe/src/PrivateKey.h");
         include !("openfhe/src/PublicKey.h");
         include !("openfhe/src/SchemeBase.h");
+        include !("openfhe/src/SchemeletRLWEMP.h");
+        include !("openfhe/src/Hermite.h");
         include !("openfhe/src/SequenceContainers.h");
         include !("openfhe/src/SerialDeserial.h");
         include !("openfhe/src/Trapdoor.h");
@@ -198,6 +202,7 @@ pub mod ffi
         type CiphertextDCRTPoly;
         type CryptoContextDCRTPoly;
         type CryptoParametersBaseDCRTPoly;
+        type ElementParams;
         type DCRTPoly;
         type DCRTPolyParams;
         type DCRTTrapdoor;
@@ -225,6 +230,7 @@ pub mod ffi
         type VectorOfDCRTPolys;
         type VectorOfEvalKeys;
         type VectorOfLWECiphertexts;
+        type VectorOfPolys;
         type VectorOfPrivateKeys;
         type VectorOfVectorOfCiphertexts;
     }
@@ -234,6 +240,7 @@ pub mod ffi
     {
         // Generator functions
         fn DCRTPolyGenNullCiphertext() -> UniquePtr<CiphertextDCRTPoly>;
+        fn GetModulus(self : &CiphertextDCRTPoly)->String;
     }
 
     // CryptoContextDCRTPoly
@@ -281,7 +288,7 @@ pub mod ffi
         fn EvalAddByCiphertextAndPlaintext(
             self : &CryptoContextDCRTPoly,
             ciphertext : &CiphertextDCRTPoly,
-            plaintext : &Plaintext, )
+            plaintext : Pin<&mut Plaintext>, )
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalAddByCiphertexts(
             self : &CryptoContextDCRTPoly,
@@ -295,7 +302,7 @@ pub mod ffi
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalAddByPlaintextAndCiphertext(
             self : &CryptoContextDCRTPoly,
-            plaintext : &Plaintext,
+            plaintext : Pin<&mut Plaintext>,
             ciphertext : &CiphertextDCRTPoly, )
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalAddInPlaceByCiphertextAndConst(
@@ -305,7 +312,7 @@ pub mod ffi
         fn EvalAddInPlaceByCiphertextAndPlaintext(
             self : &CryptoContextDCRTPoly,
             ciphertext : Pin<&mut CiphertextDCRTPoly>,
-            plaintext : &Plaintext, );
+            plaintext : Pin<&mut Plaintext>, );
         fn EvalAddInPlaceByCiphertexts(
             self : &CryptoContextDCRTPoly,
             ciphertext1 : Pin<&mut CiphertextDCRTPoly>,
@@ -316,7 +323,7 @@ pub mod ffi
             ciphertext : Pin<&mut CiphertextDCRTPoly>, );
         fn EvalAddInPlaceByPlaintextAndCiphertext(
             self : &CryptoContextDCRTPoly,
-            plaintext : &Plaintext,
+            plaintext : Pin<&mut Plaintext>,
             ciphertext : Pin<&mut CiphertextDCRTPoly>, );
         fn EvalAddMany(
             self : &CryptoContextDCRTPoly,
@@ -329,7 +336,7 @@ pub mod ffi
         fn EvalAddMutableByCiphertextAndPlaintext(
             self : &CryptoContextDCRTPoly,
             ciphertext : Pin<&mut CiphertextDCRTPoly>,
-            plaintext : &Plaintext, )
+            plaintext : Pin<&mut Plaintext>, )
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalAddMutableByCiphertexts(
             self : &CryptoContextDCRTPoly,
@@ -338,7 +345,7 @@ pub mod ffi
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalAddMutableByPlaintextAndCiphertext(
             self : &CryptoContextDCRTPoly,
-            plaintext : &Plaintext,
+            plaintext : Pin<&mut Plaintext>,
             ciphertext : Pin<&mut CiphertextDCRTPoly>, )
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalAddMutableInPlace(
@@ -384,6 +391,52 @@ pub mod ffi
             slots : /* 0 */ u32,
             correctionFactor : /* 0 */ u32,
             precompute : /* true */ bool, );
+        fn EvalFBTSetupByComplex(
+            self : &CryptoContextDCRTPoly,
+            coefficients : &CxxVector<ComplexPair>,
+            numSlots : u32,
+            pIn : &CxxString,
+            pOut : &CxxString,
+            bigq : &CxxString,
+            pubKey : &PublicKeyDCRTPoly,
+            dim1 : &CxxVector<u32>,
+            levelBudget : &CxxVector<u32>,
+            lvlsAfterBoot : /* 0 */ u32,
+            depthLeveledComputation : /* 0 */ u32,
+            order : /* 1 */ usize, );
+        fn EvalFBTSetupByInt64(
+            self : &CryptoContextDCRTPoly,
+            coefficients : &CxxVector<i64>,
+            numSlots : u32,
+            pIn : &CxxString,
+            pOut : &CxxString,
+            bigq : &CxxString,
+            pubKey : &PublicKeyDCRTPoly,
+            dim1 : &CxxVector<u32>,
+            levelBudget : &CxxVector<u32>,
+            lvlsAfterBoot : /* 0 */ u32,
+            depthLeveledComputation : /* 0 */ u32,
+            order : /* 1 */ usize, );
+        fn EvalFBTByComplex(
+            self : &CryptoContextDCRTPoly,
+            ciphertext : &CiphertextDCRTPoly,
+            coefficients : &CxxVector<ComplexPair>,
+            digitBitSize : u32,
+            initialScaling : &CxxString,
+            postScaling : u64,
+            levelToReduce : /* 0 */ u32,
+            order : /* 1 */ usize, )
+            ->UniquePtr<CiphertextDCRTPoly>;
+        fn EvalFBTByInt64(
+            self : &CryptoContextDCRTPoly,
+            ciphertext : &CiphertextDCRTPoly,
+            coefficients : &CxxVector<i64>,
+            digitBitSize : u32,
+            initialScaling : &CxxString,
+            postScaling : u64,
+            levelToReduce : /* 0 */ u32,
+            order : /* 1 */ usize, )
+            ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalCKKStoFHEW(
             self : &CryptoContextDCRTPoly,
             ciphertext : &CiphertextDCRTPoly,
@@ -524,7 +577,7 @@ pub mod ffi
         fn EvalMaxSchemeSwitching(
             self : &CryptoContextDCRTPoly,
             ciphertext : &CiphertextDCRTPoly,
-            publicKey : &PublicKeyDCRTPoly,
+            publicKey : Pin<&mut PublicKeyDCRTPoly>,
             numValues : /* 0 */ u32,
             numSlots : /* 0 */ u32,
             pLWE : /* 0 */ u32,
@@ -533,7 +586,7 @@ pub mod ffi
         fn EvalMaxSchemeSwitchingAlt(
             self : &CryptoContextDCRTPoly,
             ciphertext : &CiphertextDCRTPoly,
-            publicKey : &PublicKeyDCRTPoly,
+            publicKey : Pin<&mut PublicKeyDCRTPoly>,
             numValues : /* 0 */ u32,
             numSlots : /* 0 */ u32,
             pLWE : /* 0 */ u32,
@@ -546,7 +599,7 @@ pub mod ffi
         fn EvalMinSchemeSwitching(
             self : &CryptoContextDCRTPoly,
             ciphertext : &CiphertextDCRTPoly,
-            publicKey : &PublicKeyDCRTPoly,
+            publicKey : Pin<&mut PublicKeyDCRTPoly>,
             numValues : /* 0 */ u32,
             numSlots : /* 0 */ u32,
             pLWE : /* 0 */ u32,
@@ -555,7 +608,7 @@ pub mod ffi
         fn EvalMinSchemeSwitchingAlt(
             self : &CryptoContextDCRTPoly,
             ciphertext : &CiphertextDCRTPoly,
-            publicKey : &PublicKeyDCRTPoly,
+            publicKey : Pin<&mut PublicKeyDCRTPoly>,
             numValues : /* 0 */ u32,
             numSlots : /* 0 */ u32,
             pLWE : /* 0 */ u32,
@@ -608,7 +661,7 @@ pub mod ffi
         fn EvalMultMutableByCiphertextAndPlaintext(
             self : &CryptoContextDCRTPoly,
             ciphertext : Pin<&mut CiphertextDCRTPoly>,
-            plaintext : &Plaintext, )
+            plaintext : Pin<&mut Plaintext>, )
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalMultMutableByCiphertexts(
             self : &CryptoContextDCRTPoly,
@@ -617,7 +670,7 @@ pub mod ffi
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalMultMutableByPlaintextAndCiphertext(
             self : &CryptoContextDCRTPoly,
-            plaintext : &Plaintext,
+            plaintext : Pin<&mut Plaintext>,
             ciphertext : Pin<&mut CiphertextDCRTPoly>, )
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalMultMutableInPlace(
@@ -691,7 +744,7 @@ pub mod ffi
         fn EvalSubByCiphertextAndPlaintext(
             self : &CryptoContextDCRTPoly,
             ciphertext : &CiphertextDCRTPoly,
-            plaintext : &Plaintext, )
+            plaintext : Pin<&mut Plaintext>, )
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalSubByCiphertexts(
             self : &CryptoContextDCRTPoly,
@@ -705,7 +758,7 @@ pub mod ffi
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalSubByPlaintextAndCiphertext(
             self : &CryptoContextDCRTPoly,
-            plaintext : &Plaintext,
+            plaintext : Pin<&mut Plaintext>,
             ciphertext : &CiphertextDCRTPoly, )
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalSubInPlaceByCiphertextAndConst(
@@ -723,7 +776,7 @@ pub mod ffi
         fn EvalSubMutableByCiphertextAndPlaintext(
             self : &CryptoContextDCRTPoly,
             ciphertext : Pin<&mut CiphertextDCRTPoly>,
-            plaintext : &Plaintext, )
+            plaintext : Pin<&mut Plaintext>, )
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalSubMutableByCiphertexts(
             self : &CryptoContextDCRTPoly,
@@ -732,7 +785,7 @@ pub mod ffi
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalSubMutableByPlaintextAndCiphertext(
             self : &CryptoContextDCRTPoly,
-            plaintext : &Plaintext,
+            plaintext : Pin<&mut Plaintext>,
             ciphertext : Pin<&mut CiphertextDCRTPoly>, )
             ->UniquePtr<CiphertextDCRTPoly>;
         fn EvalSubMutableInPlace(
@@ -1069,6 +1122,89 @@ pub mod ffi
         fn DCRTPolyGenNullCryptoContext() -> UniquePtr<CryptoContextDCRTPoly>;
     }
 
+    // Schemelet RLWE MP
+    unsafe extern "C++"
+    {
+        fn SchemeletRLWEMPGetElementParams(
+            privateKey : &PrivateKeyDCRTPoly,
+            level : u32, )
+            ->UniquePtr<ElementParams>;
+        fn SchemeletRLWEMPEncryptCoeff(
+            input : &CxxVector<i64>,
+            q : &CxxString,
+            p : &CxxString,
+            privateKey : &PrivateKeyDCRTPoly,
+            elementParams : &ElementParams,
+            bitReverse : bool, )
+            -> UniquePtr<VectorOfPolys>;
+        fn SchemeletRLWEMPEncryptCoeffWithZeroB(
+            q : &CxxString,
+            a : &DCRTPoly, )
+            ->UniquePtr<VectorOfPolys>;
+        fn SchemeletRLWEMPDecryptCoeff(
+            input : &VectorOfPolys,
+            q : &CxxString,
+            p : &CxxString,
+            privateKey : &PrivateKeyDCRTPoly,
+            elementParams : &ElementParams,
+            numSlots : u32,
+            length : u32,
+            bitReverse : bool, )
+            -> UniquePtr<CxxVector<i64>>;
+        fn SchemeletRLWEMPDecryptCoeffWithoutRound(
+            input : &VectorOfPolys,
+            q : &CxxString,
+            privateKey : &PrivateKeyDCRTPoly,
+            elementParams : &ElementParams,
+            numSlots : u32,
+            length : u32,
+            bitReverse : bool, )
+            -> UniquePtr<CxxVector<i64>>;
+        fn SchemeletRLWEMPModSwitch(input : Pin<&mut VectorOfPolys>, q1 : &CxxString, q2 : &CxxString);
+        fn SchemeletRLWEMPConvertRLWEToCKKS(
+            cryptoContext : &CryptoContextDCRTPoly,
+            coeffs : &VectorOfPolys,
+            publicKey : &PublicKeyDCRTPoly,
+            bigq : &CxxString,
+            slots : u32,
+            level : u32, )
+            ->UniquePtr<CiphertextDCRTPoly>;
+        fn SchemeletRLWEMPConvertCKKSToRLWE(
+            ciphertext : &CiphertextDCRTPoly,
+            q : &CxxString, )
+            ->UniquePtr<VectorOfPolys>;
+        fn SchemeletRLWEMPGetQPrime(publicKey : &PublicKeyDCRTPoly, lvls : u32)->String;
+        fn GetElementCoefficients(
+            self : &VectorOfPolys,
+            index : usize, )
+            ->Vec<String>;
+    }
+
+    // Functional bootstrap helpers
+    unsafe extern "C++"
+    {
+        fn GetHermiteTrigCoefficientsByFunction(
+            func : fn(i64)->i64,
+            p : u32,
+            order : usize,
+            scale : f64, )
+            ->UniquePtr<CxxVector<ComplexPair>>;
+        fn GetFBTDepthByComplex(
+            levelBudget : &CxxVector<u32>,
+            coefficients : &CxxVector<ComplexPair>,
+            p_in : &CxxString,
+            order : usize,
+            skd : SecretKeyDist, )
+            ->u32;
+        fn GetFBTDepthByInt64(
+            levelBudget : &CxxVector<u32>,
+            coefficients : &CxxVector<i64>,
+            p_in : &CxxString,
+            order : usize,
+            skd : SecretKeyDist, )
+            ->u32;
+    }
+
     // DCRTPoly
     unsafe extern "C++"
     {
@@ -1145,6 +1281,12 @@ pub mod ffi
     {
         fn GetPrivateKey(self : &KeyPairDCRTPoly)->UniquePtr<PrivateKeyDCRTPoly>;
         fn GetPublicKey(self : &KeyPairDCRTPoly)->UniquePtr<PublicKeyDCRTPoly>;
+    }
+
+    // LWEPrivateKey
+    unsafe extern "C++"
+    {
+        fn GetElementAsDCRTPoly(self : &LWEPrivateKey)->UniquePtr<DCRTPoly>;
     }
 
     // Params
@@ -1492,6 +1634,7 @@ pub mod ffi
     // PrivateKeyDCRTPoly
     unsafe extern "C++"
     {
+        fn GetElementAsDCRTPoly(self : &PrivateKeyDCRTPoly)->UniquePtr<DCRTPoly>;
         // Generator functions
         fn DCRTPolyGenNullPrivateKey() -> UniquePtr<PrivateKeyDCRTPoly>;
     }
@@ -1538,6 +1681,18 @@ pub mod ffi
             cryptoContext : &CryptoContextDCRTPoly,
             serialMode : SerialMode, )
             ->bool;
+        fn DCRTPolySerializeEvalAutomorphismKeyByIdToBytes(
+            serialMode : SerialMode,
+            id : &CxxString, )
+            ->Vec<u8>;
+        fn DCRTPolySerializeEvalAutomorphismKeyToBytes(
+            serialMode : SerialMode,
+            cryptoContext : &CryptoContextDCRTPoly, )
+            ->Vec<u8>;
+        fn DCRTPolyDeserializeEvalAutomorphismKeyFromBytes(
+            data : &[u8],
+            serialMode : SerialMode, )
+            ->bool;
 
         // EvalMultKey
         fn DCRTPolyDeserializeEvalMultKeyFromFile(
@@ -1552,6 +1707,18 @@ pub mod ffi
         fn DCRTPolySerializeEvalMultKeyToFile(
             multKeyLocation : &CxxString,
             cryptoContext : &CryptoContextDCRTPoly,
+            serialMode : SerialMode, )
+            ->bool;
+        fn DCRTPolySerializeEvalMultKeyByIdToBytes(
+            serialMode : SerialMode,
+            id : &CxxString, )
+            ->Vec<u8>;
+        fn DCRTPolySerializeEvalMultKeyToBytes(
+            serialMode : SerialMode,
+            cryptoContext : &CryptoContextDCRTPoly, )
+            ->Vec<u8>;
+        fn DCRTPolyDeserializeEvalMultKeyFromBytes(
+            data : &[u8],
             serialMode : SerialMode, )
             ->bool;
 
@@ -1725,7 +1892,7 @@ impl PartialEq for DCRTPoly
 pub struct ParsedCoefficients
 {
     pub coefficients : Vec<BigUint>,
-                       pub modulus : BigUint,
+        pub modulus : BigUint,
 }
 
 /// Parses raw bytes from the serialized format into a vector of BigUint values

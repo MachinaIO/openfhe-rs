@@ -1,5 +1,6 @@
 #pragma once
 
+#include "openfhe/core/lattice/hal/lat-backend.h"
 #include "openfhe/core/utils/exception.h"
 #include "openfhe/pke/scheme/gen-cryptocontext-params.h"
 #include "openfhe/pke/scheme/bfvrns/gen-cryptocontext-bfvrns-params.h"
@@ -9,6 +10,7 @@
 #include "rust/cxx.h"
 
 #include <memory>
+#include <utility>
 
 namespace openfhe
 {
@@ -30,6 +32,22 @@ using Params = lbcrypto::Params;
 using ParamsBFVRNS = lbcrypto::CCParams<lbcrypto::CryptoContextBFVRNS>;
 using ParamsBGVRNS = lbcrypto::CCParams<lbcrypto::CryptoContextBGVRNS>;
 using ParamsCKKSRNS = lbcrypto::CCParams<lbcrypto::CryptoContextCKKSRNS>;
+
+class ElementParams final
+{
+    std::shared_ptr<lbcrypto::ILDCRTParams<lbcrypto::DCRTPoly::Integer>> m_params;
+
+public:
+    explicit ElementParams(
+        std::shared_ptr<lbcrypto::ILDCRTParams<lbcrypto::DCRTPoly::Integer>> params) noexcept;
+    ElementParams(const ElementParams&) = delete;
+    ElementParams(ElementParams&&) = delete;
+    ElementParams& operator=(const ElementParams&) = delete;
+    ElementParams& operator=(ElementParams&&) = delete;
+
+    [[nodiscard]] const std::shared_ptr<lbcrypto::ILDCRTParams<lbcrypto::DCRTPoly::Integer>>&
+        GetRef() const noexcept;
+};
 
 // Generator functions
 [[nodiscard]] std::unique_ptr<ParamsBFVRNS> GenParamsBFVRNS();
