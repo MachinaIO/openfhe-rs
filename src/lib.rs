@@ -1221,20 +1221,22 @@ pub mod ffi
             n : u32,
             size : usize,
             k_res : usize,
-            value : &String, )
+            value_limbs : &[u64], )
             ->UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromVec(
             n : u32,
             size : usize,
             k_res : usize,
-            values : &Vec<String>, )
+            values_limbs : &[u64],
+            limbs_per_int : usize, )
             ->UniquePtr<DCRTPoly>;
         // Create DCRTPoly from EVALUATION-slot integers and return EVALUATION format
         fn DCRTPolyGenFromEvalVec(
             n : u32,
             size : usize,
             k_res : usize,
-            values : &Vec<String>, )
+            values_limbs : &[u64],
+            limbs_per_int : usize, )
             ->UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromBug(n : u32, size : usize, k_res : usize)->UniquePtr<DCRTPoly>;
         fn DCRTPolyGenFromDug(n : u32, size : usize, k_res : usize)->UniquePtr<DCRTPoly>;
@@ -1895,6 +1897,26 @@ pub struct ParsedCoefficients
         pub modulus : BigUint,
 }
 
+/// Flattens little-endian `u64` limbs into the fixed-width layout expected by
+/// `ffi::DCRTPolyGenFromVec` and `ffi::DCRTPolyGenFromEvalVec`.
+///
+/// Each input element is a little-endian slice of 2^64 limbs (least-significant limb first).
+/// The output is padded with zeros so that every element occupies exactly `limbs_per_int` limbs.
+pub fn pack_dcrtpoly_u64_limbs_le(values: &[&[u64]], limbs_per_int: usize) -> Vec<u64> {
+    assert!(limbs_per_int > 0, "limbs_per_int must be > 0");
+
+    let mut out = Vec::with_capacity(values.len() * limbs_per_int);
+    for v in values {
+        assert!(
+            v.len() <= limbs_per_int,
+            "value has more limbs than limbs_per_int"
+        );
+        out.extend_from_slice(v);
+        out.resize(out.len() + (limbs_per_int - v.len()), 0);
+    }
+    out
+}
+
 /// Parses raw bytes from the serialized format into a vector of BigUint values
 /// Returns a vector containing all coefficients followed by the modulus as the last element
 pub fn
@@ -2030,11 +2052,18 @@ parse_coefficients_bytes(bytes : &[u8]) -> ParsedCoefficients
 mod tests
 {
     use super::*;
+    use std::sync::{Mutex, OnceLock};
+
+    fn openfhe_test_lock() -> &'static Mutex<()> {
+        static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+        LOCK.get_or_init(|| Mutex::new(()))
+    }
 
 // TODO: add more tests
 #[test]
     fn SimpleIntegersExample()
     {
+        let _guard = openfhe_test_lock().lock().unwrap();
         let mut _cc_params_bfvrns = ffi::GenParamsBFVRNS();
         _cc_params_bfvrns.pin_mut().SetPlaintextModulus(65537);
         _cc_params_bfvrns.pin_mut().SetMultiplicativeDepth(2);
@@ -2179,6 +2208,7 @@ mod tests
 #[test]
     fn SimpleRealNumbersExample()
     {
+        let _guard = openfhe_test_lock().lock().unwrap();
         let _mult_depth : u32 = 1;
         let _scale_mod_size : u32 = 50;
         let _batch_size : u32 = 8;
@@ -2310,6 +2340,7 @@ mod tests
 #[test]
     fn PolynomialEvaluationExample()
     {
+        let _guard = openfhe_test_lock().lock().unwrap();
         use std::time::Instant;
         println !("\n======EXAMPLE FOR EVALPOLY========\n");
 
@@ -2440,23 +2471,24 @@ mod tests
 #[test]
     fn DCRTPolyGenFromEvalVec_slot_selection()
     {
+        let _guard = openfhe_test_lock().lock().unwrap();
         // Parameters: small ring, a couple of CRT towers, modest bit-size per tower
         let n : u32 = 8;        // ring dimension
         let size : usize = 2;   // number of CRT primes (towers)
         let k_res : usize = 24; // bits per prime
 
         // Deterministic pseudo-random values for evaluation slots
-        let mut values : Vec<String> = Vec::with_capacity(n as usize);
+        let mut values : Vec<u64> = Vec::with_capacity(n as usize);
         for
             i in 0..(n as usize)
             {
                 // simple deterministic sequence in [1, 1000)
                 let v = ((i * 73 + 17) % 997 + 1) as u64;
-                values.push(v.to_string());
+                values.push(v);
             }
 
         // Build the polynomial from evaluation slots (returns coefficient representation)
-        let poly = ffi::DCRTPolyGenFromEvalVec(n, size, k_res, &values);
+        let poly = ffi::DCRTPolyGenFromEvalVec(n, size, k_res, values.as_slice(), 1);
 
         // For each slot i, multiply by selector with only i-th slot = 1
         // and verify the result equals the polynomial constructed from
@@ -2464,15 +2496,17 @@ mod tests
         for
             i in 0..(n as usize)
             {
-                let mut selector_vals = vec ![String::from("0"); n as usize];
-                selector_vals[i] = String::from("1");
-                let selector = ffi::DCRTPolyGenFromEvalVec(n, size, k_res, &selector_vals);
+                let mut selector_vals = vec ![0u64; n as usize];
+                selector_vals[i] = 1u64;
+                let selector =
+                    ffi::DCRTPolyGenFromEvalVec(n, size, k_res, selector_vals.as_slice(), 1);
 
                 let prod = ffi::DCRTPolyMul(&poly, &selector);
 
-                let mut expected_vals = vec ![String::from("0"); n as usize];
-                expected_vals[i] = values[i].clone();
-                let expected = ffi::DCRTPolyGenFromEvalVec(n, size, k_res, &expected_vals);
+                let mut expected_vals = vec ![0u64; n as usize];
+                expected_vals[i] = values[i];
+                let expected =
+                    ffi::DCRTPolyGenFromEvalVec(n, size, k_res, expected_vals.as_slice(), 1);
 
                 let prod_ref = prod.as_ref().expect("prod ref");
                 let expected_ref = expected.as_ref().expect("expected ref");

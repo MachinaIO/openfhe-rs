@@ -1,75 +1,92 @@
 use num_bigint::BigUint;
 use num_traits::Num;
-use openfhe::ffi::{self, GetMatrixElement};
-use openfhe::parse_coefficients_bytes;
+use openfhe::ffi::{
+    self,
+};
+use openfhe::{pack_dcrtpoly_u64_limbs_le, parse_coefficients_bytes};
 
-fn main() {
-    let val = String::from("123456789099999");
+fn main()
+{
+    let val : u64 = 123456789099999;
     // Parameters based on https://github.com/openfheorg/openfhe-development/blob/7b8346f4eac27121543e36c17237b919e03ec058/src/core/unittest/UnitTestTrapdoor.cpp#L314
-    let n: u32 = 16;
-    let size: usize = 4; // Number of CRT
-    let k_res: usize = 51;
+    let n : u32 = 16;
+    let size : usize = 4; // Number of CRT
+    let k_res : usize = 51;
 
-    let const_poly = ffi::DCRTPolyGenFromConst(n, size, k_res, &val);
+    let const_poly = ffi::DCRTPolyGenFromConst(n, size, k_res, &[val]);
     // print the const_poly
-    println!("const_poly: {:?}", const_poly);
+    println !("const_poly: {:?}", const_poly);
 
     let modulus = ffi::GenModulus(n, size, k_res);
-    println!("modulus: {:?}", modulus);
+    println !("modulus: {:?}", modulus);
 
     let moduli = ffi::GenCRTBasis(n, size, k_res);
-    println!("moduli: {:?}", moduli);
+    println !("moduli: {:?}", moduli);
 
-    let const_poly_2 = ffi::DCRTPolyGenFromConst(n, size, k_res, &val);
+    let const_poly_2 = ffi::DCRTPolyGenFromConst(n, size, k_res, &[val]);
     // print the const_poly_2
-    println!("const_poly_2: {:?}", const_poly_2);
+    println !("const_poly_2: {:?}", const_poly_2);
 
     // assert that the two const_poly are equal
-    assert_eq!(const_poly, const_poly_2);
+    assert_eq !(const_poly, const_poly_2);
 
-    let const_poly_one = ffi::DCRTPolyGenFromConst(n, size, k_res, &String::from("1"));
+    let const_poly_one = ffi::DCRTPolyGenFromConst(n, size, k_res, &[1u64]);
     let negated_poly_one = const_poly_one.Negate();
-    println!("negated_poly_one: {:?}", negated_poly_one);
+    println !("negated_poly_one: {:?}", negated_poly_one);
 
-    let coeffs = vec![
+    let coeffs = vec ![
         String::from("123456789099999"),
         String::from("1234567842539099999"),
         String::from("31232189328123893128912983"),
         String::from("24535423544252452453"),
     ];
 
-    let poly = ffi::DCRTPolyGenFromVec(n, size, k_res, &coeffs);
-    let poly_2 = ffi::DCRTPolyGenFromVec(n, size, k_res, &coeffs);
+    let coeffs_big : Vec<BigUint> = coeffs
+                                        .iter()
+                                        .map(| s | BigUint::from_str_radix(s, 10).unwrap())
+                                        .collect();
+    let coeff_limbs : Vec<Vec<u64>> = coeffs_big.iter().map(| v | v.to_u64_digits()).collect();
+    let limbs_per_int = coeff_limbs
+                            .iter()
+                            .map(| d | d.len())
+                            .max()
+                            .unwrap_or(1)
+                            .max(1);
+    let coeff_slices : Vec<&[u64]> = coeff_limbs.iter().map(| d | d.as_slice()).collect();
+    let packed_coeffs = pack_dcrtpoly_u64_limbs_le(&coeff_slices, limbs_per_int);
+
+    let poly = ffi::DCRTPolyGenFromVec(n, size, k_res, packed_coeffs.as_slice(), limbs_per_int);
+    let poly_2 = ffi::DCRTPolyGenFromVec(n, size, k_res, packed_coeffs.as_slice(), limbs_per_int);
 
     // assert that the two poly are equal
-    assert_eq!(poly, poly_2);
+    assert_eq !(poly, poly_2);
 
     // perform polynomial addition
     let poly_add = ffi::DCRTPolyAdd(&poly, &poly_2);
-    println!("poly_add: {:?}", poly_add);
+    println !("poly_add: {:?}", poly_add);
 
     // perform polynomial multiplication
     let poly_mul = ffi::DCRTPolyMul(&poly, &poly_2);
-    println!("poly_mul: {:?}", poly_mul);
+    println !("poly_mul: {:?}", poly_mul);
 
     // get the coefficients of the polynomials
     let coeffs_poly = poly.GetCoefficients();
-    println!("coeffs_poly: {:?}", coeffs_poly);
+    println !("coeffs_poly: {:?}", coeffs_poly);
     let coeffs_poly_2 = poly_2.GetCoefficients();
-    println!("coeffs_poly_2: {:?}", coeffs_poly_2);
+    println !("coeffs_poly_2: {:?}", coeffs_poly_2);
     let coeffs_poly_add = poly_add.GetCoefficients();
-    println!("coeffs_poly_add: {:?}", coeffs_poly_add);
+    println !("coeffs_poly_add: {:?}", coeffs_poly_add);
 
     let coeffs_poly_bytes = poly.GetCoefficientsBytes();
-    println!("coeffs_poly_bytes: {:?}", coeffs_poly_bytes);
+    println !("coeffs_poly_bytes: {:?}", coeffs_poly_bytes);
 
     // decode coeff_poly_bytes
     let parsed_coefficients = parse_coefficients_bytes(&coeffs_poly_bytes);
-    println!("decoded mod: {:?}", parsed_coefficients.modulus);
-    println!("decoded coeffs: {:?}", parsed_coefficients.coefficients);
+    println !("decoded mod: {:?}", parsed_coefficients.modulus);
+    println !("decoded coeffs: {:?}", parsed_coefficients.coefficients);
 
     let poly_modulus = poly.GetModulus();
-    assert_eq!(poly_modulus, modulus);
+    assert_eq !(poly_modulus, modulus);
 
     let sigma = 4.57825;
     let base = 2;
@@ -97,12 +114,16 @@ fn main() {
 
     // build the target matrix by sampling a random polynomial for each element
     let mut target_matrix = ffi::MatrixGen(n, size, k_res, d, d);
-    for i in 0..d {
-        for j in 0..d {
-            let poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
-            ffi::SetMatrixElement(target_matrix.as_mut().unwrap(), i, j, &poly);
+    for
+        i in 0..d
+        {
+        for
+            j in 0..d
+            {
+                let poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
+                ffi::SetMatrixElement(target_matrix.as_mut().unwrap(), i, j, &poly);
+            }
         }
-    }
 
     // generate a preimage such that public_matrix_square * preimage = target_matrix
     let _preimage_square = ffi::DCRTSquareMatTrapdoorGaussSamp(
@@ -112,8 +133,7 @@ fn main() {
         &trapdoor_square,
         &target_matrix,
         base,
-        sigma,
-    );
+        sigma, );
 
     // generate preimage and store it to file system
     let path = String::from("data/preimageID.bin");
@@ -126,27 +146,14 @@ fn main() {
         &target_matrix,
         base,
         sigma,
-        &path,
-    );
+        &path, );
 
     // fetch the matrix from the file system
-    let preimage = ffi::GetMatrixFromFs(n, size, k_res, &path);
-    let nrow = ffi::GetMatrixRows(&preimage);
-    let ncol = ffi::GetMatrixCols(&preimage);
-
-    let dummy_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
-    let decomposed_poly = dummy_poly.Decompose(1);
-    let poly_0_0 = GetMatrixElement(&decomposed_poly, 0, 0);
 
     let sample = ffi::GenerateIntegerKarney(0.0, 4.0);
-    println!("sample: {:?}", sample);
+    println !("sample: {:?}", sample);
 
     // Example of using DCRTGaussSampGqArbBase
-
-    // Parameters
-    let c: f64 = (base as f64 + 1.0) * sigma; // Typically c = (base + 1) * sigma
-
-    let syndrome_poly = ffi::DCRTPolyGenFromDug(n, size, k_res);
 
     // // Loop over each tower_idx which is taken from `size`
     // for tower_idx in 0..size {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include "openfhe/core/lattice/hal/lat-backend.h"
 #include "rust/cxx.h"
 #include "openfhe/core/math/matrix.h"
@@ -36,13 +37,14 @@ namespace openfhe
         usint n,
         size_t size,
         size_t kRes,
-        const rust::String &value);
+        rust::Slice<const uint64_t> value_limbs);
 
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromVec(
         usint n,
         size_t size,
         size_t kRes,
-        const rust::Vec<rust::String> &values);
+        rust::Slice<const uint64_t> values_limbs,
+        size_t limbs_per_int);
 
     // Generate a polynomial from integers interpreted as EVALUATION slots,
     // and return the resulting DCRTPoly in EVALUATION format.
@@ -50,7 +52,8 @@ namespace openfhe
         usint n,
         size_t size,
         size_t kRes,
-        const rust::Vec<rust::String> &values);
+        rust::Slice<const uint64_t> values_limbs,
+        size_t limbs_per_int);
 
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromBug(usint n, size_t size, size_t kRes);
     [[nodiscard]] std::unique_ptr<DCRTPoly> DCRTPolyGenFromDug(usint n, size_t size, size_t kRes);
