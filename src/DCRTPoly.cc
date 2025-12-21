@@ -27,14 +27,6 @@ namespace openfhe
             }
             return result;
         }
-
-        void ValidateStrideOrThrow(const size_t limbsPerInt)
-        {
-            if (limbsPerInt == 0)
-            {
-                throw std::runtime_error("limbs_per_int must be > 0");
-            }
-        }
     } // namespace
 
     DCRTPoly::DCRTPoly(lbcrypto::DCRTPoly &&poly) noexcept
@@ -165,7 +157,20 @@ namespace openfhe
         rust::Slice<const uint64_t> values_limbs,
         size_t limbs_per_int)
     {
-        ValidateStrideOrThrow(limbs_per_int);
+        if (limbs_per_int == 0)
+        {
+            // Treat as "all coefficients are zero", regardless of input buffer.
+            auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+            lbcrypto::BigVector bigVec(params->GetRingDimension(), params->GetModulus());
+
+            lbcrypto::PolyImpl<lbcrypto::BigVector> polyLarge(params, Format::COEFFICIENT);
+            polyLarge.SetValues(bigVec, Format::COEFFICIENT);
+
+            lbcrypto::DCRTPoly dcrtPoly(polyLarge, params);
+            dcrtPoly.SetFormat(Format::EVALUATION);
+            return std::make_unique<DCRTPoly>(std::move(dcrtPoly));
+        }
+
         if (values_limbs.size() % limbs_per_int != 0)
         {
             throw std::runtime_error("values_limbs length must be a multiple of limbs_per_int");
@@ -205,7 +210,19 @@ namespace openfhe
         rust::Slice<const uint64_t> values_limbs,
         size_t limbs_per_int)
     {
-        ValidateStrideOrThrow(limbs_per_int);
+        if (limbs_per_int == 0)
+        {
+            // Treat as "all evaluation slots are zero", regardless of input buffer.
+            auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+            lbcrypto::BigVector bigVec(params->GetRingDimension(), params->GetModulus());
+
+            lbcrypto::PolyImpl<lbcrypto::BigVector> polyLarge(params, Format::EVALUATION);
+            polyLarge.SetValues(bigVec, Format::EVALUATION);
+
+            lbcrypto::DCRTPoly dcrtPoly(polyLarge, params);
+            return std::make_unique<DCRTPoly>(std::move(dcrtPoly));
+        }
+
         if (values_limbs.size() % limbs_per_int != 0)
         {
             throw std::runtime_error("values_limbs length must be a multiple of limbs_per_int");

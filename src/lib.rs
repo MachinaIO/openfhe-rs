@@ -1903,7 +1903,9 @@ pub struct ParsedCoefficients
 /// Each input element is a little-endian slice of 2^64 limbs (least-significant limb first).
 /// The output is padded with zeros so that every element occupies exactly `limbs_per_int` limbs.
 pub fn pack_dcrtpoly_u64_limbs_le(values: &[&[u64]], limbs_per_int: usize) -> Vec<u64> {
-    assert!(limbs_per_int > 0, "limbs_per_int must be > 0");
+    if limbs_per_int == 0 {
+        return Vec::new();
+    }
 
     let mut out = Vec::with_capacity(values.len() * limbs_per_int);
     for v in values {
