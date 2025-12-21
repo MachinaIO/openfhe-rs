@@ -1,8 +1,33 @@
 #include "DCRTPoly.h"
+#include <cstdint>
 #include <sstream>
+#include <stdexcept>
 
 namespace openfhe
 {
+    namespace
+    {
+        lbcrypto::BigInteger BigIntegerFromFixedLimbsLE(const uint64_t *limbs, size_t limbsPerInt)
+        {
+            lbcrypto::BigInteger result(0);
+            if (limbsPerInt == 0)
+            {
+                return result;
+            }
+
+            lbcrypto::BigInteger factor(1);
+            for (size_t i = 0; i < limbsPerInt; ++i)
+            {
+                const uint64_t limb = limbs[i];
+                if (limb != 0)
+                {
+                    result += lbcrypto::BigInteger(limb) * factor;
+                }
+                factor <<= 64;
+            }
+            return result;
+        }
+    } // namespace
 
     DCRTPoly::DCRTPoly(lbcrypto::DCRTPoly &&poly) noexcept
         : m_poly(std::move(poly))
@@ -114,42 +139,55 @@ namespace openfhe
         usint n,
         size_t size,
         size_t kRes,
-        const rust::String &value)
+        rust::Slice<const uint64_t> value_limbs)
     {
-        // Create params
-        auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
-
-        // Create a BigVector
-        lbcrypto::BigVector bigVec(params->GetRingDimension(), params->GetModulus());
-        bigVec[0] = lbcrypto::BigInteger(std::string(value));
-
-        // Create a Poly that supports BigInteger coefficients)
-        lbcrypto::PolyImpl<lbcrypto::BigVector> polyLarge(params, Format::COEFFICIENT);
-        polyLarge.SetValues(bigVec, Format::COEFFICIENT);
-
-        // Convert polyLarge to a DCRTPoly
-        lbcrypto::DCRTPoly dcrtPoly(polyLarge, params);
-
-        // switch dcrtPoly to EVALUATION format
-        dcrtPoly.SetFormat(Format::EVALUATION);
-
-        return std::make_unique<DCRTPoly>(std::move(dcrtPoly));
+        const size_t limbsPerInt = value_limbs.size();
+        if (limbsPerInt == 0)
+        {
+            const uint64_t zero = 0;
+            return DCRTPolyGenFromVec(n, size, kRes, rust::Slice<const uint64_t>(&zero, 1), 1);
+        }
+        return DCRTPolyGenFromVec(n, size, kRes, value_limbs, limbsPerInt);
     }
 
     std::unique_ptr<DCRTPoly> DCRTPolyGenFromVec(
         usint n,
         size_t size,
         size_t kRes,
-        const rust::Vec<rust::String> &values)
+        rust::Slice<const uint64_t> values_limbs,
+        size_t limbs_per_int)
     {
+        if (limbs_per_int == 0)
+        {
+            // Treat as "all coefficients are zero", regardless of input buffer.
+            auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+            lbcrypto::BigVector bigVec(params->GetRingDimension(), params->GetModulus());
+
+            lbcrypto::PolyImpl<lbcrypto::BigVector> polyLarge(params, Format::COEFFICIENT);
+            polyLarge.SetValues(bigVec, Format::COEFFICIENT);
+
+            lbcrypto::DCRTPoly dcrtPoly(polyLarge, params);
+            dcrtPoly.SetFormat(Format::EVALUATION);
+            return std::make_unique<DCRTPoly>(std::move(dcrtPoly));
+        }
+
+        if (values_limbs.size() % limbs_per_int != 0)
+        {
+            throw std::runtime_error("values_limbs length must be a multiple of limbs_per_int");
+        }
+
         // Create params
         auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
 
         // Create a BigVector
         lbcrypto::BigVector bigVec(params->GetRingDimension(), params->GetModulus());
-        for (size_t i = 0; i < values.size() && i < params->GetRingDimension(); i++)
+        const size_t count = values_limbs.size() / limbs_per_int;
+        const size_t ringDim = params->GetRingDimension();
+        const size_t limit = (count < ringDim) ? count : ringDim;
+        for (size_t i = 0; i < limit; ++i)
         {
-            bigVec[i] = lbcrypto::BigInteger(std::string(values[i]));
+            const uint64_t *limbs = values_limbs.data() + (i * limbs_per_int);
+            bigVec[i] = BigIntegerFromFixedLimbsLE(limbs, limbs_per_int);
         }
 
         // Create a Poly that supports BigInteger coefficients
@@ -169,16 +207,39 @@ namespace openfhe
         usint n,
         size_t size,
         size_t kRes,
-        const rust::Vec<rust::String> &values)
+        rust::Slice<const uint64_t> values_limbs,
+        size_t limbs_per_int)
     {
+        if (limbs_per_int == 0)
+        {
+            // Treat as "all evaluation slots are zero", regardless of input buffer.
+            auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
+            lbcrypto::BigVector bigVec(params->GetRingDimension(), params->GetModulus());
+
+            lbcrypto::PolyImpl<lbcrypto::BigVector> polyLarge(params, Format::EVALUATION);
+            polyLarge.SetValues(bigVec, Format::EVALUATION);
+
+            lbcrypto::DCRTPoly dcrtPoly(polyLarge, params);
+            return std::make_unique<DCRTPoly>(std::move(dcrtPoly));
+        }
+
+        if (values_limbs.size() % limbs_per_int != 0)
+        {
+            throw std::runtime_error("values_limbs length must be a multiple of limbs_per_int");
+        }
+
         // Create params
         auto params = std::make_shared<lbcrypto::ILDCRTParams<lbcrypto::BigInteger>>(2 * n, size, kRes);
 
         // Create a BigVector for evaluation slots
         lbcrypto::BigVector bigVec(params->GetRingDimension(), params->GetModulus());
-        for (size_t i = 0; i < values.size() && i < params->GetRingDimension(); i++)
+        const size_t count = values_limbs.size() / limbs_per_int;
+        const size_t ringDim = params->GetRingDimension();
+        const size_t limit = (count < ringDim) ? count : ringDim;
+        for (size_t i = 0; i < limit; ++i)
         {
-            bigVec[i] = lbcrypto::BigInteger(std::string(values[i]));
+            const uint64_t *limbs = values_limbs.data() + (i * limbs_per_int);
+            bigVec[i] = BigIntegerFromFixedLimbsLE(limbs, limbs_per_int);
         }
 
         // Build a Poly with values interpreted in EVALUATION domain

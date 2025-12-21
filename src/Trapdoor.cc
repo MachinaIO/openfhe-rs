@@ -1,6 +1,7 @@
 #include "Trapdoor.h"
 #include "Params.h"
 #include <filesystem>
+#include <vector>
 
 namespace openfhe
 {
@@ -299,28 +300,38 @@ namespace openfhe
         BF.SetFormat(Format::EVALUATION);
         DF.SetFormat(Format::EVALUATION);
 
-        Matrix p1(zero_alloc, 1, 1);
+        lbcrypto::Matrix<lbcrypto::Field2n> c([&]()
+                                              { return lbcrypto::Field2n(n, Format::COEFFICIENT); }, 2 * d, ncol);
+        double cScale = -sigma * sigma / (s * s - sigma * sigma);
 
-        for (size_t j = 0; j < ncol; j++)
+#pragma omp parallel for if (ncol > 1)
+        for (long jL = 0; jL < static_cast<long>(ncol); ++jL)
         {
-            lbcrypto::Matrix<lbcrypto::Field2n> c([&]()
-                                                  { return lbcrypto::Field2n(n, Format::COEFFICIENT); }, 2 * d, 1);
-
+            size_t j = static_cast<size_t>(jL);
             for (size_t i = 0; i < d; i++)
             {
-                c(i, 0) = lbcrypto::Field2n(tp2(i, j)).ScalarMult(-sigma * sigma / (s * s - sigma * sigma));
-                c(i + d, 0) = lbcrypto::Field2n(tp2(i + d, j)).ScalarMult(-sigma * sigma / (s * s - sigma * sigma));
+                c(i, j) = lbcrypto::Field2n(tp2(i, j)).ScalarMult(cScale);
+                c(i + d, j) = lbcrypto::Field2n(tp2(i + d, j)).ScalarMult(cScale);
             }
+        }
 
-            auto p1ZVector = std::make_shared<lbcrypto::Matrix<int64_t>>([]()
-                                                                         { return 0; }, n * 2 * d, 1);
+        auto p1ZVector = std::make_shared<lbcrypto::Matrix<int64_t>>([]()
+                                                                     { return 0; }, n * 2 * d, ncol);
+        lbcrypto::LatticeGaussSampUtility<lbcrypto::DCRTPoly>::SampleMat(AF, BF, DF, c, dgg, p1ZVector);
 
-            lbcrypto::LatticeGaussSampUtility<lbcrypto::DCRTPoly>::SampleMat(AF, BF, DF, c, dgg, p1ZVector);
-
-            if (j == 0)
-                p1 = lbcrypto::SplitInt64IntoElements<lbcrypto::DCRTPoly>(*p1ZVector, n, params);
-            else
-                p1.HStack(lbcrypto::SplitInt64IntoElements<lbcrypto::DCRTPoly>(*p1ZVector, n, params));
+        lbcrypto::Matrix<lbcrypto::DCRTPoly> p1(zero_alloc, 1, 1);
+        std::vector<lbcrypto::Matrix<lbcrypto::DCRTPoly>> p1Cols(ncol);
+#pragma omp parallel for if (ncol > 1)
+        for (long jL = 0; jL < static_cast<long>(ncol); ++jL)
+        {
+            size_t j = static_cast<size_t>(jL);
+            p1Cols[j] = lbcrypto::SplitInt64IntoElements<lbcrypto::DCRTPoly>(p1ZVector->ExtractCol(j), n, params);
+        }
+        if (ncol > 0)
+        {
+            p1 = p1Cols[0];
+            for (size_t j = 1; j < ncol; ++j)
+                p1.HStack(p1Cols[j]);
         }
 
         p1.SetFormat(Format::EVALUATION);
