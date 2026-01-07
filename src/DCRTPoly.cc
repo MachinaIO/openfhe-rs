@@ -103,6 +103,51 @@ namespace openfhe
         return result;
     }
 
+    rust::Vec<rust::u8> DCRTPoly::GetEvaluationBytes() const
+    {
+        auto tempPoly = m_poly;
+        tempPoly.SetFormat(Format::EVALUATION);
+
+        const auto &params = tempPoly.GetParams();
+        const uint32_t towers = tempPoly.GetNumOfElements();
+        const uint32_t ringDim = params->GetRingDimension();
+        const lbcrypto::BigInteger &modulus = params->GetModulus();
+
+        std::vector<lbcrypto::BigInteger> multiplier;
+        multiplier.reserve(towers);
+        for (uint32_t i = 0; i < towers; ++i)
+        {
+            const lbcrypto::BigInteger qi = tempPoly.GetElementAtIndex(i).GetModulus().ConvertToInt();
+            const lbcrypto::BigInteger qtDivQi = modulus / qi;
+            multiplier.emplace_back(qtDivQi.ModInverse(qi) * qtDivQi);
+        }
+
+        lbcrypto::BigVector values(ringDim, modulus);
+        for (uint32_t j = 0; j < ringDim; ++j)
+        {
+            for (uint32_t i = 0; i < towers; ++i)
+            {
+                values[j] += tempPoly.GetElementAtIndex(i).GetValues()[j].ConvertToInt() * multiplier[i];
+            }
+            values[j].ModEq(modulus);
+        }
+
+        std::stringstream ss;
+        lbcrypto::Serial::Serialize(values, ss, lbcrypto::SerType::BINARY);
+
+        std::string serializedData = ss.str();
+
+        rust::Vec<rust::u8> result;
+        result.reserve(serializedData.size());
+
+        for (size_t i = 0; i < serializedData.size(); ++i)
+        {
+            result.push_back(static_cast<rust::u8>(static_cast<unsigned char>(serializedData[i])));
+        }
+
+        return result;
+    }
+
     std::unique_ptr<DCRTPoly> DCRTPoly::Negate() const
     {
         return std::make_unique<DCRTPoly>(-m_poly);
