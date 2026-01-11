@@ -51,6 +51,11 @@ namespace openfhe
         return m_poly.GetModulus().ToString();
     }
 
+    std::unique_ptr<DCRTPoly> DCRTPoly::Clone() const
+    {
+        return std::make_unique<DCRTPoly>(m_poly.Clone());
+    }
+
     bool DCRTPoly::IsEqual(const DCRTPoly &other) const noexcept
     {
         return m_poly == other.m_poly;

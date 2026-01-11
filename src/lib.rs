@@ -1224,6 +1224,7 @@ pub mod ffi {
         fn GetCoefficientsBytes(self: &DCRTPoly) -> Vec<u8>;
         fn GetEvaluationBytes(self: &DCRTPoly) -> Vec<u8>;
         fn GetModulus(self: &DCRTPoly) -> String;
+        fn Clone(self: &DCRTPoly) -> UniquePtr<DCRTPoly>;
         fn Negate(self: &DCRTPoly) -> UniquePtr<DCRTPoly>;
         fn Decompose(self: &DCRTPoly, base_bits: u32) -> UniquePtr<Matrix>;
 
