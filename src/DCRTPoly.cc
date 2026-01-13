@@ -401,7 +401,20 @@ namespace openfhe
         size_t col)
     {
         lbcrypto::DCRTPoly copy = matrix(row, col);
-        return std::make_unique<DCRTPoly>(std::move(copy));
+        const auto originalFormat = copy.GetFormat();
+        if (originalFormat != Format::COEFFICIENT)
+        {
+            copy.SetFormat(Format::COEFFICIENT);
+        }
+
+        // Canonicalize coefficients to [0, q) via CRT interpolation.
+        lbcrypto::DCRTPoly::PolyLargeType polyLarge = copy.CRTInterpolate();
+        lbcrypto::DCRTPoly rounded(polyLarge, copy.GetParams());
+        if (originalFormat != Format::COEFFICIENT)
+        {
+            rounded.SetFormat(originalFormat);
+        }
+        return std::make_unique<DCRTPoly>(std::move(rounded));
     }
 
     size_t GetMatrixRows(const Matrix &matrix)
